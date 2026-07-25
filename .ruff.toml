@@ -1,5 +1,6 @@
 line-length = 90
-fix = true
+preview = false
+unsafe-fixes = false
 
 [lint]
 select = [
@@ -41,6 +42,7 @@ select = [
     "SLF",
     "RSE",
     "PYI",
+    "ARG",
     "ANN001",
     "ANN201",
     "ANN202",
@@ -68,10 +70,12 @@ ignore = [
     "S105",
     "S106",
 ]
-
 [lint.per-file-ignores]
-# Tests may inspect private behavior when pinning an internal contract.
-"tests/**" = ["SLF001"]
+"tests/**/*.py" = ["ARG001", "ARG002", "S101"]
+
+[lint.mccabe]
+max-complexity = 10
+
 
 [lint.flake8-quotes]
 docstring-quotes = "single"

@@ -1,0 +1,42 @@
+# pytest.toml
+
+[pytest]
+minversion = "9.0"
+strict = true
+
+testpaths = ["tests"]
+collect_imported_tests = false
+empty_parameter_set_mark = "fail_at_collect"
+
+faulthandler_timeout = 60
+faulthandler_exit_on_timeout = true
+
+tmp_path_retention_policy = "failed"
+tmp_path_retention_count = 3
+
+addopts = [
+    "-ra",
+    "--tb=short",
+    "--showlocals",
+    "--durations=10",
+    "--durations-min=1.0",
+
+    "--cov",
+    "--cov-config=.coveragerc.ini",
+    "--cov-report=term-missing",
+]
+
+required_plugins = [
+    "pytest-cov",
+    "pytest-mock",
+    "pytest-randomly",
+    "pytest-xdist",
+]
+
+markers = [
+    "integration: tests involving multiple application components",
+    "slow: tests excluded from the fastest validation loop",
+    "network: tests requiring real network access",
+]
+
+filterwarnings = ["error"]
