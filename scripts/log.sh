@@ -57,3 +57,10 @@ log_step_end() {
         printf '%s\n' "::endgroup::"
     fi
 }
+
+require_cmd() {
+    if ! command -v "$1" >/dev/null 2>&1; then
+        log_error "Required command not found: $1"
+        exit 1
+    fi
+}

@@ -16,3 +16,4 @@ trim_trailing_whitespace = false
 [*.sh]
 indent_style = space
 indent_size = 4
+shell_variant = bash
