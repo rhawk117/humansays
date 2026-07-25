@@ -1,0 +1,96 @@
+name: Reusable package validation
+
+on:
+  workflow_call:
+    inputs:
+      runner:
+        description: GitHub Actions runner label
+        required: false
+        type: string
+        default: ""
+
+      artifact-name:
+        description: Uploaded distribution artifact name
+        required: false
+        type: string
+        default: python-distributions
+
+      smoke-python:
+        description: Python version used for the wheel smoke test
+        required: false
+        type: string
+        default: "3.11"
+
+    outputs:
+      artifact-name:
+        description: Name of the uploaded distribution artifact
+        value: ${{ jobs.build.outputs.artifact-name }}
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  ARTIFACT_NAME: ${{ inputs.artifact-name }}
+  OUTPUT_DIRECTORY: dist/
+
+jobs:
+  build:
+    name: Build Package Distributions
+    runs-on: ${{ inputs.runner || vars.DEFAULT_RUNNER || 'ubuntu-24.04' }}
+    outputs:
+      artifact-name: ${{ steps.metadata.outputs.artifact-name }}
+    steps:
+      - name: Check Out Repository
+        uses: actions/checkout@v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Bootstrap Runner
+        uses: ./.github/actions/bootstrap
+        with:
+          python-version: "3.14"
+          groups: package
+
+      - name: Build distributions
+        id: metadata
+        run: ./scripts/build.sh "$OUTPUT_DIRECTORY"
+
+      - name: Upload Distributions
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: dist/
+          if-no-files-found: error
+          retention-days: 7
+
+  smoke:
+    name: Smoke Test Wheel on Python ${{ inputs.smoke-python }}
+    needs: build
+    runs-on: ${{ inputs.runner || vars.DEFAULT_RUNNER || 'ubuntu-24.04' }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7.0.0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Install uv and Python
+        uses: ./.github/actions/bootstrap
+        with:
+          python-version: ${{ inputs.smoke-python }}
+          sync: "false"
+
+      - name: Download distributions
+        uses: actions/download-artifact@v8.0.1 # v8.0.1
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: dist/
+
+      - name: Smoke Test Package
+        env:
+          PYTHON_VERSION: ${{ inputs.smoke-python }}
+        run: |
+          ./scripts/smoke-package.sh "$PYTHON_VERSION" "$OUTPUT_DIRECTORY"

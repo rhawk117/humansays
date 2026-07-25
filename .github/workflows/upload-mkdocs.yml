@@ -1,0 +1,45 @@
+name: Build Doc Site
+
+on:
+  workflow_call:
+    inputs:
+      runner:
+        description: GitHub Actions runner label
+        required: false
+        type: string
+        default: ""
+      upload-artifact:
+        description: Upload the built site for GitHub Pages
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build documentation
+    runs-on: ${{ vars.DEFAULT_RUNNER || 'ubuntu-24.04' }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Bootstrap Runner
+        uses: ./.github/actions/bootstrap
+        with:
+          python-version: "3.14"
+          groups: docs
+
+      - name: Build Mkdocs Site
+        env:
+          UV_NO_SYNC: "1"
+        run: uv run --locked --group docs mkdocs build --strict --clean
+
+      - name: Upload GitHub Pages artifact
+        if: ${{ inputs.upload-artifact }}
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: site/
