@@ -19,7 +19,7 @@ Small typo and documentation fixes do not require an issue first.
 git clone <repository-url>
 cd <repository-name>
 uv sync --all-groups
-bash scripts/code-quality.sh all
+make ci
 ```
 
 ## development rules
@@ -47,16 +47,16 @@ squash the branch when merging.
 
 ## quality gate
 
-All commands except `format` are check-only:
+All commands except `make format` are check-only:
 
 ```bash
-bash scripts/code-quality.sh all
+make ci
 ```
 
-The `format` command modifies files and is intended for local use:
+The `format` target modifies files and is intended for local use:
 
 ```bash
-bash scripts/code-quality.sh format
+make format
 ```
 
 ## pull requests

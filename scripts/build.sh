@@ -24,7 +24,7 @@ if ((${#wheels[@]} != 1)); then
 fi
 
 if ((${#sdists[@]} != 1)); then
-  printf 'Expected exactly one source distribution, found %s\n' \
+  printf '::error::xpected exactly one source distribution, found %s\n' \
     "${#sdists[@]}" >&2
   exit 1
 fi

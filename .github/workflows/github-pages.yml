@@ -1,0 +1,60 @@
+name: Documentation
+
+on:
+  pull_request:
+    paths:
+      - docs/**
+      - mkdocs.yml
+      - pyproject.toml
+      - scripts/docs.sh
+      - src/**
+      - uv.lock
+      - .github/actions/setup-project/**
+      - .github/workflows/_docs.yml
+      - .github/workflows/docs.yml
+  push:
+    branches:
+      - main
+    paths:
+      - docs/**
+      - mkdocs.yml
+      - pyproject.toml
+      - scripts/docs.sh
+      - src/**
+      - uv.lock
+      - .github/actions/setup-project/**
+      - .github/workflows/_docs.yml
+      - .github/workflows/docs.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-docs:
+    uses: ./.github/workflows/upload-mkdocs.yml
+    with:
+      upload-artifact: ${{ github.event_name != 'pull_request' }}
+
+  deploy:
+    name: Deploy documentation
+    if: ${{ github.event_name != 'pull_request' }}
+    needs: build-docs
+    runs-on: ${{ vars.DEFAULT_RUNNER || 'ubuntu-24.04' }}
+
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -40,6 +40,13 @@ requires = ["uv_build>=0.11.29,<0.12.0"]
 build-backend = "uv_build"
 
 [dependency-groups]
+dev = [
+    { include-group = "docs" },
+    { include-group = "package" },
+    { include-group = "lint" },
+    { include-group = "test" },
+]
+docs = ["mkdocs-material>=9.7.7", "mkdocstrings[python]>=1.0.6"]
 lint = [
     "bandit>=1.9.4",
     "deptry>=0.25.1",
@@ -48,6 +55,7 @@ lint = [
     "ty>=0.0.63",
     "vulture>=2.16",
 ]
+package = ["twine>=6.2.0"]
 test = [
     "pytest>=9.1.1",
     "pytest-cov>=7.1.0",
@@ -55,6 +63,15 @@ test = [
     "pytest-randomly>=4.1.0",
     "pytest-xdist>=3.8.0",
 ]
+
+[tool.uv]
+default-groups = ["dev"]
+
+[tool.uv.dependency-groups]
+dev = { requires-python = ">=3.14" }
+docs = { requires-python = ">=3.12" }
+lint = { requires-python = ">=3.14" }
+
 
 [tool.deptry]
 ignore_notebooks = true

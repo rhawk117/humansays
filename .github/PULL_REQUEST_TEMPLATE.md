@@ -11,4 +11,6 @@
 
 ## Related Issues
 
+<!-- omit section if not applicable -->
+
 Closes #
