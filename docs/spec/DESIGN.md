@@ -888,8 +888,7 @@ class AnalysisBackend(Protocol):
         self,
         files: Sequence[SourceFile],
         options: AnalysisOptions,
-    ) -> AnalysisBatch:
-        ...
+    ) -> AnalysisBatch: ...
 ```
 
 The boundary is batch-oriented so a Rust backend does not cross the Python/native boundary once per AST node.

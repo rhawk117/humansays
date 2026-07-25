@@ -501,8 +501,7 @@ class AnalysisBackend(Protocol):
         self,
         files: Sequence[SourceFile],
         options: AnalysisOptions,
-    ) -> AnalysisBatch:
-        ...
+    ) -> AnalysisBatch: ...
 ```
 
 ### 10.3 Parser-neutral facts
