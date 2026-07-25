@@ -1,20 +1,77 @@
 [project]
-name = "askance"
+name = "humansays"
 version = "0.1.0"
+requires-python = ">=3.11"
 description = "A linting guardrail for LLM-generated Python code which raises structural doubts and a per-finding score before the code reaches a reviewer"
 readme = "README.md"
 authors = [
     { name = "rhawk117", email = "noplaceLike127dot0dot0dot1@proton.me" },
 ]
-requires-python = ">=3.14"
+keywords = ["lint", "linter", "static-analysis", "llm", "code-quality"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Software Development :: Quality Assurance",
+]
+license = "MIT"
+license-files = ["LICENSE"]
 dependencies = []
 
+[project.urls]
+Homepage = "https://github.com/rhawk117/askance"
+Repository = "https://github.com/rhawk117/askance"
+Issues = "https://github.com/rhawk117/askance/issues"
+Changelog = "https://github.com/rhawk117/askance/releases"
+
 [project.scripts]
-askance = "askance:main"
+humansays = "humansays:main"
 
 [build-system]
 requires = ["uv_build>=0.11.29,<0.12.0"]
 build-backend = "uv_build"
 
 [dependency-groups]
-dev = ["bashate>=2.1.1", "pytest>=9.1.1", "ruff>=0.16.0", "ty>=0.0.63"]
+lint = [
+    "bandit>=1.9.4",
+    "deptry>=0.25.1",
+    "import-linter>=2.13",
+    "ruff>=0.16.0",
+    "ty>=0.0.63",
+    "vulture>=2.16",
+]
+test = [
+    "pytest>=9.1.1",
+    "pytest-cov>=7.1.0",
+    "pytest-mock>=3.15.1",
+    "pytest-randomly>=4.1.0",
+    "pytest-xdist>=3.8.0",
+]
+
+[tool.deptry]
+ignore_notebooks = true
+extend_exclude = ["(^|/)(build|dist|generated)(/|$)"]
+
+[tool.deptry.per_rule_ignores]
+# DEP002 = ["uvicorn"]
+
+[tool.deptry.package_module_name_map]
+# "python-dateutil" = "dateutil"
+
+[tool.vulture]
+paths = ["src", "tests"]
+
+exclude = ["*/generated/*"]
+
+min_confidence = 100
+sort_by_size = true
+make_whitelist = false
+verbose = false

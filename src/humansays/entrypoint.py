@@ -1,7 +1,3 @@
-
-
-
-
 def run_tool() -> int:
     print('placeholder')
     return 0
