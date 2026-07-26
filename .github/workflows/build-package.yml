@@ -42,7 +42,7 @@ jobs:
     name: Build Package Distributions
     runs-on: ${{ inputs.runner || vars.DEFAULT_RUNNER || 'ubuntu-24.04' }}
     outputs:
-      artifact-name: ${{ steps.metadata.outputs.artifact-name }}
+      artifact-name: ${{ inputs.artifact-name }}
     steps:
       - name: Check Out Repository
         uses: actions/checkout@v7.0.1
@@ -56,7 +56,6 @@ jobs:
           groups: package
 
       - name: Build distributions
-        id: metadata
         run: ./scripts/build.sh "$OUTPUT_DIRECTORY"
 
       - name: Upload Distributions
