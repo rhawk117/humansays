@@ -65,18 +65,22 @@ def _build(
             kwargs[key] = value
         else:
             sub_cls, sub_spec = spec if isinstance(spec, tuple) else (spec, None)
-            assert isinstance(sub_cls, type)
-            assert isinstance(value, Mapping)
-            assert sub_spec is None or isinstance(sub_spec, Mapping)
+            if not isinstance(sub_cls, type):
+                raise TypeError(f'nested spec for {key!r} is not a dataclass type')
+            if not isinstance(value, Mapping):
+                raise TypeError(f'nested value for {key!r} is not a mapping')
+            if sub_spec is not None and not isinstance(sub_spec, Mapping):
+                raise TypeError(f'nested spec-of-spec for {key!r} is not a mapping')
             # THRESHOLDS_SPEC/SETTINGS_SPEC guarantee dataclass-shaped values here;
-            # ty can't see through the runtime-checked isinstance narrowing above.
+            # ty can't see through the isinstance narrowing above.
             kwargs[key] = _build(sub_cls, value, sub_spec)  # ty: ignore[invalid-argument-type]
     return cls(**kwargs)
 
 
 def build_settings(mapping: Mapping[str, object]) -> ScannerSettings:
     built = _build(ScannerSettings, mapping, SETTINGS_SPEC)
-    assert isinstance(built, ScannerSettings)
+    if not isinstance(built, ScannerSettings):
+        raise TypeError(f'expected ScannerSettings, got {type(built).__name__}')
     return built
 
 
