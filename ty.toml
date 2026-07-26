@@ -1,8 +1,11 @@
 [src]
 # Vendored third-party fixture corpus (not humansays code) and the one-time
 # oracle generator (only importable inside the ephemeral POC env) -- neither
-# is ours to type check.
-exclude = ["tests/golden/poc-parity/corpus", "tests/golden/poc-parity/_generate.py"]
+# is ours to type check. The rest of tests/ is excluded too: the "lint" CI job
+# installs only the lint dependency group (no pytest), so ty can't resolve
+# test-only imports there; the test matrix job runs the tests directly, which
+# is the stronger correctness signal for that code anyway.
+exclude = ["tests"]
 
 [analysis]
 respect-type-ignore-comments = true
