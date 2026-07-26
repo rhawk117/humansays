@@ -48,13 +48,17 @@ If you are about to rely on remembering a constraint, write the check instead.
 
 ## 4a. Every enforcement claim names its test
 
-If a phase document says a mechanism prevents, blocks, or guarantees something,
-that sentence must name the test that demonstrates it. A claim without a named
-test is a claim that has not been checked.
+If a document says a mechanism prevents, blocks, or guarantees something,
+that sentence must name the test, hook, or CI job that demonstrates it. A
+claim with no named enforcer has not been checked, and must be written as
+convention rather than as enforcement.
 
-This exists because it already failed once: the scope guard was documented as
-physically blocking signature changes, and a six-line test showed it blocked
-nothing. Phrases worth auditing hardest: *physically blocked*, *all mechanical*,
+This exists because it has already failed twice. The scope guard was
+documented as physically blocking signature changes, and a six-line test
+showed it blocked nothing. It was then documented as running "as a
+pre-commit hook and in CI" while being invoked by neither.
+
+Phrases worth auditing hardest: *physically blocked*, *all mechanical*,
 *complete*, *exact*, *only path*, *cannot happen*, *the gate proves*.
 
 ## 5. Evidence discipline

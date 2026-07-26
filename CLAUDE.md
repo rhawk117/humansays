@@ -38,10 +38,11 @@ Agent specs: `.agent-specs/`. Start at `.agent-specs/process/agent-protocol.md`.
     them rather than re-deriving them.
 12. **Stop when blocked.** Record the unresolved question. Never substitute an
     unverified theory.
-13. **Every enforcement claim names its test.** If you write that something is
-    blocked, prevented or guaranteed, name the test that proves it. This rule
-    exists because the scope guard was documented as blocking changes it did not
-    block.
+13. **Every enforcement claim names its enforcer.** If you write that something
+    is blocked, prevented or guaranteed, name the test, hook or CI job that
+    proves it. If none exists, write it as convention instead. This rule
+    exists because the scope guard was documented as blocking changes it did
+    not block, and later as running in CI when it ran nowhere.
 
 ## Not a metric
 
