@@ -869,3 +869,12 @@ above are the contract-debt docstring and the two `::NOTE::` comments listed
 in the table.
 
 ---
+
+## Stated exceptions
+
+**The scope guard was not run against this PR's diff.** `01-review`'s allowlist
+is review-shaped and postdates the migration commits, so running the guard
+against `main..HEAD` would report violations for work that predates the
+allowlist. No allowlist was widened to accommodate that history. Scope
+enforcement applies from the review commits forward. Recorded per
+`docs/phases/01-review/PHASE.md` §C.
