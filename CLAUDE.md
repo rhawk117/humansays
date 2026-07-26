@@ -53,7 +53,7 @@ Use the project's own scripts instead of invoking `ruff`/`ty`/etc. by hand:
 
 - `scripts/format.sh` (or `make format`) — applies `ruff format` and
   `ruff check --fix --unsafe-fixes` in place. This is the only quality script
-  that modifies repository files.
+  that modifies repository files do not attempt to fix any linting issues without doing this first
 - `scripts/lint.sh` (or `make lint`) — read-only: `ruff format --check`,
   `ruff check --no-fix`, `ty check`, `shellcheck`/`shfmt --diff`, `bandit`,
   `deptry`, `lint-imports --config .importlinter.ini`, `vulture`. Run

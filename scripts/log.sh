@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 _in_actions() {
-    [[ "${CI:-false}" == "true" ]]
+    [[ ${CI:-false} == "true" ]]
 }
 
 _COLOR_RED='\033[0;31m'
