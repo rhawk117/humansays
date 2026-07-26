@@ -67,4 +67,4 @@ jobs:
 
       - name: Run tests
         run: |
-          uv run --locked pytest
+          uv run --locked --no-default-groups --group test pytest
