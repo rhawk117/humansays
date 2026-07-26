@@ -1,0 +1,14 @@
+{
+  "note": "Phase 9 -- performance. No optimization may change any finding.",
+  "allowed": [
+    "src/humansays/**",
+    "benchmarks/**",
+    "scripts/bench.py",
+    ".agent-specs/design/05-rust.md",
+    "docs/evidence/perf-baseline.md",
+    ".agent-specs/phases/09-performance/**"
+  ],
+  "deny": [
+    "src/humansays/catalog/**"
+  ]
+}

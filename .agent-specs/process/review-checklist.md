@@ -11,7 +11,7 @@ are the specific mistakes predicted for this phase.
 ## 2. Scope
 
 - [ ] `scripts/check-scope.sh <phase>` passes
-- [ ] If `allowed-paths.txt` was widened, it happened in its own commit with a
+- [ ] If `paths.json` was widened, it happened in its own commit with a
       stated reason
 - [ ] No change addresses a non-goal listed in the phase document
 

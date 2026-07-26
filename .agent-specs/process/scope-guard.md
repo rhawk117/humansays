@@ -15,8 +15,7 @@ Prose non-goals do not prevent this reliably. Path allowlists do.
 
 ## Mechanism
 
-Each phase directory contains `allowed-paths.txt` — one glob per line, `#` for
-comments.
+Each phase directory contains `paths.json` — see "Pattern file format" below.
 
 ```bash
 uv run python scripts/check_scope.py 01-review --base origin/main
@@ -29,11 +28,17 @@ uv run python scripts/check_scope.py 01-review --base origin/main
 
 ## Pattern file format
 
+```json
+{
+  "note": "optional, ignored by the parser",
+  "allowed": ["src/humansays/**"],
+  "deny": ["src/humansays/analysis/signature*"]
+}
 ```
-# comment
-src/humansays/**                      allow
-!src/humansays/analysis/signature*    deny, overrides any allow
-```
+
+`allowed` and `deny` are required and may be empty. Unknown top-level keys
+are a hard error -- a typo'd key that silently parsed as an empty list would
+make the guard pass everything.
 
 Glob semantics are POSIX-like: `*` stays within a path segment, `**` crosses
 segments, `?` matches one character within a segment.

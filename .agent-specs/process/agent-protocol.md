@@ -23,7 +23,7 @@ split easy — every task with a subtle condition names its acceptance test.
 
 ## 3. Scope is enforced mechanically
 
-Every phase directory contains `allowed-paths.txt`. `scripts/check_scope.py`
+Every phase directory contains `paths.json`. `scripts/check_scope.py`
 fails if the diff touches anything outside it.
 
 This exists because prose non-goals do not survive contact with a helpful model

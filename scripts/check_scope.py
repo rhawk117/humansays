@@ -4,11 +4,13 @@ Checks four sources, because a committed-diff-only check is trivially bypassed:
 committed changes on the branch, staged changes, unstaged changes, and
 untracked files.
 
-Pattern file format (.agent-specs/phases/<phase>/allowed-paths.txt):
+Pattern file format (.agent-specs/phases/<phase>/paths.json):
 
-    # comment
-    src/humansays/**          allow
-    !src/humansays/analysis/signature*   deny, overrides any allow
+    {"note": "...", "allowed": ["src/humansays/**"],
+     "deny": ["src/humansays/analysis/signature*"]}
+
+`note` is optional and ignored by the parser. `allowed` and `deny` are
+required and may be empty. Unknown top-level keys are a hard error.
 
 Glob semantics are POSIX-like, not bash `[[ ]]`:
     *   matches within one path segment (does not cross /)
@@ -22,13 +24,14 @@ Exit 0 clean, 1 violation, 2 usage or environment error.
 from __future__ import annotations
 
 import argparse
+import json
 import re
 import subprocess
 import sys
 from pathlib import Path
 
 SELF = 'scripts/check_scope.py'
-ALLOWLIST_NAME = 'allowed-paths.txt'
+ALLOWLIST_NAME = 'paths.json'
 
 
 def glob_to_regex(pattern: str) -> re.Pattern[str]:
@@ -54,18 +57,16 @@ def glob_to_regex(pattern: str) -> re.Pattern[str]:
     return re.compile('^' + ''.join(out) + '$')
 
 
-def load_patterns(path: Path) -> tuple[list[re.Pattern[str]], list[re.Pattern[str]]]:
-    allow: list[re.Pattern[str]] = []
-    deny: list[re.Pattern[str]] = []
-    for raw in path.read_text().splitlines():
-        line = raw.split('#', 1)[0].strip()
-        if not line:
-            continue
-        if line.startswith('!'):
-            deny.append(glob_to_regex(line[1:].strip()))
-        else:
-            allow.append(glob_to_regex(line))
-    return allow, deny
+def load_patterns(path: Path) -> tuple[list[str], list[str]]:
+    """Read a phase's paths.json.
+
+    Shape: {"note": str (optional, ignored), "allowed": [...], "deny": [...]}
+    """
+    data = json.loads(path.read_text(encoding='utf-8'))
+    unknown = set(data) - {'note', 'allowed', 'deny'}
+    if unknown:
+        raise ValueError(f'{path}: unknown keys {sorted(unknown)}')
+    return list(data['allowed']), list(data['deny'])
 
 
 def git(*args: str) -> list[str]:
@@ -122,7 +123,9 @@ def main() -> int:
         print(f'no allowlist for phase {args.phase}', file=sys.stderr)
         return 2
 
-    allow, deny = load_patterns(allowlist)
+    allow_patterns, deny_patterns = load_patterns(allowlist)
+    allow = [glob_to_regex(p) for p in allow_patterns]
+    deny = [glob_to_regex(p) for p in deny_patterns]
     try:
         changes = changed_files(args.base)
         widening = widening_commits_are_isolated(args.base, args.phase)

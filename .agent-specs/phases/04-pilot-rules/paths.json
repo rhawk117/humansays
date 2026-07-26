@@ -1,0 +1,16 @@
+{
+  "note": "Phase 4 -- three vertical findings with matched fixtures. Pilot only.",
+  "allowed": [
+    "src/humansays/signals/**",
+    "src/humansays/findings/**",
+    "src/humansays/catalog/**",
+    "tests/unit/**",
+    "tests/corpus/**",
+    "docs/site/rules/python.md",
+    ".agent-specs/phases/04-pilot-rules/**"
+  ],
+  "deny": [
+    "src/humansays/analysis/effects/**",
+    "src/humansays/runtime/**"
+  ]
+}

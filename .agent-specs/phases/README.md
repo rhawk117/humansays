@@ -30,7 +30,7 @@ expands on the result.
 ```
 PHASE.md            goal, preconditions, tasks, acceptance, non-goals,
                     and what a wrong implementation looks like
-allowed-paths.txt   scope guard input; `!` prefix denies
+paths.json          scope guard input; {"allowed": [...], "deny": [...]}
 ```
 
 ## Rules

@@ -1,0 +1,18 @@
+{
+  "note": "Phase 7 -- effect architecture.",
+  "allowed": [
+    "src/humansays/analysis/effects/**",
+    "src/humansays/analysis/environment/**",
+    "src/humansays/signals/effects.py",
+    "src/humansays/findings/**",
+    "data/audit-events.toml",
+    "tests/unit/effects/**",
+    "tests/corpus/**",
+    ".agent-specs/design/03-effect-architecture.md",
+    "docs/evidence/effect-gate.md",
+    ".agent-specs/phases/07-effects/**"
+  ],
+  "deny": [
+    "src/humansays/runtime/**"
+  ]
+}
