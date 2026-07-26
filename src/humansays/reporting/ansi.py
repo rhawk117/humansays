@@ -7,6 +7,7 @@ Honors the informal ``NO_COLOR``/``FORCE_COLOR`` convention and ``TERM=dumb``.
 
 import os
 import sys
+from types import MappingProxyType
 
 from humansays.config.models import Report
 from humansays.const import GRADE_STYLES, SEVERITY_STYLES
@@ -16,7 +17,7 @@ from .grouping import Target, review_targets, shown_targets
 from .models import ScanResult
 
 RESET = '\x1b[0m'
-ANSI_CODES = {
+ANSI_CODES = MappingProxyType({
     'bold yellow': '\x1b[1;33m',
     'bold green': '\x1b[1;32m',
     'bold red': '\x1b[1;31m',
@@ -25,7 +26,7 @@ ANSI_CODES = {
     'cyan': '\x1b[36m',
     'dim': '\x1b[2m',
     '': '',
-}
+})
 
 
 def use_color(*, is_tty: bool) -> bool:

@@ -11,6 +11,7 @@ import dataclasses
 import tomllib
 from collections.abc import Sequence
 from pathlib import Path
+from types import MappingProxyType
 
 from humansays.const import CLI_DESTINATIONS, DEFAULT_CONFIG_NAMES, PYPROJECT_SECTION
 from humansays.enums import FailOn, OutputFormat
@@ -25,16 +26,16 @@ from .models import (
     Thresholds,
 )
 
-THRESHOLDS_SPEC = {
+THRESHOLDS_SPEC = MappingProxyType({
     'functions': FunctionThresholds,
     'classes': ClassThresholds,
     'modules': ModuleThresholds,
-}
-SETTINGS_SPEC = {
+})
+SETTINGS_SPEC = MappingProxyType({
     'thresholds': (Thresholds, THRESHOLDS_SPEC),
     'selection': Selection,
     'report': Report,
-}
+})
 
 
 class ConfigError(Exception):
