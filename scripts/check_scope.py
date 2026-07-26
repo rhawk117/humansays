@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Fail if a change touches files outside the current phase's scope.
 
 Checks four sources, because a committed-diff-only check is trivially bypassed:
