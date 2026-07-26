@@ -71,6 +71,9 @@ def _rich_targets_table(shown: list[Target], rich: SimpleNamespace) -> 'Table | 
 
 def _render_rich(result: ScanResult, score: Score, settings: Report) -> None:
     rich = _load_rich()
+    assert rich is not None, (
+        '_render_rich is only called after emit() confirms rich is installed'
+    )
     console = rich.Console()
     targets = review_targets(result.reports)
     shown = shown_targets(targets, settings.limit)

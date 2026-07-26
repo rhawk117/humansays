@@ -40,6 +40,7 @@ from .cpython_ast import (
 from .models import (
     AnalysisIndex,
     FunctionFacts,
+    FunctionNode,
     MutationVocabulary,
     ParsedModule,
     Scope,
@@ -115,7 +116,7 @@ class Analyzer:
 
     def _analyze_function(
         self,
-        node: ast.AST,
+        node: FunctionNode,
         qualified_name: str,
         class_name: str | None = None,
     ) -> FunctionFacts:
@@ -148,7 +149,7 @@ class Analyzer:
         self._state_signals(facts)
         return facts
 
-    def _static_method(self, node: ast.AST, qualified_name: str) -> None:
+    def _static_method(self, node: FunctionNode, qualified_name: str) -> None:
         """HS015: a staticmethod is a module function wearing a class as a namespace."""
         if STATIC_DECORATOR not in decorator_names(node):
             return

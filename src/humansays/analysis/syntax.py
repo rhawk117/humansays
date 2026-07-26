@@ -11,7 +11,7 @@ from collections.abc import Iterable
 from humansays.const import BOOL_NAMES, BOUNDARY_MODULES, UNPARSE_LIMIT
 from humansays.findings.models import Location
 
-from .models import ParsedModule
+from .models import FunctionNode, ParsedModule
 
 MUTABLE_LITERALS = (
     ast.Dict,
@@ -38,7 +38,7 @@ def root_name(node: ast.AST) -> str | None:
     return node.id if isinstance(node, ast.Name) else None
 
 
-def assigned_names(node: ast.stmt) -> list[tuple[str, ast.AST]]:
+def assigned_names(node: ast.Assign | ast.AnnAssign) -> list[tuple[str, ast.AST]]:
     value = getattr(node, 'value', None)
     if value is None:
         return []
@@ -77,7 +77,7 @@ def contains_raise(nodes: Iterable[ast.AST]) -> bool:
     return any(isinstance(child, ast.Raise) for node in nodes for child in ast.walk(node))
 
 
-def decorator_names(node: ast.AST) -> tuple[str, ...]:
+def decorator_names(node: FunctionNode) -> tuple[str, ...]:
     names = []
     for decorator in node.decorator_list:
         target = decorator.func if isinstance(decorator, ast.Call) else decorator

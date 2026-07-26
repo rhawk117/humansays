@@ -1,7 +1,7 @@
 import pytest
-from humansays.findings.models import RuleSpec
 
 from humansays.enums import Severity, SignalName
+from humansays.findings.models import RuleSpec
 
 
 def test_rulespec_rejects_confidence_above_one() -> None:

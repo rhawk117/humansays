@@ -9,12 +9,16 @@ so an unset flag is absent from the namespace entirely -- that is what makes
 import argparse
 import dataclasses
 import tomllib
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from pathlib import Path
 from types import MappingProxyType
+from typing import TYPE_CHECKING
 
 from humansays.const import CLI_DESTINATIONS, DEFAULT_CONFIG_NAMES, PYPROJECT_SECTION
 from humansays.enums import FailOn, OutputFormat
+
+if TYPE_CHECKING:
+    from _typeshed import DataclassInstance
 
 from .models import (
     ClassThresholds,
@@ -44,7 +48,11 @@ class ConfigError(Exception):
         self.path = path
 
 
-def _build(cls: type, mapping: dict, nested_spec: dict | None = None) -> object:
+def _build(
+    cls: type['DataclassInstance'],
+    mapping: Mapping[str, object],
+    nested_spec: Mapping[str, object] | None = None,
+) -> 'DataclassInstance':
     nested_spec = nested_spec or {}
     known = {f.name for f in dataclasses.fields(cls)}
     unknown = set(mapping) - known
@@ -57,12 +65,19 @@ def _build(cls: type, mapping: dict, nested_spec: dict | None = None) -> object:
             kwargs[key] = value
         else:
             sub_cls, sub_spec = spec if isinstance(spec, tuple) else (spec, None)
-            kwargs[key] = _build(sub_cls, value, sub_spec)
+            assert isinstance(sub_cls, type)
+            assert isinstance(value, Mapping)
+            assert sub_spec is None or isinstance(sub_spec, Mapping)
+            # THRESHOLDS_SPEC/SETTINGS_SPEC guarantee dataclass-shaped values here;
+            # ty can't see through the runtime-checked isinstance narrowing above.
+            kwargs[key] = _build(sub_cls, value, sub_spec)  # ty: ignore[invalid-argument-type]
     return cls(**kwargs)
 
 
-def build_settings(mapping: dict) -> ScannerSettings:
-    return _build(ScannerSettings, mapping, SETTINGS_SPEC)
+def build_settings(mapping: Mapping[str, object]) -> ScannerSettings:
+    built = _build(ScannerSettings, mapping, SETTINGS_SPEC)
+    assert isinstance(built, ScannerSettings)
+    return built
 
 
 def toml_values(path: Path) -> dict:

@@ -26,6 +26,7 @@ from humansays.findings.models import Finding, Incident, Location, Observation
 
 from .models import (
     BodyFacts,
+    FunctionNode,
     ParsedModule,
     ScopeContext,
     SelfUsage,
@@ -110,7 +111,7 @@ def attribute_prefix_clusters(attributes: Iterable[str]) -> dict[str, tuple[str,
     }
 
 
-def argument_defaults(node: ast.AST) -> dict[str, ast.AST]:
+def argument_defaults(node: FunctionNode) -> dict[str, ast.AST]:
     positional = [*node.args.posonlyargs, *node.args.args]
     defaults: dict[str, ast.AST] = {}
     offset = len(node.args.defaults)
@@ -125,7 +126,7 @@ def argument_defaults(node: ast.AST) -> dict[str, ast.AST]:
     return defaults
 
 
-def declared_arguments(node: ast.AST) -> list[ast.arg]:
+def declared_arguments(node: FunctionNode) -> list[ast.arg]:
     arguments = [*node.args.posonlyargs, *node.args.args, *node.args.kwonlyargs]
     if node.args.vararg:
         arguments.append(node.args.vararg)
@@ -134,7 +135,7 @@ def declared_arguments(node: ast.AST) -> list[ast.arg]:
     return arguments
 
 
-def build_signature(node: ast.AST) -> Signature:
+def build_signature(node: FunctionNode) -> Signature:
     arguments = declared_arguments(node)
     defaults = argument_defaults(node)
     boolean = []
@@ -152,7 +153,7 @@ def build_signature(node: ast.AST) -> Signature:
     )
 
 
-def is_trivial_accessor(node: ast.AST) -> bool:
+def is_trivial_accessor(node: FunctionNode) -> bool:
     if len(node.body) != 1:
         return False
     statement = node.body[0]
@@ -310,7 +311,8 @@ class FunctionVisitor(ast.NodeVisitor):
         self.visit(node.iter)
         self._visit_nested([*node.body, *node.orelse])
 
-    visit_AsyncFor = visit_For  # noqa: N815 -- ast.NodeVisitor dispatch name
+    # ast.NodeVisitor dispatch name; For/AsyncFor share every field this visitor reads
+    visit_AsyncFor = visit_For  # noqa: N815 # ty: ignore[invalid-method-override]
 
     def visit_While(self, node: ast.While) -> None:
         self.visit(node.test)
@@ -321,7 +323,8 @@ class FunctionVisitor(ast.NodeVisitor):
             [*node.body, *node.handlers, *node.orelse, *node.finalbody],
         )
 
-    visit_TryStar = visit_Try  # noqa: N815 -- ast.NodeVisitor dispatch name
+    # ast.NodeVisitor dispatch name; Try/TryStar share every field this visitor reads
+    visit_TryStar = visit_Try  # noqa: N815 # ty: ignore[invalid-method-override]
 
     def visit_With(self, node: ast.With) -> None:
         for item in node.items:
@@ -330,7 +333,8 @@ class FunctionVisitor(ast.NodeVisitor):
                 self.visit(item.optional_vars)
         self._visit_nested(node.body)
 
-    visit_AsyncWith = visit_With  # noqa: N815 -- ast.NodeVisitor dispatch name
+    # ast.NodeVisitor dispatch name; With/AsyncWith share every field this visitor reads
+    visit_AsyncWith = visit_With  # noqa: N815 # ty: ignore[invalid-method-override]
 
     def visit_Match(self, node: ast.Match) -> None:
         self.visit(node.subject)
@@ -340,7 +344,9 @@ class FunctionVisitor(ast.NodeVisitor):
     def _record_incident(self, signal: SignalName, line: int, detail: str) -> None:
         self.body.incidents[signal].append(Incident(line, detail))
 
-    def _record_lazy_import(self, node: ast.AST, modules: list[str]) -> None:
+    def _record_lazy_import(
+        self, node: ast.Import | ast.ImportFrom, modules: list[str]
+    ) -> None:
         self._record_incident(SignalName.HS021, node.lineno, ', '.join(modules))
 
     def _record_guard(self, node: ast.If) -> None:
@@ -351,6 +357,8 @@ class FunctionVisitor(ast.NodeVisitor):
 
     def _record_call_target(self, node: ast.Call, call_name: str | None) -> None:
         attribute = node.func
+        if not isinstance(attribute, ast.Attribute):
+            return
         if root_name(attribute) == 'self':
             self.usage.methods_called.add(attribute.attr)
         if attribute.attr not in self.context.vocabulary.methods:

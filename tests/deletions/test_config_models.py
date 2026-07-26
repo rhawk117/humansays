@@ -1,4 +1,5 @@
 import pytest
+
 from humansays.config.models import FunctionThresholds, Report
 
 

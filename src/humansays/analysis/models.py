@@ -20,6 +20,8 @@ from humansays.factories import (
 )
 from humansays.findings.models import Incident, Location
 
+FunctionNode = ast.FunctionDef | ast.AsyncFunctionDef
+
 
 @dataclass(frozen=True, slots=True)
 class ParsedModule:

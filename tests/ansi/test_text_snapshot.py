@@ -7,6 +7,7 @@ import pytest
 from humansays.analysis.models import ParsedModule
 from humansays.analysis.rules import Analyzer
 from humansays.config.models import Report, Thresholds
+from humansays.findings.models import Score
 from humansays.reporting import ansi, render
 from humansays.reporting.models import FileReport, ScanResult
 from humansays.scoring import score_for
@@ -19,7 +20,7 @@ snippet.py:10-11  Store  many-base-classes
 """
 
 
-def _scan_result() -> tuple[ScanResult, object]:
+def _scan_result() -> tuple[ScanResult, Score]:
     source = fixtures.MULTIPLE_INHERITANCE
     module = ParsedModule(Path('snippet.py'), source, ast.parse(source))
     findings = Analyzer(module, Thresholds()).run()
