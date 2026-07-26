@@ -86,6 +86,8 @@ class Report:
     min_score: float = 0.0
 
     def __post_init__(self) -> None:
+        object.__setattr__(self, 'format', OutputFormat(self.format))
+        object.__setattr__(self, 'fail_on', FailOn(self.fail_on))
         check_bounds((
             (self.limit, 0, None, 'limit'),
             (self.min_score, 0.0, 100.0, 'min_score'),
