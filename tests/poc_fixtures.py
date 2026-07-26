@@ -157,7 +157,7 @@ from __future__ import annotations
 
 REGISTRY = {}
 
-SORT_KEY = lambda entry: entry["line"]
+SORT_KEY = lambda entry: entry['line']
 
 
 class Reader:
@@ -180,17 +180,17 @@ class Store(Reader, Writer):
         """Many arguments, a boolean mode, and a wall of branches."""
         import json
 
-        if mode == "a":
+        if mode == 'a':
             return 1
-        elif mode == "b":
+        elif mode == 'b':
             return 2
-        elif mode == "c":
+        elif mode == 'c':
             return 3
-        elif mode == "d":
+        elif mode == 'd':
             return 4
-        elif mode == "e":
+        elif mode == 'e':
             return 5
-        elif mode == "f":
+        elif mode == 'f':
             return 6
         if verbose:
             return json.dumps(sorted(payload, key=lambda item: item))
