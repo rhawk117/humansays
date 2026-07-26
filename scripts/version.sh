@@ -12,8 +12,11 @@ fi
 root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 cd -- "$root"
 
+# shellcheck source=scripts/log.sh
+source "$root/scripts/log.sh"
+
 uv version --bump "$bump" --no-sync
 
 version="$(uv version --short)"
-printf 'Prepared version %s\n' "$version"
-printf 'Commit pyproject.toml and uv.lock together.\n'
+log_success "Prepared version $version"
+log_info "Commit pyproject.toml and uv.lock together."
