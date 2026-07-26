@@ -3,10 +3,10 @@
 [![CI](https://github.com/rhawk117/humansays/actions/workflows/integration.yml/badge.svg)](https://github.com/rhawk117/humansays/actions/workflows/integration.yml)
 [![PyPI](https://img.shields.io/pypi/v/humansays.svg)](https://pypi.org/project/humansays/)
 [![Python](https://img.shields.io/pypi/pyversions/humansays.svg)](https://pypi.org/project/humansays/)
-[![Release](https://img.shields.io/badge/release-v0.1.0a1-blue)](https://github.com/rhawk117/humansays/releases/tag/v0.1.0a1)
 
-A linting guardrail for LLM-generated Python code which raises structural doubts
-and a per-finding score before the code reaches a reviewer.
+Something about the LLM-generated code feels off, and you can't quite put your
+finger on why — and you don't have the mental bandwidth, or the tokens, to give
+it a detailed critique right now.
 
 `humansays` reads the standard-library AST and reports structural review leads —
 long parameter lists, deep nesting, mutable module state, lazy imports, methods
