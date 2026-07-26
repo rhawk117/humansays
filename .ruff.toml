@@ -1,6 +1,8 @@
 line-length = 90
 preview = false
 unsafe-fixes = false
+# Vendored third-party fixture corpus, not humansays code -- not ours to lint.
+extend-exclude = ["tests/golden/poc-parity/corpus"]
 
 [lint]
 select = [
