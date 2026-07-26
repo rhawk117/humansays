@@ -7,19 +7,21 @@ dist_dir="${2:-$root/dist}"
 
 cd -- "$root"
 
+# shellcheck source=scripts/log.sh
+source "$root/scripts/log.sh"
+
 mapfile -t wheels < <(
-  find "$dist_dir" -maxdepth 1 -type f -name '*.whl' -print
+    find "$dist_dir" -maxdepth 1 -type f -name '*.whl' -print
 )
 
 if ((${#wheels[@]} != 1)); then
-  printf 'Expected exactly one wheel in %s, found %s\n' \
-    "$dist_dir" "${#wheels[@]}" >&2
-  exit 1
+    log_error "Expected exactly one wheel in $dist_dir, found ${#wheels[@]}"
+    exit 1
 fi
 
 uv run \
-  --python "$python_version" \
-  --isolated \
-  --no-project \
-  --with "${wheels[0]}" \
-  scripts/smoke_test_package.py
+    --python "$python_version" \
+    --isolated \
+    --no-project \
+    --with "${wheels[0]}" \
+    scripts/smoke_test_package.py
