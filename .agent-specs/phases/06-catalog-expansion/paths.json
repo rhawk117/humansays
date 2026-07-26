@@ -1,0 +1,16 @@
+{
+  "note": "Phase 6 -- expand the catalog only where the pilot passed.",
+  "allowed": [
+    "src/humansays/signals/**",
+    "src/humansays/findings/**",
+    "src/humansays/catalog/**",
+    "tests/unit/**",
+    "tests/corpus/**",
+    "docs/site/rules/python.md",
+    ".agent-specs/phases/06-catalog-expansion/**"
+  ],
+  "deny": [
+    "src/humansays/analysis/effects/**",
+    "src/humansays/runtime/**"
+  ]
+}

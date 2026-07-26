@@ -3,7 +3,7 @@ set -euo pipefail
 
 bump="${1:-}"
 
-if [[ ! "$bump" =~ ^(major|minor|patch|alpha|beta|rc|stable|post|dev)$ ]]; then
+if [[ ! $bump =~ ^(major|minor|patch|alpha|beta|rc|stable|post|dev)$ ]]; then
     printf 'usage: %s major|minor|patch|alpha|beta|rc|stable|post|dev\n' \
         "${0##*/}" >&2
     exit 2

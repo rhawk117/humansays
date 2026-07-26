@@ -1,0 +1,13 @@
+{
+  "note": "Phase 5 -- run repair-pair evaluation and the narration study.",
+  "allowed": [
+    "tests/corpus/**",
+    "scripts/**",
+    "docs/evidence/**",
+    "docs/site/rules/python.md",
+    ".agent-specs/phases/05-measurement-study/**"
+  ],
+  "deny": [
+    "src/humansays/**"
+  ]
+}

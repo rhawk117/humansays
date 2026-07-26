@@ -1,0 +1,22 @@
+{
+  "note": "Phase 2 -- fact-model correctness.",
+  "allowed": [
+    "pyproject.toml",
+    "src/humansays/analysis/**",
+    "src/humansays/config/**",
+    "src/humansays/catalog/**",
+    "src/humansays/findings/models.py",
+    "src/humansays/signals/**",
+    "tests/criteria/**",
+    "tests/unit/**",
+    "tests/golden/facts/**",
+    "tests/parity/**",
+    "docs/site/rules/python.md",
+    "docs/site/style-guide/python.md",
+    ".agent-specs/phases/02-fact-model/**"
+  ],
+  "deny": [
+    "src/humansays/runtime/**",
+    "src/humansays/analysis/effects/**"
+  ]
+}

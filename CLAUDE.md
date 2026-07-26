@@ -4,7 +4,7 @@ Project-specific instructions for working in this repo.
 
 ## humansays — standing constraints
 
-Full documentation: `docs/`. Start at `docs/process/agent-protocol.md`.
+Agent specs: `.agent-specs/`. Start at `.agent-specs/process/agent-protocol.md`.
 **Read only the phase file you are executing.**
 
 ## Never
@@ -38,14 +38,15 @@ Full documentation: `docs/`. Start at `docs/process/agent-protocol.md`.
     them rather than re-deriving them.
 12. **Stop when blocked.** Record the unresolved question. Never substitute an
     unverified theory.
-13. **Every enforcement claim names its test.** If you write that something is
-    blocked, prevented or guaranteed, name the test that proves it. This rule
-    exists because the scope guard was documented as blocking changes it did not
-    block.
+13. **Every enforcement claim names its enforcer.** If you write that something
+    is blocked, prevented or guaranteed, name the test, hook or CI job that
+    proves it. If none exists, write it as convention instead. This rule
+    exists because the scope guard was documented as blocking changes it did
+    not block, and later as running in CI when it ran nowhere.
 
 ## Not a metric
 
-Rule count. The guards in `docs/design/02-evaluation-model.md` §5 are.
+Rule count. The guards in `.agent-specs/design/02-evaluation-model.md` §5 are.
 
 ## Formatting and linting
 
@@ -53,7 +54,7 @@ Use the project's own scripts instead of invoking `ruff`/`ty`/etc. by hand:
 
 - `scripts/format.sh` (or `make format`) — applies `ruff format` and
   `ruff check --fix --unsafe-fixes` in place. This is the only quality script
-  that modifies repository files.
+  that modifies repository files do not attempt to fix any linting issues without doing this first
 - `scripts/lint.sh` (or `make lint`) — read-only: `ruff format --check`,
   `ruff check --no-fix`, `ty check`, `shellcheck`/`shfmt --diff`, `bandit`,
   `deptry`, `lint-imports --config .importlinter.ini`, `vulture`. Run
