@@ -36,6 +36,11 @@ jobs:
           python-version: "3.14"
           groups: lint
 
+      - name: Install shfmt
+        uses: mfinelli/setup-shfmt@a25fda4c1fe115aec0f85e04126610841bc3141d # v4.0.1
+        with:
+          shfmt-version: 3.10.0
+
       - name: Run Linter
         run: ./scripts/lint.sh
         env:
