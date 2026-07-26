@@ -1,0 +1,1288 @@
+{
+  "schema_version": 4,
+  "root": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/core/exceptions.py, /tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/utils/dateparse.py, /tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/utils/text.py",
+  "score": {
+    "lines": 896,
+    "penalty": 12.42,
+    "density": 1.386,
+    "value": 84.4,
+    "grade": "B"
+  },
+  "summary": {
+    "files": 3,
+    "lines": 896,
+    "targets": 55,
+    "signals": 67,
+    "errors": 0,
+    "truncated": 0
+  },
+  "targets": [
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/core/exceptions.py",
+      "symbol": "ValidationError.__init__",
+      "line": 137,
+      "end_line": 178,
+      "signals": [
+        {
+          "rule_id": "PY019",
+          "indicator": "many-branches",
+          "severity": "warning",
+          "confidence": 0.74,
+          "weight": 3.0,
+          "message": "Function contains 8 if/elif statements.",
+          "evidence": [
+            "configured threshold: 5"
+          ],
+          "review_question": "Do these conditionals encode one decision that belongs in a table, mapping, or polymorphic dispatch?"
+        },
+        {
+          "rule_id": "PY010",
+          "indicator": "comments",
+          "severity": "advisory",
+          "confidence": 0.7,
+          "weight": 0.0,
+          "message": "Scope contains 1 comments.",
+          "evidence": [
+            "comment line 166"
+          ],
+          "review_question": "Do comments compensate for unclear code, preserve stale assumptions, or encode required constraints?"
+        },
+        {
+          "rule_id": "PY011",
+          "indicator": "docstring",
+          "severity": "advisory",
+          "confidence": 0.75,
+          "weight": 0.0,
+          "message": "Scope contains a docstring.",
+          "evidence": [
+            "docstring starts at line 138"
+          ],
+          "review_question": "Does the docstring add durable contract information rather than restating the code?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/utils/dateparse.py",
+      "symbol": "parse_datetime",
+      "line": 104,
+      "end_line": 129,
+      "signals": [
+        {
+          "rule_id": "PY003",
+          "indicator": "deep-nesting",
+          "severity": "warning",
+          "confidence": 0.76,
+          "weight": 3.0,
+          "message": "Control flow reaches nesting depth 4.",
+          "evidence": [
+            "configured threshold: 3"
+          ],
+          "review_question": "Would guard clauses, a state model, or one meaningful extraction clarify the control flow?"
+        },
+        {
+          "rule_id": "PY011",
+          "indicator": "docstring",
+          "severity": "advisory",
+          "confidence": 0.75,
+          "weight": 0.0,
+          "message": "Scope contains a docstring.",
+          "evidence": [
+            "docstring starts at line 105"
+          ],
+          "review_question": "Does the docstring add durable contract information rather than restating the code?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/utils/text.py",
+      "symbol": "Truncator.__init__",
+      "line": 195,
+      "end_line": 195,
+      "signals": [
+        {
+          "rule_id": "PY016",
+          "indicator": "lambda-expression",
+          "severity": "warning",
+          "confidence": 0.99,
+          "weight": 3.0,
+          "message": "Lambda expression stands in for a named function.",
+          "evidence": [
+            "line 195: lambda: str(text)"
+          ],
+          "review_question": "What would this expression be named, and would a named function make it testable and reusable?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/utils/dateparse.py",
+      "symbol": "<module>",
+      "line": 1,
+      "end_line": 154,
+      "signals": [
+        {
+          "rule_id": "PY010",
+          "indicator": "comments",
+          "severity": "advisory",
+          "confidence": 0.7,
+          "weight": 0.0,
+          "message": "Scope contains 9 comments.",
+          "evidence": [
+            "comment line 3",
+            "comment line 4",
+            "comment line 5",
+            "comment line 6",
+            "comment line 38",
+            "comment line 39",
+            "comment line 52",
+            "comment line 53",
+            "comment line 54"
+          ],
+          "review_question": "Do comments compensate for unclear code, preserve stale assumptions, or encode required constraints?"
+        },
+        {
+          "rule_id": "PY011",
+          "indicator": "docstring",
+          "severity": "advisory",
+          "confidence": 0.75,
+          "weight": 0.0,
+          "message": "Scope contains a docstring.",
+          "evidence": [
+            "docstring starts at line 1"
+          ],
+          "review_question": "Does the docstring add durable contract information rather than restating the code?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/utils/dateparse.py",
+      "symbol": "parse_time",
+      "line": 81,
+      "end_line": 101,
+      "signals": [
+        {
+          "rule_id": "PY010",
+          "indicator": "comments",
+          "severity": "advisory",
+          "confidence": 0.7,
+          "weight": 0.0,
+          "message": "Scope contains 4 comments.",
+          "evidence": [
+            "comment line 91",
+            "comment line 92",
+            "comment line 93",
+            "comment line 94"
+          ],
+          "review_question": "Do comments compensate for unclear code, preserve stale assumptions, or encode required constraints?"
+        },
+        {
+          "rule_id": "PY011",
+          "indicator": "docstring",
+          "severity": "advisory",
+          "confidence": 0.75,
+          "weight": 0.0,
+          "message": "Scope contains a docstring.",
+          "evidence": [
+            "docstring starts at line 82"
+          ],
+          "review_question": "Does the docstring add durable contract information rather than restating the code?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/utils/text.py",
+      "symbol": "wrap",
+      "line": 40,
+      "end_line": 69,
+      "signals": [
+        {
+          "rule_id": "PY010",
+          "indicator": "comments",
+          "severity": "advisory",
+          "confidence": 0.7,
+          "weight": 0.0,
+          "message": "Scope contains 1 comments.",
+          "evidence": [
+            "comment line 53"
+          ],
+          "review_question": "Do comments compensate for unclear code, preserve stale assumptions, or encode required constraints?"
+        },
+        {
+          "rule_id": "PY011",
+          "indicator": "docstring",
+          "severity": "advisory",
+          "confidence": 0.75,
+          "weight": 0.0,
+          "message": "Scope contains a docstring.",
+          "evidence": [
+            "docstring starts at line 41"
+          ],
+          "review_question": "Does the docstring add durable contract information rather than restating the code?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/utils/text.py",
+      "symbol": "Truncator",
+      "line": 183,
+      "end_line": 265,
+      "signals": [
+        {
+          "rule_id": "PY010",
+          "indicator": "comments",
+          "severity": "advisory",
+          "confidence": 0.7,
+          "weight": 0.0,
+          "message": "Scope contains 1 comments.",
+          "evidence": [
+            "comment line 191"
+          ],
+          "review_question": "Do comments compensate for unclear code, preserve stale assumptions, or encode required constraints?"
+        },
+        {
+          "rule_id": "PY011",
+          "indicator": "docstring",
+          "severity": "advisory",
+          "confidence": 0.75,
+          "weight": 0.0,
+          "message": "Scope contains a docstring.",
+          "evidence": [
+            "docstring starts at line 184"
+          ],
+          "review_question": "Does the docstring add durable contract information rather than restating the code?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/utils/text.py",
+      "symbol": "Truncator.chars",
+      "line": 197,
+      "end_line": 216,
+      "signals": [
+        {
+          "rule_id": "PY002",
+          "indicator": "boolean-modes",
+          "severity": "advisory",
+          "confidence": 0.82,
+          "weight": 1.0,
+          "message": "Boolean parameters select behavior or operating modes.",
+          "evidence": [
+            "html"
+          ],
+          "review_question": "Would keyword-only arguments, an enum, or separate operations communicate the modes better?"
+        },
+        {
+          "rule_id": "PY011",
+          "indicator": "docstring",
+          "severity": "advisory",
+          "confidence": 0.75,
+          "weight": 0.0,
+          "message": "Scope contains a docstring.",
+          "evidence": [
+            "docstring starts at line 198"
+          ],
+          "review_question": "Does the docstring add durable contract information rather than restating the code?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/utils/text.py",
+      "symbol": "Truncator._text_chars",
+      "line": 218,
+      "end_line": 236,
+      "signals": [
+        {
+          "rule_id": "PY010",
+          "indicator": "comments",
+          "severity": "advisory",
+          "confidence": 0.7,
+          "weight": 0.0,
+          "message": "Scope contains 4 comments.",
+          "evidence": [
+            "comment line 225",
+            "comment line 226",
+            "comment line 232",
+            "comment line 235"
+          ],
+          "review_question": "Do comments compensate for unclear code, preserve stale assumptions, or encode required constraints?"
+        },
+        {
+          "rule_id": "PY011",
+          "indicator": "docstring",
+          "severity": "advisory",
+          "confidence": 0.75,
+          "weight": 0.0,
+          "message": "Scope contains a docstring.",
+          "evidence": [
+            "docstring starts at line 219"
+          ],
+          "review_question": "Does the docstring add durable contract information rather than restating the code?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/utils/text.py",
+      "symbol": "Truncator.words",
+      "line": 238,
+      "end_line": 253,
+      "signals": [
+        {
+          "rule_id": "PY002",
+          "indicator": "boolean-modes",
+          "severity": "advisory",
+          "confidence": 0.82,
+          "weight": 1.0,
+          "message": "Boolean parameters select behavior or operating modes.",
+          "evidence": [
+            "html"
+          ],
+          "review_question": "Would keyword-only arguments, an enum, or separate operations communicate the modes better?"
+        },
+        {
+          "rule_id": "PY011",
+          "indicator": "docstring",
+          "severity": "advisory",
+          "confidence": 0.75,
+          "weight": 0.0,
+          "message": "Scope contains a docstring.",
+          "evidence": [
+            "docstring starts at line 239"
+          ],
+          "review_question": "Does the docstring add durable contract information rather than restating the code?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/utils/text.py",
+      "symbol": "get_text_list",
+      "line": 286,
+      "end_line": 308,
+      "signals": [
+        {
+          "rule_id": "PY010",
+          "indicator": "comments",
+          "severity": "advisory",
+          "confidence": 0.7,
+          "weight": 0.0,
+          "message": "Scope contains 1 comments.",
+          "evidence": [
+            "comment line 304"
+          ],
+          "review_question": "Do comments compensate for unclear code, preserve stale assumptions, or encode required constraints?"
+        },
+        {
+          "rule_id": "PY011",
+          "indicator": "docstring",
+          "severity": "advisory",
+          "confidence": 0.75,
+          "weight": 0.0,
+          "message": "Scope contains a docstring.",
+          "evidence": [
+            "docstring starts at line 287"
+          ],
+          "review_question": "Does the docstring add durable contract information rather than restating the code?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/utils/text.py",
+      "symbol": "slugify",
+      "line": 452,
+      "end_line": 469,
+      "signals": [
+        {
+          "rule_id": "PY002",
+          "indicator": "boolean-modes",
+          "severity": "advisory",
+          "confidence": 0.82,
+          "weight": 1.0,
+          "message": "Boolean parameters select behavior or operating modes.",
+          "evidence": [
+            "allow_unicode"
+          ],
+          "review_question": "Would keyword-only arguments, an enum, or separate operations communicate the modes better?"
+        },
+        {
+          "rule_id": "PY011",
+          "indicator": "docstring",
+          "severity": "advisory",
+          "confidence": 0.75,
+          "weight": 0.0,
+          "message": "Scope contains a docstring.",
+          "evidence": [
+            "docstring starts at line 453"
+          ],
+          "review_question": "Does the docstring add durable contract information rather than restating the code?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/core/exceptions.py",
+      "symbol": "<module>",
+      "line": 1,
+      "end_line": 255,
+      "signals": [
+        {
+          "rule_id": "PY011",
+          "indicator": "docstring",
+          "severity": "advisory",
+          "confidence": 0.75,
+          "weight": 0.0,
+          "message": "Scope contains a docstring.",
+          "evidence": [
+            "docstring starts at line 1"
+          ],
+          "review_question": "Does the docstring add durable contract information rather than restating the code?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/core/exceptions.py",
+      "symbol": "FieldDoesNotExist",
+      "line": 10,
+      "end_line": 13,
+      "signals": [
+        {
+          "rule_id": "PY011",
+          "indicator": "docstring",
+          "severity": "advisory",
+          "confidence": 0.75,
+          "weight": 0.0,
+          "message": "Scope contains a docstring.",
+          "evidence": [
+            "docstring starts at line 11"
+          ],
+          "review_question": "Does the docstring add durable contract information rather than restating the code?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/core/exceptions.py",
+      "symbol": "AppRegistryNotReady",
+      "line": 16,
+      "end_line": 19,
+      "signals": [
+        {
+          "rule_id": "PY011",
+          "indicator": "docstring",
+          "severity": "advisory",
+          "confidence": 0.75,
+          "weight": 0.0,
+          "message": "Scope contains a docstring.",
+          "evidence": [
+            "docstring starts at line 17"
+          ],
+          "review_question": "Does the docstring add durable contract information rather than restating the code?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/core/exceptions.py",
+      "symbol": "ObjectDoesNotExist",
+      "line": 22,
+      "end_line": 25,
+      "signals": [
+        {
+          "rule_id": "PY011",
+          "indicator": "docstring",
+          "severity": "advisory",
+          "confidence": 0.75,
+          "weight": 0.0,
+          "message": "Scope contains a docstring.",
+          "evidence": [
+            "docstring starts at line 23"
+          ],
+          "review_question": "Does the docstring add durable contract information rather than restating the code?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/core/exceptions.py",
+      "symbol": "MultipleObjectsReturned",
+      "line": 28,
+      "end_line": 31,
+      "signals": [
+        {
+          "rule_id": "PY011",
+          "indicator": "docstring",
+          "severity": "advisory",
+          "confidence": 0.75,
+          "weight": 0.0,
+          "message": "Scope contains a docstring.",
+          "evidence": [
+            "docstring starts at line 29"
+          ],
+          "review_question": "Does the docstring add durable contract information rather than restating the code?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/core/exceptions.py",
+      "symbol": "SuspiciousOperation",
+      "line": 34,
+      "end_line": 35,
+      "signals": [
+        {
+          "rule_id": "PY011",
+          "indicator": "docstring",
+          "severity": "advisory",
+          "confidence": 0.75,
+          "weight": 0.0,
+          "message": "Scope contains a docstring.",
+          "evidence": [
+            "docstring starts at line 35"
+          ],
+          "review_question": "Does the docstring add durable contract information rather than restating the code?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/core/exceptions.py",
+      "symbol": "SuspiciousMultipartForm",
+      "line": 38,
+      "end_line": 41,
+      "signals": [
+        {
+          "rule_id": "PY011",
+          "indicator": "docstring",
+          "severity": "advisory",
+          "confidence": 0.75,
+          "weight": 0.0,
+          "message": "Scope contains a docstring.",
+          "evidence": [
+            "docstring starts at line 39"
+          ],
+          "review_question": "Does the docstring add durable contract information rather than restating the code?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/core/exceptions.py",
+      "symbol": "SuspiciousFileOperation",
+      "line": 44,
+      "end_line": 47,
+      "signals": [
+        {
+          "rule_id": "PY011",
+          "indicator": "docstring",
+          "severity": "advisory",
+          "confidence": 0.75,
+          "weight": 0.0,
+          "message": "Scope contains a docstring.",
+          "evidence": [
+            "docstring starts at line 45"
+          ],
+          "review_question": "Does the docstring add durable contract information rather than restating the code?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/core/exceptions.py",
+      "symbol": "DisallowedHost",
+      "line": 50,
+      "end_line": 53,
+      "signals": [
+        {
+          "rule_id": "PY011",
+          "indicator": "docstring",
+          "severity": "advisory",
+          "confidence": 0.75,
+          "weight": 0.0,
+          "message": "Scope contains a docstring.",
+          "evidence": [
+            "docstring starts at line 51"
+          ],
+          "review_question": "Does the docstring add durable contract information rather than restating the code?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/core/exceptions.py",
+      "symbol": "DisallowedRedirect",
+      "line": 56,
+      "end_line": 59,
+      "signals": [
+        {
+          "rule_id": "PY011",
+          "indicator": "docstring",
+          "severity": "advisory",
+          "confidence": 0.75,
+          "weight": 0.0,
+          "message": "Scope contains a docstring.",
+          "evidence": [
+            "docstring starts at line 57"
+          ],
+          "review_question": "Does the docstring add durable contract information rather than restating the code?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/core/exceptions.py",
+      "symbol": "TooManyFieldsSent",
+      "line": 62,
+      "end_line": 68,
+      "signals": [
+        {
+          "rule_id": "PY011",
+          "indicator": "docstring",
+          "severity": "advisory",
+          "confidence": 0.75,
+          "weight": 0.0,
+          "message": "Scope contains a docstring.",
+          "evidence": [
+            "docstring starts at line 63"
+          ],
+          "review_question": "Does the docstring add durable contract information rather than restating the code?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/core/exceptions.py",
+      "symbol": "TooManyFilesSent",
+      "line": 71,
+      "end_line": 77,
+      "signals": [
+        {
+          "rule_id": "PY011",
+          "indicator": "docstring",
+          "severity": "advisory",
+          "confidence": 0.75,
+          "weight": 0.0,
+          "message": "Scope contains a docstring.",
+          "evidence": [
+            "docstring starts at line 72"
+          ],
+          "review_question": "Does the docstring add durable contract information rather than restating the code?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/core/exceptions.py",
+      "symbol": "RequestDataTooBig",
+      "line": 80,
+      "end_line": 86,
+      "signals": [
+        {
+          "rule_id": "PY011",
+          "indicator": "docstring",
+          "severity": "advisory",
+          "confidence": 0.75,
+          "weight": 0.0,
+          "message": "Scope contains a docstring.",
+          "evidence": [
+            "docstring starts at line 81"
+          ],
+          "review_question": "Does the docstring add durable contract information rather than restating the code?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/core/exceptions.py",
+      "symbol": "RequestAborted",
+      "line": 89,
+      "end_line": 92,
+      "signals": [
+        {
+          "rule_id": "PY011",
+          "indicator": "docstring",
+          "severity": "advisory",
+          "confidence": 0.75,
+          "weight": 0.0,
+          "message": "Scope contains a docstring.",
+          "evidence": [
+            "docstring starts at line 90"
+          ],
+          "review_question": "Does the docstring add durable contract information rather than restating the code?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/core/exceptions.py",
+      "symbol": "BadRequest",
+      "line": 95,
+      "end_line": 98,
+      "signals": [
+        {
+          "rule_id": "PY011",
+          "indicator": "docstring",
+          "severity": "advisory",
+          "confidence": 0.75,
+          "weight": 0.0,
+          "message": "Scope contains a docstring.",
+          "evidence": [
+            "docstring starts at line 96"
+          ],
+          "review_question": "Does the docstring add durable contract information rather than restating the code?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/core/exceptions.py",
+      "symbol": "PermissionDenied",
+      "line": 101,
+      "end_line": 104,
+      "signals": [
+        {
+          "rule_id": "PY011",
+          "indicator": "docstring",
+          "severity": "advisory",
+          "confidence": 0.75,
+          "weight": 0.0,
+          "message": "Scope contains a docstring.",
+          "evidence": [
+            "docstring starts at line 102"
+          ],
+          "review_question": "Does the docstring add durable contract information rather than restating the code?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/core/exceptions.py",
+      "symbol": "ViewDoesNotExist",
+      "line": 107,
+      "end_line": 110,
+      "signals": [
+        {
+          "rule_id": "PY011",
+          "indicator": "docstring",
+          "severity": "advisory",
+          "confidence": 0.75,
+          "weight": 0.0,
+          "message": "Scope contains a docstring.",
+          "evidence": [
+            "docstring starts at line 108"
+          ],
+          "review_question": "Does the docstring add durable contract information rather than restating the code?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/core/exceptions.py",
+      "symbol": "MiddlewareNotUsed",
+      "line": 113,
+      "end_line": 116,
+      "signals": [
+        {
+          "rule_id": "PY011",
+          "indicator": "docstring",
+          "severity": "advisory",
+          "confidence": 0.75,
+          "weight": 0.0,
+          "message": "Scope contains a docstring.",
+          "evidence": [
+            "docstring starts at line 114"
+          ],
+          "review_question": "Does the docstring add durable contract information rather than restating the code?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/core/exceptions.py",
+      "symbol": "ImproperlyConfigured",
+      "line": 119,
+      "end_line": 122,
+      "signals": [
+        {
+          "rule_id": "PY011",
+          "indicator": "docstring",
+          "severity": "advisory",
+          "confidence": 0.75,
+          "weight": 0.0,
+          "message": "Scope contains a docstring.",
+          "evidence": [
+            "docstring starts at line 120"
+          ],
+          "review_question": "Does the docstring add durable contract information rather than restating the code?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/core/exceptions.py",
+      "symbol": "FieldError",
+      "line": 125,
+      "end_line": 128,
+      "signals": [
+        {
+          "rule_id": "PY011",
+          "indicator": "docstring",
+          "severity": "advisory",
+          "confidence": 0.75,
+          "weight": 0.0,
+          "message": "Scope contains a docstring.",
+          "evidence": [
+            "docstring starts at line 126"
+          ],
+          "review_question": "Does the docstring add durable contract information rather than restating the code?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/core/exceptions.py",
+      "symbol": "ValidationError",
+      "line": 134,
+      "end_line": 237,
+      "signals": [
+        {
+          "rule_id": "PY011",
+          "indicator": "docstring",
+          "severity": "advisory",
+          "confidence": 0.75,
+          "weight": 0.0,
+          "message": "Scope contains a docstring.",
+          "evidence": [
+            "docstring starts at line 135"
+          ],
+          "review_question": "Does the docstring add durable contract information rather than restating the code?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/core/exceptions.py",
+      "symbol": "ValidationError.message_dict",
+      "line": 181,
+      "end_line": 186,
+      "signals": [
+        {
+          "rule_id": "PY010",
+          "indicator": "comments",
+          "severity": "advisory",
+          "confidence": 0.7,
+          "weight": 0.0,
+          "message": "Scope contains 2 comments.",
+          "evidence": [
+            "comment line 182",
+            "comment line 183"
+          ],
+          "review_question": "Do comments compensate for unclear code, preserve stale assumptions, or encode required constraints?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/core/exceptions.py",
+      "symbol": "EmptyResultSet",
+      "line": 240,
+      "end_line": 243,
+      "signals": [
+        {
+          "rule_id": "PY011",
+          "indicator": "docstring",
+          "severity": "advisory",
+          "confidence": 0.75,
+          "weight": 0.0,
+          "message": "Scope contains a docstring.",
+          "evidence": [
+            "docstring starts at line 241"
+          ],
+          "review_question": "Does the docstring add durable contract information rather than restating the code?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/core/exceptions.py",
+      "symbol": "FullResultSet",
+      "line": 246,
+      "end_line": 249,
+      "signals": [
+        {
+          "rule_id": "PY011",
+          "indicator": "docstring",
+          "severity": "advisory",
+          "confidence": 0.75,
+          "weight": 0.0,
+          "message": "Scope contains a docstring.",
+          "evidence": [
+            "docstring starts at line 247"
+          ],
+          "review_question": "Does the docstring add durable contract information rather than restating the code?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/core/exceptions.py",
+      "symbol": "SynchronousOnlyOperation",
+      "line": 252,
+      "end_line": 255,
+      "signals": [
+        {
+          "rule_id": "PY011",
+          "indicator": "docstring",
+          "severity": "advisory",
+          "confidence": 0.75,
+          "weight": 0.0,
+          "message": "Scope contains a docstring.",
+          "evidence": [
+            "docstring starts at line 253"
+          ],
+          "review_question": "Does the docstring add durable contract information rather than restating the code?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/utils/dateparse.py",
+      "symbol": "parse_date",
+      "line": 67,
+      "end_line": 78,
+      "signals": [
+        {
+          "rule_id": "PY011",
+          "indicator": "docstring",
+          "severity": "advisory",
+          "confidence": 0.75,
+          "weight": 0.0,
+          "message": "Scope contains a docstring.",
+          "evidence": [
+            "docstring starts at line 68"
+          ],
+          "review_question": "Does the docstring add durable contract information rather than restating the code?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/utils/dateparse.py",
+      "symbol": "parse_duration",
+      "line": 132,
+      "end_line": 154,
+      "signals": [
+        {
+          "rule_id": "PY011",
+          "indicator": "docstring",
+          "severity": "advisory",
+          "confidence": 0.75,
+          "weight": 0.0,
+          "message": "Scope contains a docstring.",
+          "evidence": [
+            "docstring starts at line 133"
+          ],
+          "review_question": "Does the docstring add durable contract information rather than restating the code?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/utils/text.py",
+      "symbol": "<module>",
+      "line": 1,
+      "end_line": 487,
+      "signals": [
+        {
+          "rule_id": "PY010",
+          "indicator": "comments",
+          "severity": "advisory",
+          "confidence": 0.7,
+          "weight": 0.0,
+          "message": "Scope contains 5 comments.",
+          "evidence": [
+            "comment line 34",
+            "comment line 35",
+            "comment line 378",
+            "comment line 395",
+            "comment line 396"
+          ],
+          "review_question": "Do comments compensate for unclear code, preserve stale assumptions, or encode required constraints?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/utils/text.py",
+      "symbol": "capfirst",
+      "line": 25,
+      "end_line": 31,
+      "signals": [
+        {
+          "rule_id": "PY011",
+          "indicator": "docstring",
+          "severity": "advisory",
+          "confidence": 0.75,
+          "weight": 0.0,
+          "message": "Scope contains a docstring.",
+          "evidence": [
+            "docstring starts at line 26"
+          ],
+          "review_question": "Does the docstring add durable contract information rather than restating the code?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/utils/text.py",
+      "symbol": "add_truncation_text",
+      "line": 72,
+      "end_line": 85,
+      "signals": [
+        {
+          "rule_id": "PY010",
+          "indicator": "comments",
+          "severity": "advisory",
+          "confidence": 0.7,
+          "weight": 0.0,
+          "message": "Scope contains 4 comments.",
+          "evidence": [
+            "comment line 79",
+            "comment line 80",
+            "comment line 82",
+            "comment line 83"
+          ],
+          "review_question": "Do comments compensate for unclear code, preserve stale assumptions, or encode required constraints?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/utils/text.py",
+      "symbol": "TruncateHTMLParser.__init__",
+      "line": 102,
+      "end_line": 107,
+      "signals": [
+        {
+          "rule_id": "PY002",
+          "indicator": "boolean-modes",
+          "severity": "advisory",
+          "confidence": 0.82,
+          "weight": 1.0,
+          "message": "Boolean parameters select behavior or operating modes.",
+          "evidence": [
+            "convert_charrefs"
+          ],
+          "review_question": "Would keyword-only arguments, an enum, or separate operations communicate the modes better?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/utils/text.py",
+      "symbol": "TruncateHTMLParser.void_elements",
+      "line": 110,
+      "end_line": 113,
+      "signals": [
+        {
+          "rule_id": "PY021",
+          "indicator": "lazy-import",
+          "severity": "advisory",
+          "confidence": 0.85,
+          "weight": 1.0,
+          "message": "Import is deferred into the function body.",
+          "evidence": [
+            "line 111: django.utils.html"
+          ],
+          "review_question": "Is this hiding a cycle, an optional dependency, or a startup cost that belongs at module scope?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/utils/text.py",
+      "symbol": "TruncateHTMLParser.feed",
+      "line": 143,
+      "end_line": 152,
+      "signals": [
+        {
+          "rule_id": "PY010",
+          "indicator": "comments",
+          "severity": "advisory",
+          "confidence": 0.7,
+          "weight": 0.0,
+          "message": "Scope contains 1 comments.",
+          "evidence": [
+            "comment line 151"
+          ],
+          "review_question": "Do comments compensate for unclear code, preserve stale assumptions, or encode required constraints?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/utils/text.py",
+      "symbol": "TruncateCharsHTMLParser.__init__",
+      "line": 156,
+      "end_line": 163,
+      "signals": [
+        {
+          "rule_id": "PY002",
+          "indicator": "boolean-modes",
+          "severity": "advisory",
+          "confidence": 0.82,
+          "weight": 1.0,
+          "message": "Boolean parameters select behavior or operating modes.",
+          "evidence": [
+            "convert_charrefs"
+          ],
+          "review_question": "Would keyword-only arguments, an enum, or separate operations communicate the modes better?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/utils/text.py",
+      "symbol": "Truncator._text_words",
+      "line": 255,
+      "end_line": 265,
+      "signals": [
+        {
+          "rule_id": "PY011",
+          "indicator": "docstring",
+          "severity": "advisory",
+          "confidence": 0.75,
+          "weight": 0.0,
+          "message": "Scope contains a docstring.",
+          "evidence": [
+            "docstring starts at line 256"
+          ],
+          "review_question": "Does the docstring add durable contract information rather than restating the code?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/utils/text.py",
+      "symbol": "get_valid_filename",
+      "line": 269,
+      "end_line": 282,
+      "signals": [
+        {
+          "rule_id": "PY011",
+          "indicator": "docstring",
+          "severity": "advisory",
+          "confidence": 0.75,
+          "weight": 0.0,
+          "message": "Scope contains a docstring.",
+          "evidence": [
+            "docstring starts at line 270"
+          ],
+          "review_question": "Does the docstring add durable contract information rather than restating the code?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/utils/text.py",
+      "symbol": "normalize_newlines",
+      "line": 312,
+      "end_line": 314,
+      "signals": [
+        {
+          "rule_id": "PY011",
+          "indicator": "docstring",
+          "severity": "advisory",
+          "confidence": 0.75,
+          "weight": 0.0,
+          "message": "Scope contains a docstring.",
+          "evidence": [
+            "docstring starts at line 313"
+          ],
+          "review_question": "Does the docstring add durable contract information rather than restating the code?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/utils/text.py",
+      "symbol": "phone2numeric",
+      "line": 318,
+      "end_line": 348,
+      "signals": [
+        {
+          "rule_id": "PY011",
+          "indicator": "docstring",
+          "severity": "advisory",
+          "confidence": 0.75,
+          "weight": 0.0,
+          "message": "Scope contains a docstring.",
+          "evidence": [
+            "docstring starts at line 319"
+          ],
+          "review_question": "Does the docstring add durable contract information rather than restating the code?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/utils/text.py",
+      "symbol": "compress_sequence",
+      "line": 379,
+      "end_line": 392,
+      "signals": [
+        {
+          "rule_id": "PY010",
+          "indicator": "comments",
+          "severity": "advisory",
+          "confidence": 0.7,
+          "weight": 0.0,
+          "message": "Scope contains 1 comments.",
+          "evidence": [
+            "comment line 385"
+          ],
+          "review_question": "Do comments compensate for unclear code, preserve stale assumptions, or encode required constraints?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/utils/text.py",
+      "symbol": "smart_split",
+      "line": 411,
+      "end_line": 427,
+      "signals": [
+        {
+          "rule_id": "PY011",
+          "indicator": "docstring",
+          "severity": "advisory",
+          "confidence": 0.75,
+          "weight": 0.0,
+          "message": "Scope contains a docstring.",
+          "evidence": [
+            "docstring starts at line 412"
+          ],
+          "review_question": "Does the docstring add durable contract information rather than restating the code?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/utils/text.py",
+      "symbol": "unescape_string_literal",
+      "line": 431,
+      "end_line": 448,
+      "signals": [
+        {
+          "rule_id": "PY011",
+          "indicator": "docstring",
+          "severity": "advisory",
+          "confidence": 0.75,
+          "weight": 0.0,
+          "message": "Scope contains a docstring.",
+          "evidence": [
+            "docstring starts at line 432"
+          ],
+          "review_question": "Does the docstring add durable contract information rather than restating the code?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/utils/text.py",
+      "symbol": "camel_case_to_spaces",
+      "line": 472,
+      "end_line": 476,
+      "signals": [
+        {
+          "rule_id": "PY011",
+          "indicator": "docstring",
+          "severity": "advisory",
+          "confidence": 0.75,
+          "weight": 0.0,
+          "message": "Scope contains a docstring.",
+          "evidence": [
+            "docstring starts at line 473"
+          ],
+          "review_question": "Does the docstring add durable contract information rather than restating the code?"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e907e3f/scratchpad/django-src/django/utils/text.py",
+      "symbol": "_format_lazy",
+      "line": 479,
+      "end_line": 484,
+      "signals": [
+        {
+          "rule_id": "PY011",
+          "indicator": "docstring",
+          "severity": "advisory",
+          "confidence": 0.75,
+          "weight": 0.0,
+          "message": "Scope contains a docstring.",
+          "evidence": [
+            "docstring starts at line 480"
+          ],
+          "review_question": "Does the docstring add durable contract information rather than restating the code?"
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

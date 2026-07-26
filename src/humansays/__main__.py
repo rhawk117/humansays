@@ -1,3 +1,4 @@
-from humansays.entrypoint import run_tool
+from humansays.cli import main
 
-raise SystemExit(run_tool())
+if __name__ == '__main__':
+    raise SystemExit(main())

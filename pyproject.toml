@@ -1,6 +1,6 @@
 [project]
 name = "humansays"
-version = "0.1.0"
+version = "0.1.0a1"
 requires-python = ">=3.11"
 description = "A linting guardrail for LLM-generated Python code which raises structural doubts and a per-finding score before the code reaches a reviewer"
 readme = "README.md"
@@ -26,6 +26,9 @@ license = "MIT"
 license-files = ["LICENSE"]
 dependencies = []
 
+[project.optional-dependencies]
+terminal = ["rich>=13.7"]
+
 [project.urls]
 Homepage = "https://github.com/rhawk117/humansays"
 Repository = "https://github.com/rhawk117/humansays"
@@ -33,7 +36,7 @@ Issues = "https://github.com/rhawk117/humansays/issues"
 Changelog = "https://github.com/rhawk117/humansays/releases"
 
 [project.scripts]
-humansays = "humansays:main"
+humansays = "humansays.cli:main"
 
 [build-system]
 requires = ["uv_build>=0.11.32,<0.12.0"]

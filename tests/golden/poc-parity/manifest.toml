@@ -1,0 +1,39 @@
+# Corpus pinned for the humansays parity oracle (see tests/golden/poc-parity/_generate.py).
+# Source files are vendored under corpus/<group>/ so tests/golden/test_parity.py
+# can re-run humansays's own analyzer against them with no network access; the
+# .raw.json outputs alongside this file are the frozen pysignals 0.3.0 oracle to
+# compare against. Regenerating the corpus (not required to run the tests) needs
+# network access for the Django sdist download; see _generate.py.
+pysignals_version = "0.3.0"
+limit = 0 # expose every finding so scores can be recomputed after the rule deletions
+
+[groups.poc]
+root = "tests/golden/poc-parity/corpus/poc"
+files = [
+    "catalog.py",
+    "const.py",
+    "core.py",
+    "enums.py",
+    "factories.py",
+    "models.py",
+    "options.py",
+    "py_ast.py",
+    "report.py",
+    "rules.py",
+    "scoring.py",
+    "syntax.py",
+    "__init__.py",
+    "__main__.py",
+]
+
+[groups.django]
+root = "tests/golden/poc-parity/corpus/django"
+sdist_url = "https://files.pythonhosted.org/packages/source/D/Django/Django-5.1.4.tar.gz"
+sdist_name = "Django-5.1.4.tar.gz"
+sha256 = "de450c09e91879fa5a307f696e57c851955c910a438a35e6b4c895e86bedc82a"
+sdist_prefix = "Django-5.1.4"
+files = [
+    "django/core/exceptions.py",
+    "django/utils/dateparse.py",
+    "django/utils/text.py",
+]
