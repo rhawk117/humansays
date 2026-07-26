@@ -1,20 +1,16 @@
 name: Release
 
 on:
-  push:
-    tags: ["v*"]
   workflow_dispatch:
     inputs:
-      tag:
-        description: Tag to release, e.g. v0.1.0a1
-        required: true
-        type: string
-      index:
-        description: Which index to publish to
-        required: true
-        default: testpypi
-        type: choice
-        options: [testpypi, pypi]
+      force:
+        description: Publish the current version even when no version diff is available
+        required: false
+        type: boolean
+        default: false
+  push:
+    branches: [main]
+    paths: [pyproject.toml]
 
 permissions:
   contents: read
@@ -28,109 +24,96 @@ defaults:
     shell: bash
 
 jobs:
-  verify:
-    name: Verify Tag Matches Project Version
+  detect:
+    name: Detect Version Change
     runs-on: ${{ vars.DEFAULT_RUNNER || 'ubuntu-24.04' }}
     outputs:
-      tag: ${{ steps.check.outputs.tag }}
-      version: ${{ steps.check.outputs.version }}
-      prerelease: ${{ steps.check.outputs.prerelease }}
-      index: ${{ inputs.index || 'pypi' }}
+      changed: ${{ steps.release.outputs.changed }}
+      prerelease: ${{ steps.release.outputs.prerelease }}
+      tag: ${{ steps.release.outputs.tag }}
+      version: ${{ steps.release.outputs.version }}
     steps:
       - name: Check Out Repository
         uses: actions/checkout@v7.0.1
         with:
-          ref: ${{ inputs.tag || github.ref }}
+          fetch-depth: 0
           persist-credentials: false
 
       - name: Bootstrap Runner
         uses: ./.github/actions/bootstrap
         with:
           python-version: "3.14"
-          sync: "false"
 
-      - name: Verify Tag
-        id: check
+      - name: Determine Release Metadata
+        id: release
+        shell: bash
         env:
-          RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
+          BEFORE_SHA: ${{ github.event.before }}
+          FORCE_RELEASE: ${{ inputs.force || false }}
         run: |
           set -euo pipefail
 
-          version="$(uv version --short)"
-          if [[ "$RELEASE_TAG" != "v${version}" ]]; then
-            printf '::error::tag %s does not match project version %s\n' \
-              "$RELEASE_TAG" "$version" >&2
-            exit 1
+          args=(scripts/release_info.py --before "$BEFORE_SHA")
+          if [[ "$FORCE_RELEASE" == "true" ]]; then
+              args+=(--force)
           fi
 
-          prerelease=false
-          if [[ "$version" =~ (a|b|rc)[0-9]+|\.dev[0-9]+ ]]; then
-            prerelease=true
-          fi
-
-          {
-            printf 'tag=%s\n' "$RELEASE_TAG"
-            printf 'version=%s\n' "$version"
-            printf 'prerelease=%s\n' "$prerelease"
-          } >>"$GITHUB_OUTPUT"
+          uv run "${args[@]}"
 
   continuous-integration:
-    needs: verify
+    if: ${{ needs.detect.outputs.changed == 'true' }}
+    needs: detect
     uses: ./.github/workflows/ci-playbook.yml
 
   package:
-    needs: [verify, continuous-integration]
+    if: ${{ needs.detect.outputs.changed == 'true' }}
+    needs: [detect, continuous-integration]
     uses: ./.github/workflows/build-package.yml
     with:
       artifact-name: release-distributions
 
-  publish:
-    name: Publish to ${{ needs.verify.outputs.index }}
-    needs: [verify, package]
-    runs-on: ${{ vars.DEFAULT_RUNNER || 'ubuntu-24.04' }}
-    environment:
-      name: ${{ needs.verify.outputs.index }}
-      url: https://pypi.org/project/humansays/
-    permissions:
-      contents: read
-      id-token: write
-    steps:
-      - name: Download distributions
-        uses: actions/download-artifact@v8.0.1
-        with:
-          name: ${{ needs.package.outputs.artifact-name }}
-          path: dist/
+  # ::NOTE::fix-later
+  # publish-pypi:
+  #   name: Publish to PyPI
+  #   needs: [detect, package]
+  #   if: ${{ needs.detect.outputs.changed == 'true' }}
+  #   runs-on: ${{ vars.DEFAULT_RUNNER || 'ubuntu-24.04' }}
+  #   environment:
+  #     name: pypi
+  #     url: https://pypi.org/project/codemudgeon/
 
-      - name: Install uv
-        uses: astral-sh/setup-uv@v8.1.0
-        with:
-          version: "0.11.32"
-          enable-cache: false
+  #   permissions:
+  #     contents: read
+  #     id-token: write
 
-      - name: Publish Distributions
-        env:
-          TARGET_INDEX: ${{ needs.verify.outputs.index }}
-        run: |
-          set -euo pipefail
+  #   steps:
+  #     - name: Download distributions
+  #       uses: actions/download-artifact@v8.0.1
+  #       with:
+  #         name: ${{ needs.package.outputs.artifact-name }}
+  #         path: dist/
 
-          args=(publish --trusted-publishing always)
-          if [[ "$TARGET_INDEX" == "testpypi" ]]; then
-            args+=(--publish-url https://test.pypi.org/legacy/)
-          fi
+  #     - name: Install uv
+  #       uses: astral-sh/setup-uv@v8.1.0
+  #       with:
+  #         version: "0.11.32"
+  #         enable-cache: false
 
-          uv "${args[@]}" dist/*
+  #     - name: Publish Distributions
+  #       run: uv publish dist/*
 
   github-release:
     name: Publish GitHub Release
-    needs: [verify, package, publish]
-    if: ${{ needs.verify.outputs.index == 'pypi' }}
+    needs: [detect, package] # ::NOTE::publish-pypi
+    if: ${{ needs.detect.outputs.changed == 'true' }}
     runs-on: ${{ vars.DEFAULT_RUNNER || 'ubuntu-24.04' }}
     permissions:
       contents: write
     env:
-      IS_PRERELEASE: ${{ needs.verify.outputs.prerelease }}
+      TARGET_SHA: ${{ github.sha }}
+      IS_PRERELEASE: ${{ needs.detect.outputs.prerelease == 'true' }}
       ARTIFACT_NAME: ${{ needs.package.outputs.artifact-name }}
-      RELEASE_TAG: ${{ needs.verify.outputs.tag }}
+      RELEASE_TAG: ${{ needs.detect.outputs.tag }}
     steps:
       - name: Download distributions
         uses: actions/download-artifact@v8.0.1
@@ -144,7 +127,9 @@ jobs:
         run: |
           set -euo pipefail
 
-          mapfile -t assets < <(find dist -maxdepth 1 -type f -print)
+          mapfile -t assets < <(
+            find dist -maxdepth 1 -type f -print
+          )
 
           if ((${#assets[@]} == 0)); then
             printf '::error::no release assets were downloaded.\n' >&2
@@ -160,6 +145,7 @@ jobs:
             release create "$RELEASE_TAG"
             "${assets[@]}"
             --generate-notes
+            --target "$TARGET_SHA"
             --title "$RELEASE_TAG"
           )
 

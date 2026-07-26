@@ -1,9 +1,30 @@
 name: Documentation
 
-# Disabled in CI: docs/ is being restructured and mkdocs currently fails to
-# build. Kept as a repository artifact, runnable manually until the docs
-# restructuring lands.
 on:
+  pull_request:
+    paths:
+      - docs/**
+      - mkdocs.yml
+      - pyproject.toml
+      - scripts/docs.sh
+      - src/**
+      - uv.lock
+      - .github/actions/setup-project/**
+      - .github/workflows/_docs.yml
+      - .github/workflows/docs.yml
+  push:
+    branches:
+      - main
+    paths:
+      - docs/**
+      - mkdocs.yml
+      - pyproject.toml
+      - scripts/docs.sh
+      - src/**
+      - uv.lock
+      - .github/actions/setup-project/**
+      - .github/workflows/_docs.yml
+      - .github/workflows/docs.yml
   workflow_dispatch:
 
 permissions:

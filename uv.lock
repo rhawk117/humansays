@@ -496,13 +496,8 @@ wheels = [
 
 [[package]]
 name = "humansays"
-version = "0.1.0a1"
+version = "0.1.0"
 source = { editable = "." }
-
-[package.optional-dependencies]
-terminal = [
-    { name = "rich" },
-]
 
 [package.dev-dependencies]
 dev = [
@@ -545,8 +540,6 @@ test = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "rich", marker = "extra == 'terminal'", specifier = ">=13.7" }]
-provides-extras = ["terminal"]
 
 [package.metadata.requires-dev]
 dev = [

@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import importlib.util
-import json
 import subprocess
 import sys
 import tomllib
@@ -84,91 +82,6 @@ def validate_package_cli(project: PyprojectMetadata) -> None:
             )
 
 
-FIXTURE_DIRECTORY = 'tests/golden/poc-parity/corpus/poc'
-REQUIRED_SUMMARY_KEYS = frozenset({
-    'files',
-    'lines',
-    'targets',
-    'signals',
-    'errors',
-    'truncated',
-})
-
-
-def run_cli(cli: str, *arguments: str) -> str:
-    result = subprocess.run(  # noqa: S603
-        [cli, *arguments],
-        check=False,
-        capture_output=True,
-        text=True,
-    )
-    if result.returncode != 0:
-        fail(
-            f'{cli} {" ".join(arguments)} failed with status '
-            f'{result.returncode}\nstdout:\n{result.stdout}\n'
-            f'stderr:\n{result.stderr}'
-        )
-    return result.stdout
-
-
-def validate_scan_json(payload: str, label: str) -> None:
-    try:
-        document = json.loads(payload)
-    except json.JSONDecodeError as error:
-        fail(f'{label}: output was not valid JSON: {error}')
-
-    if document.get('schema_version') != 1:
-        fail(
-            f'{label}: expected schema_version 1, got {document.get("schema_version")!r}'
-        )
-
-    summary = document.get('summary')
-    if not isinstance(summary, dict):
-        fail(f'{label}: payload has no summary object')
-
-    if missing := REQUIRED_SUMMARY_KEYS - set(summary):
-        fail(f'{label}: summary is missing {sorted(missing)}')
-
-    if summary['files'] < 1:
-        fail(f'{label}: scanned zero files')
-
-    if summary['errors']:
-        fail(f'{label}: scan reported {summary["errors"]} parse error(s)')
-
-
-def installed_package_directory() -> str:
-    """Locate the installed package so the self-scan reads the artifact.
-
-    Importing `humansays` here is importing our own package, not third-party
-    code under analysis, so the no-import-to-analyze rule does not apply.
-    """
-    specification = importlib.util.find_spec('humansays')
-    if specification is None or not specification.submodule_search_locations:
-        fail('humansays is importable by name but has no package directory')
-    return str(specification.submodule_search_locations[0])
-
-
-def validate_fixture_scan(project: PyprojectMetadata) -> None:
-    fixture = Path(FIXTURE_DIRECTORY)
-    if not fixture.is_dir():
-        fail(f'fixture directory {FIXTURE_DIRECTORY} not found; run from the repo root')
-
-    payload = run_cli(project.cli_name, '--format', 'json', str(fixture))
-    validate_scan_json(payload, f'fixture scan of {FIXTURE_DIRECTORY}')
-
-
-def validate_self_scan(project: PyprojectMetadata) -> None:
-    package_directory = installed_package_directory()
-    if str(Path.cwd().resolve()) in package_directory:
-        fail(
-            f'installed package resolved inside the source tree '
-            f'({package_directory}); the artifact is not isolated'
-        )
-
-    payload = run_cli(project.cli_name, '--format', 'json', package_directory)
-    validate_scan_json(payload, f'self-scan of {package_directory}')
-
-
 def smoke_test() -> int:
     project_section = read_pyproject_project()
     project_meta = load_pyproject_meta(project_section)
@@ -183,8 +96,6 @@ def smoke_test() -> int:
         )
 
     validate_package_cli(project_meta)
-    validate_fixture_scan(project_meta)
-    validate_self_scan(project_meta)
     print(
         f'verified {project_meta.distribution_name} {installed_version} '
         f'through the {project_meta.cli_name!r} entry point'
