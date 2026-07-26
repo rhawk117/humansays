@@ -528,3 +528,205 @@ baseline entries: 7 distinct keys: 7
 Entry count and distinct-key count are equal (7 = 7).
 
 ---
+
+## 9. Golden fixtures
+
+**What exists**, `find tests/golden -type f | sort`:
+
+```
+tests/golden/__init__.py
+tests/golden/poc-parity/_generate.py
+tests/golden/poc-parity/corpus/django/NOTICE.md
+tests/golden/poc-parity/corpus/django/django/core/exceptions.py
+tests/golden/poc-parity/corpus/django/django/utils/dateparse.py
+tests/golden/poc-parity/corpus/django/django/utils/text.py
+tests/golden/poc-parity/corpus/poc/__init__.py
+tests/golden/poc-parity/corpus/poc/__main__.py
+tests/golden/poc-parity/corpus/poc/catalog.py
+tests/golden/poc-parity/corpus/poc/const.py
+tests/golden/poc-parity/corpus/poc/core.py
+tests/golden/poc-parity/corpus/poc/enums.py
+tests/golden/poc-parity/corpus/poc/factories.py
+tests/golden/poc-parity/corpus/poc/models.py
+tests/golden/poc-parity/corpus/poc/options.py
+tests/golden/poc-parity/corpus/poc/py_ast.py
+tests/golden/poc-parity/corpus/poc/report.py
+tests/golden/poc-parity/corpus/poc/rules.py
+tests/golden/poc-parity/corpus/poc/scoring.py
+tests/golden/poc-parity/corpus/poc/syntax.py
+tests/golden/poc-parity/django.pysignals.json
+tests/golden/poc-parity/django.pysignals.txt
+tests/golden/poc-parity/django.raw.json
+tests/golden/poc-parity/manifest.toml
+tests/golden/poc-parity/mapping.toml
+tests/golden/poc-parity/poc.pysignals.json
+tests/golden/poc-parity/poc.pysignals.txt
+tests/golden/poc-parity/poc.raw.json
+tests/golden/self-scan-baseline.json
+tests/golden/test_parity.py
+tests/golden/test_self_scan.py
+```
+
+**Contents, one line per non-corpus fixture:**
+
+| File | Contents (first lines / stated purpose) |
+| --- | --- |
+| `manifest.toml` | Corpus pin: `pysignals_version = "0.3.0"`, per-group `root`/`files` lists, the Django sdist URL and `sha256`. Header comment: "Corpus pinned for the humansays parity oracle... .raw.json outputs alongside this file are the frozen pysignals 0.3.0 oracle to compare against." |
+| `mapping.toml` | `deleted = ["PY010", "PY011", "PY020"]` plus a `[rename]` table mapping every surviving `PY###` id to its `HS###` counterpart. Header comment: "PY-id -> HS-id rename table used to transform the raw poc-parity oracle. Every surviving rule keeps its original number; only its two-letter prefix changes." |
+| `poc.raw.json` | Authoritative per-finding oracle for the `poc` corpus group — a `{"findings": [...]}` array of raw pysignals 0.3.0 output (e.g. first entry: `path: __init__.py, rule_id: PY011, symbol: <module>, line 1`). |
+| `django.raw.json` | Same shape as `poc.raw.json`, for the `django` corpus group. |
+| `poc.pysignals.json` | Reference-only CLI JSON output (`schema_version: 4`) for the `poc` group, `root` listing absolute paths under `.poc-reference/pysignals-0.3.0/pysignals/...`. |
+| `django.pysignals.json` | Same shape, for the `django` group, `root` listing absolute paths under a scratchpad `django-src/` checkout. |
+| `poc.pysignals.txt` | Reference-only plain-text CLI rendering of the `poc` group scan (`Python investigation targets ...`). |
+| `django.pysignals.txt` | Same, for the `django` group. |
+| `_generate.py` | One-time generator script, explicitly marked "NOT a test" in its own docstring. Docstring states it "Writes, for every group in manifest.toml: `<group>.raw.json` (the authoritative per-finding oracle used by `tests/golden/test_parity.py`) plus `<group>.pysignals.json` and `<group>.pysignals.txt` (reference-only CLI output, NOT asserted against for groups whose CLI JSON aggregates multiple findings per symbol)." |
+| `corpus/poc/*.py` (14 files) | Vendored proof-of-concept source, matching `manifest.toml`'s `[groups.poc].files` list. |
+| `corpus/django/*.py` (3 files) + `NOTICE.md` | Vendored Django 5.1.4 subset (`django/core/exceptions.py`, `django/utils/dateparse.py`, `django/utils/text.py`), matching `manifest.toml`'s `[groups.django].files` list. |
+| `self-scan-baseline.json` | Quoted in full in §8. |
+| `test_parity.py`, `test_self_scan.py` | Test files; assertions recorded in §11. |
+
+**Ordering, branch-scoped (`main..HEAD`).** Earliest commit touching
+`tests/golden/**` vs. earliest touching `src/humansays/**`:
+
+| Path | Earliest commit | Timestamp | Subject |
+| --- | --- | --- | --- |
+| `tests/golden/**` | `1aeeaec` | 2026-07-25T22:27:10-04:00 | test(golden): pin poc-parity corpus (poc source + Django 5.1.4 subset) |
+| `src/humansays/**` (branch-scoped) | `2342d6e` | 2026-07-25T22:29:48-04:00 | refactor: scaffold humansays package, drop placeholder entrypoint |
+
+Within the `main..HEAD` window, `tests/golden/**` is touched first — `1aeeaec`
+precedes `2342d6e` by 2 minutes 38 seconds.
+
+**Boundary condition.** `src/humansays/**` is not created on this branch;
+it already exists at the merge-base:
+
+```
+$ git log --reverse --diff-filter=A --format='%h %ad %s' --date=short -- src/humansays | head -5
+a3d301f 2026-07-25 feat(setup): setup CI pipeline gates, wire dependency audit, add pre-commit (#1)
+2342d6e 2026-07-25 refactor: scaffold humansays package, drop placeholder entrypoint
+ade4094 2026-07-25 feat(enums,const): HS ids, humansays config names, config-error exit
+34093d4 2026-07-25 feat(findings): dataclass finding models with data-driven validation
+3b2f222 2026-07-25 feat(config): frozen-dataclass settings models
+```
+
+`a3d301f` **is** the merge-base for this branch (`git merge-base HEAD main`
+→ `a3d301fefae2c56ef8e707d270bf48d15aaf5568`). So the unscoped first-add of
+`src/humansays/**` sits at or before the branch's starting point. The
+`2342d6e` figure above is the first *modification* to `src/humansays/**`
+within `main..HEAD`, not the tree's first appearance. Both numbers are
+recorded, labelled distinctly, so as not to be mistaken for each other.
+
+**The parity oracle specifically.** Narrower than the module-level
+comparison above: does the `poc-parity` fixture set predate the analysis
+source it validates?
+
+```
+$ git log --reverse --format='%h %cI %s' main..HEAD -- tests/golden/poc-parity
+1aeeaec 2026-07-25T22:27:10-04:00 test(golden): pin poc-parity corpus (poc source + Django 5.1.4 subset)
+048e303 2026-07-25T22:29:09-04:00 test(golden): freeze raw pysignals 0.3.0 output as parity oracle
+fabeb88 2026-07-25T23:10:51-04:00 test(golden): vendor poc/django corpus, JSON parity harness (transform + score recompute)
+
+$ git log --reverse --format='%h %cI %s' main..HEAD -- src/humansays/analysis
+2342d6e 2026-07-25T22:29:48-04:00 refactor: scaffold humansays package, drop placeholder entrypoint
+d32f138 2026-07-25T22:34:31-04:00 feat(analysis): per-node fact models (only ast-bearing model module)
+d6777dc 2026-07-25T22:40:33-04:00 feat(analysis): move syntax/cpython_ast, add parse_module, delete PY020, drop type_comments
+af93c29 2026-07-25T23:45:33-04:00 fix(ci): rename .ty.toml -> ty.toml so config is actually discovered, tighten ast node types, fix pre-existing ruff gaps
+```
+
+`git show --stat` on each `poc-parity` commit shows what each one actually
+added:
+
+- `1aeeaec` (22:27:10) — `manifest.toml` only (35 lines; the corpus pin
+  metadata, no oracle data and no corpus source yet).
+- `048e303` (22:29:09) — `poc.raw.json`, `django.raw.json` (the authoritative
+  per-finding oracle data itself), plus `mapping.toml` and `_generate.py`.
+- `fabeb88` (23:10:51) — the vendored corpus source files themselves
+  (`corpus/poc/*.py`, `corpus/django/*.py`, `NOTICE.md`) plus an update to
+  `manifest.toml`.
+
+Ordering by timestamp: the oracle data (`048e303`, 22:29:09) precedes the
+first `src/humansays/analysis` commit on this branch (`2342d6e`, 22:29:48)
+by 39 seconds. The vendored corpus *source* files being scanned
+(`fabeb88`, 23:10:51) land after three of the four `src/humansays/analysis`
+commits on this branch, and before the fourth (`af93c29`, 23:45:33).
+
+---
+
+## 10. Refactors made to satisfy the analyzer
+
+**Candidate search:**
+
+```bash
+$ git log --oneline main..HEAD --grep='self-scan' --grep='split' --grep='HS0' --grep='baseline' -i
+5699e66 docs(evidence): phase-1 inventory sections 6-8 (HS002 kinds, HS021 sites, baseline)
+9a70ce1 fix(self-scan): consolidate rich lazy-import, wrap module dicts, split _render_rich; add self-scan-baseline gate
+```
+
+**Considered and excluded:** `5699e66` — this document's own §6-8 commit,
+written during this task. It matched the `-i --grep='baseline'` term
+because it mentions the baseline file, not because it changes source. `git
+show --stat` confirms it touches only `docs/evidence/phase-1-inventory.md`.
+Excluded: no source diff.
+
+**Qualifying commit:** `9a70ce1` ("fix(self-scan): consolidate rich
+lazy-import, wrap module dicts, split `_render_rich`; add
+self-scan-baseline gate"). `git show --stat` for this commit:
+
+```
+src/humansays/config/loading.py      |  9 ++--
+src/humansays/reporting/ansi.py      |  5 ++-
+src/humansays/reporting/render.py    | 87 ++++++++++++++++++++++--------------
+tests/golden/self-scan-baseline.json | 67 +++++++++++++++++++++++++++
+tests/golden/test_self_scan.py       | 64 ++++++++++++++++++++++++++
+5 files changed, 193 insertions(+), 39 deletions(-)
+```
+
+Its diff on `src/humansays/reporting/render.py` shows a source function
+being restructured, and its own commit message ties the restructuring to
+"consolidate rich lazy-import" and "split `_render_rich`" directly — this
+document records it under §10 on that basis (the message's own words,
+corroborated by the diff).
+
+**Original function.** `_render_rich(result, score, settings)`, before this
+commit, contained (per the diff) three inline `from rich.X import Y`
+statements at its top, an inline score-line construction block, and an
+inline table-construction block; `_rich_indicator_text` separately contained
+its own inline `from rich.text import Text`. The baseline file's own
+`reason` field for the resulting `HS021` findings (quoted in §8) attributes
+this to "the plan's rich-optional design."
+
+**Extracted units**, each with its current `name` and `file:line`:
+
+| Unit | `file:line` |
+| --- | --- |
+| `_load_rich` | `render.py:28` |
+| `_rich_score_line` | `render.py:44` |
+| `_rich_targets_table` | `render.py:56` |
+| `_rich_indicator_text` | `render.py:109` (signature changed to accept `rich`; not a new function) |
+
+**Call sites**, from `grep -rn '<name>' src/ tests/`:
+
+| Unit | Definition site | Call sites | Other references |
+| --- | --- | --- | --- |
+| `_load_rich` | `render.py:28` | `render.py:73` (inside `_render_rich`), `render.py:147` (inside `emit`) | `tests/ansi/test_text_snapshot.py:49` — `monkeypatch.setattr(render, '_load_rich', lambda: None)`; also named (not called) in three `tests/golden/self-scan-baseline.json` entries as the flagged symbol |
+| `_rich_score_line` | `render.py:44` | `render.py:91` (inside `_render_rich`) | none |
+| `_rich_targets_table` | `render.py:56` | `render.py:93` (inside `_render_rich`) | none |
+| `_rich_indicator_text` | `render.py:109` | `render.py:67` (inside `_rich_targets_table`) | none |
+
+**State shared with siblings.** Parameters and non-parameter state read by
+each extracted unit, determined by reading each signature and body:
+
+| Unit | Parameters | Shared with | Non-parameter (module-level) state read |
+| --- | --- | --- | --- |
+| `_load_rich` | (none) | — | none |
+| `_rich_score_line` | `score`, `rich` | `rich` — also received by `_rich_targets_table`, `_rich_indicator_text` | `GRADE_STYLES` (imported from `humansays.const`) |
+| `_rich_targets_table` | `shown`, `rich` | `rich` — also received by `_rich_score_line`, `_rich_indicator_text`; calls `_rich_indicator_text` directly | none read directly (delegates styling to `_rich_indicator_text`) |
+| `_rich_indicator_text` | `target`, `rich` | `rich` — also received by `_rich_score_line`, `_rich_targets_table` | `SEVERITY_STYLES` (imported from `humansays.const`) |
+
+All three helper functions (`_rich_score_line`, `_rich_targets_table`,
+`_rich_indicator_text`) receive the `SimpleNamespace` returned by
+`_load_rich()` as a `rich` parameter rather than importing rich's classes
+themselves. `_load_rich` itself takes no parameters and reads no
+module-level state beyond the stdlib `try`/`except ImportError` around the
+three `from rich.X import Y` statements.
+
+---
