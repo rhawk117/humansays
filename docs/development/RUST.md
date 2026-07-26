@@ -13,8 +13,7 @@ def analyze_source(
     source: str,
     *,
     path: str,
-) -> list[Finding]:
-    ...
+) -> list[Finding]: ...
 ```
 
 The CLI, reporters, JSON schema, scoring model, and tests should consume stable

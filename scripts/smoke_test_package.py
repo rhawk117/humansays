@@ -27,8 +27,6 @@ class PyprojectMetadata:
         return None
 
 
-
-
 def fail(message: str) -> NoReturn:
     print(f'::error::{message}', file=sys.stderr)
     raise SystemExit(1)
@@ -65,6 +63,7 @@ def load_pyproject_meta(project: dict[str, Any]) -> PyprojectMetadata:
         scripts=scripts,
     )
 
+
 def validate_package_cli(project: PyprojectMetadata) -> None:
     arguments = ('--version', '--help')
     for arg in arguments:
@@ -81,6 +80,7 @@ def validate_package_cli(project: PyprojectMetadata) -> None:
                 f'stdout:\n{result.stdout}\n'
                 f'stderr:\n{result.stderr}'
             )
+
 
 def smoke_test() -> int:
     project_section = read_pyproject_project()
@@ -101,6 +101,7 @@ def smoke_test() -> int:
         f'through the {project_meta.cli_name!r} entry point'
     )
     return 0
+
 
 def main() -> None:
     try:

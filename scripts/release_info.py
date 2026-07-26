@@ -27,10 +27,10 @@ def parse_arguments() -> argparse.Namespace:
     )
     return parser.parse_args()
 
+
 def fail(message: str) -> NoReturn:
     print(f'::error::{message}', file=sys.stderr)
     raise SystemExit(1)
-
 
 
 def project_version(document: dict[str, Any]) -> str:
@@ -49,7 +49,6 @@ def current_version() -> str:
     return project_version(tomllib.loads(pyproject))
 
 
-
 def previous_version(revision: str) -> str | None:
     if not revision or set(revision) == {'0'}:
         revision = 'HEAD^'
@@ -57,10 +56,10 @@ def previous_version(revision: str) -> str | None:
     safe_pyproject = shlex.quote(f'{revision}:pyproject.toml')
 
     completed = subprocess.run(
-        ['git', 'show', "$PYPROJECT"],  # noqa: S607
+        ['git', 'show', '$PYPROJECT'],  # noqa: S607
         check=False,
         capture_output=True,
-        env={'PYPROJECT': safe_pyproject}
+        env={'PYPROJECT': safe_pyproject},
     )
 
     if completed.returncode != 0:
@@ -108,7 +107,6 @@ def main() -> int:
 
     if step_summary := os.getenv('GITHUB_STEP_SUMMARY'):
         Path(step_summary).write_text(output_content)
-
 
     print(f'::notice::{output_content}')
     return 0
