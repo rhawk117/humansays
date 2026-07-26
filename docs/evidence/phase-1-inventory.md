@@ -730,3 +730,142 @@ module-level state beyond the stdlib `try`/`except ImportError` around the
 three `from rich.X import Y` statements.
 
 ---
+
+## 11. CI
+
+**Workflow files** (`ls .github/workflows/`, 7 files; none deleted in
+`main..HEAD` — `git log --diff-filter=D --oneline main..HEAD --
+.github/workflows/` produced no output):
+
+| File | Jobs | Triggers | Enabled/disabled | Mechanism / reason (quoted) |
+| --- | --- | --- | --- | --- |
+| `integration.yml` (name: "Continuous Integration (CI)") | `ci-runbook`, `package`, `ci-gate` | `pull_request`, `workflow_call`, `push` to `main`/`develop` | enabled | — |
+| `ci-playbook.yml` (name: "Reusable Python tests") | `linter`, `run-tests` (matrix `["3.11","3.12","3.13","3.14"]`) | `workflow_call` only | enabled (reusable; invoked by `integration.yml` and `release.yml`) | — |
+| `build-package.yml` (name: "Reusable package validation") | `build`, `smoke` | `workflow_call` only | enabled (reusable; invoked by `integration.yml` and `release.yml`) | — |
+| `release.yml` (name: "Release") | `detect`, `continuous-integration`, `package`, `github-release`; a `publish-pypi` job block is present but fully commented out | `workflow_dispatch`, `push` to `main` on `paths: [pyproject.toml]` | `detect`/`continuous-integration`/`package`/`github-release` enabled; `publish-pypi` disabled | Commented-out job body at `release.yml:75-103`, headed by `# ::NOTE::fix-later` (`release.yml:75`). The `github-release` job's `needs` list carries a stale reference in a trailing comment: `needs: [detect, package] # ::NOTE::publish-pypi` (`release.yml:107`) |
+| `security-audit.yml` (name: "Dependency Audit") | `audit` | `pull_request` on `paths: [uv.lock, pyproject.toml]`, weekly `schedule` (`cron: "0 6 * * 1"`), `workflow_dispatch` | enabled | — |
+| `github-pages.yml` (name: "Documentation") | `build-docs` (calls `upload-mkdocs.yml`), `deploy` | `workflow_dispatch` only | disabled from automatic triggers | Comment at `github-pages.yml:3-5`, quoted in full: "Disabled in CI: docs/ is being restructured and mkdocs currently fails to build. Kept as a repository artifact, runnable manually until the docs restructuring lands." |
+| `upload-mkdocs.yml` (name: "Build Doc Site") | `build` (runs `mkdocs build --strict --clean`) | `workflow_call` only | enabled (reusable; invoked only by `github-pages.yml`) | — |
+
+**mkdocs job: disabled-vs-deleted, measured.**
+
+```bash
+$ ls .github/workflows/
+build-package.yml  ci-playbook.yml  github-pages.yml  integration.yml
+release.yml  security-audit.yml  upload-mkdocs.yml
+
+$ git log --diff-filter=D --oneline main..HEAD -- .github/workflows/
+(no output)
+
+$ grep -rn 'mkdocs\|pages\|docs' .github/workflows/
+.github/workflows/upload-mkdocs.yml:34:          groups: docs
+.github/workflows/upload-mkdocs.yml:36:      - name: Build Mkdocs Site
+.github/workflows/upload-mkdocs.yml:39:        run: uv run --locked --group docs mkdocs build --strict --clean
+.github/workflows/upload-mkdocs.yml:43:        uses: actions/upload-pages-artifact@v5
+.github/workflows/github-pages.yml:3:# Disabled in CI: docs/ is being restructured and mkdocs currently fails to
+.github/workflows/github-pages.yml:4:# build. Kept as a repository artifact, runnable manually until the docs
+.github/workflows/github-pages.yml:13:  group: pages-${{ github.ref }}
+.github/workflows/github-pages.yml:17:  build-docs:
+.github/workflows/github-pages.yml:18:    uses: ./.github/workflows/upload-mkdocs.yml
+.github/workflows/github-pages.yml:25:    needs: build-docs
+.github/workflows/github-pages.yml:29:      pages: write
+.github/workflows/github-pages.yml:33:      name: github-pages
+.github/workflows/github-pages.yml:39:        uses: actions/deploy-pages@v4
+```
+
+Both `github-pages.yml` and `upload-mkdocs.yml` still exist as files; neither
+was deleted on this branch (the deleted-file log is empty). The mechanism is
+a narrowed trigger set: `github-pages.yml`'s `on:` block was reduced to
+`workflow_dispatch` only (no `pull_request`/`push` entry), with the
+disabling reason stated in the comment quoted above. `upload-mkdocs.yml`
+itself has no trigger of its own (`workflow_call` only, as a reusable
+workflow) and is unreachable automatically because its only caller,
+`github-pages.yml`, is manual-only.
+
+**Test inventory** (Section A checklist item). From `$SCRATCH/raw/pytest.txt`:
+
+- Framework: `pytest` (config file `.pytest.toml` — pytest 9's TOML config
+  format — sets `testpaths = ["tests"]`, `--import-mode=importlib`,
+  `--cov`/`--cov-config=.coveragerc.ini`/`--cov-report=term-missing` in
+  `addopts`, and `required_plugins = ["pytest-cov", "pytest-mock",
+  "pytest-randomly", "pytest-xdist"]`).
+- Summary line, verbatim: `57 passed, 34 subtests passed in 0.67s`.
+- No failures, errors, skips, or xfails appear in the summary line — the
+  line contains no `failed`, `error`, `skipped`, or `xfailed` segment.
+- Coverage: `TOTAL 1210 85 348 44 90.56%`, "Required test coverage of 85.0%
+  reached. Total coverage: 90.56%".
+- Exit code: `0`.
+
+**Directory structure and what each suite asserts** (module docstring or,
+where absent, test/class names read directly):
+
+| Directory | File | What it asserts |
+| --- | --- | --- |
+| `tests/ansi/` | `test_color_policy.py` | `NO_COLOR`/`FORCE_COLOR`/`TERM=dumb` color-policy behavior of `ansi.use_color` (test names: `test_no_color_disables_color`, `test_force_color_overrides_non_tty`, `test_term_dumb_disables`) |
+| `tests/ansi/` | `test_text_snapshot.py` | Plain-ANSI text output stability and the rich-absent fallback path (test names: `test_plain_text_snapshot_is_stable`, `test_emit_falls_back_to_ansi_when_rich_is_absent`) |
+| `tests/deletions/` | `test_config_loading.py` | A nonexistent `--config` path exits with code 4 (`test_missing_config_exits_four`) |
+| `tests/deletions/` | `test_config_models.py` | Threshold/report dataclass validation bounds (test names: `test_max_lines_must_be_at_least_one`, `test_min_score_bounds`, `test_defaults_match_poc`) |
+| `tests/deletions/` | `test_deleted_rules.py` | Module docstring, quoted: "Deleted-rule behavior: PY010 (comments), PY011 (docstring), PY020 (future-annotations) no longer exist anywhere in humansays, and ast/tokenize stay confined to humansays.analysis." (already quoted in full in §4) |
+| `tests/deletions/` | `test_findings_models.py` | `RuleSpec` bounds validation on `confidence`/`weight`, and the `penalty` computed property (test names: `test_rulespec_rejects_confidence_above_one`, `test_rulespec_penalty_is_weight_times_confidence`) |
+| `tests/golden/` | `test_parity.py` | Module docstring, quoted: "Transforms the raw pysignals 0.3.0 oracle (PY ids, three now-deleted rules) into the shape humansays should produce (HS ids, deleted rules dropped, score recomputed from the survivors) and asserts it against what humansays actually finds when it analyzes the same vendored corpus. This is the migration's acceptance criterion..." (test names: `test_every_group_has_a_frozen_oracle`, `test_humansays_matches_transformed_oracle_for_every_group`, `test_poc_group_grouped_json_smoke`) |
+| `tests/golden/` | `test_self_scan.py` | Module docstring, quoted: "Self-scan gate: humansays scanning its own source. The gate is exact-match, not a ceiling: every weighted finding humansays reports against its own source must be listed in `self-scan-baseline.json` with a reason, and every baseline entry must still be reproduced. A finding that stops showing up means the baseline has gone stale and must be pruned, not silently carried forward." (test name: `test_self_scan_matches_baseline_exactly`) |
+| `tests/parity/` | `test_signals.py` | Module docstring, quoted: "Tests for the structural signal scanner, including a scan of its own source." 12 `unittest.TestCase` classes, one per rule/behavior area: `StaticMethodRuleTests`, `LambdaRuleTests`, `LazyImportRuleTests`, `ModuleLengthRuleTests`, `FunctionSizeRuleTests`, `BaseClassRuleTests`, `BranchRuleTests`, `NestingRuleTests`, `ScoringTests`, `ConfigurationTests`, `InputResolutionTests` (largest test file, 323 lines) |
+| `tests/` (top level) | `fixture_module.py` | Not a test file — no `test_` functions (0 matches). Module docstring, quoted: "Deliberately smelly fixture module. Every construct here exists to trip a specific rule. Do not clean it up." Support fixture, imported by other test files. |
+| `tests/` (top level) | `poc_fixtures.py` | Not a test file — no `test_` functions (0 matches). Module docstring, quoted: "Source fixtures. Every snippet the tests analyze lives here, named for the rule it exercises..." Support fixture, imported by other test files. |
+
+**Skipped/xfailed tests.**
+
+```bash
+$ grep -rn 'skip\|xfail\|skipif' tests/ --include='*.py'
+tests/golden/poc-parity/corpus/poc/syntax.py:133:    skipped = docstring_span(node)
+tests/golden/poc-parity/corpus/poc/syntax.py:138:        if text and not text.startswith("#") and number not in skipped: import number not in skipped
+```
+
+Both matches are the local variable name `skipped` inside the vendored POC
+corpus source (`corpus/poc/syntax.py`, analysis target data, not a test),
+not a `pytest.mark.skip`/`skipif`/`xfail` marker. None found in `tests/`
+outside the vendored corpus. This absence claim is established by the grep
+above, per the actual `grep` output shown, not asserted without a command.
+
+---
+
+## 12. Existing debt markers
+
+From `$SCRATCH/raw/grep-todo.txt`
+(`grep -rn 'TODO\|FIXME\|XXX\|HACK\|contract debt\|::NOTE::' src/ tests/ scripts/ .github/`):
+
+```
+src/humansays/analysis/rules.py:6:Known contract debt: this module still fuses ast-extraction (walking
+src/humansays/analysis/rules.py:10:for this migration -- see the plan's "Known contract debt" section -- so it
+.github/workflows/release.yml:75:  # ::NOTE::fix-later
+.github/workflows/release.yml:107:    needs: [detect, package] # ::NOTE::publish-pypi
+```
+
+Four matching lines, all attributable to two markers:
+
+| `file:line` | Marker type | Text (verbatim) |
+| --- | --- | --- |
+| `src/humansays/analysis/rules.py:6-10` | Contract-debt docstring | quoted in full below |
+| `.github/workflows/release.yml:75` | `::NOTE::` comment | `# ::NOTE::fix-later` |
+| `.github/workflows/release.yml:107` | `::NOTE::` inline comment | `needs: [detect, package] # ::NOTE::publish-pypi` |
+
+**`src/humansays/analysis/rules.py:6-12`, contract-debt docstring, quoted in
+full:**
+
+```python
+"""Known contract debt: this module still fuses ast-extraction (walking
+the tree, reading raw node shape) with rule evaluation (thresholds,
+scoring, message construction) in one file. Splitting those is a Phase 2
+task; there is no dedicated `humansays.signals` package to move the
+extraction half into yet, and the import-linter contract can't be written
+for this migration -- see the plan's "Known contract debt" section -- so it
+predates the refactor it would otherwise enforce.
+"""
+```
+
+No `TODO`, `FIXME`, `XXX`, or `HACK` marker was found anywhere under `src/`,
+`tests/`, `scripts/`, or `.github/` — the only hits from the grep pattern
+above are the contract-debt docstring and the two `::NOTE::` comments listed
+in the table.
+
+---
