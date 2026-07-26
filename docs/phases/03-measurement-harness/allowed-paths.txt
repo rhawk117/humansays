@@ -1,0 +1,10 @@
+# Phase 3 — corpus format, harness, pinning, extraction tooling. No study runs.
+tests/corpus/**
+tests/calibration/**
+scripts/collect-pairs.py
+scripts/run-corpus.sh
+docs/evidence/corpus-*.md
+docs/phases/03-measurement-harness/**
+.github/workflows/corpus.yml
+# Denied — this phase builds the instrument, it does not change behavior
+!src/humansays/**

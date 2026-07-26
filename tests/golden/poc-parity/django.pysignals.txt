@@ -1,0 +1,341 @@
+Python investigation targets 
+/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e90
+7e3f/scratchpad/django-src/django/core/exceptions.py, 
+/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e90
+7e3f/scratchpad/django-src/django/utils/dateparse.py, 
+/tmp/claude-1000/-home-rhawk-src-code-humansays/42e45627-db04-4271-86e5-066a4e90
+7e3f/scratchpad/django-src/django/utils/text.py
+files=3 lines=896 targets=55 errors=0
+score 84.4 (B)  penalty 12.42 over 896 lines  density 1.386/100 lines
+location                  ┃ symbol                   ┃ signals                  
+━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━
+/tmp/claude-1000/-home-rh │ ValidationError.__init__ │ many-branches comments   
+awk-src-code-humansays/42 │                          │ docstring                
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/core/except │                          │                          
+ions.py:137-178           │                          │                          
+/tmp/claude-1000/-home-rh │ parse_datetime           │ deep-nesting docstring   
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/utils/datep │                          │                          
+arse.py:104-129           │                          │                          
+/tmp/claude-1000/-home-rh │ Truncator.__init__       │ lambda-expression        
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/utils/text. │                          │                          
+py:195-195                │                          │                          
+/tmp/claude-1000/-home-rh │ <module>                 │ comments docstring       
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/utils/datep │                          │                          
+arse.py:1-154             │                          │                          
+/tmp/claude-1000/-home-rh │ parse_time               │ comments docstring       
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/utils/datep │                          │                          
+arse.py:81-101            │                          │                          
+/tmp/claude-1000/-home-rh │ wrap                     │ comments docstring       
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/utils/text. │                          │                          
+py:40-69                  │                          │                          
+/tmp/claude-1000/-home-rh │ Truncator                │ comments docstring       
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/utils/text. │                          │                          
+py:183-265                │                          │                          
+/tmp/claude-1000/-home-rh │ Truncator.chars          │ boolean-modes docstring  
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/utils/text. │                          │                          
+py:197-216                │                          │                          
+/tmp/claude-1000/-home-rh │ Truncator._text_chars    │ comments docstring       
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/utils/text. │                          │                          
+py:218-236                │                          │                          
+/tmp/claude-1000/-home-rh │ Truncator.words          │ boolean-modes docstring  
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/utils/text. │                          │                          
+py:238-253                │                          │                          
+/tmp/claude-1000/-home-rh │ get_text_list            │ comments docstring       
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/utils/text. │                          │                          
+py:286-308                │                          │                          
+/tmp/claude-1000/-home-rh │ slugify                  │ boolean-modes docstring  
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/utils/text. │                          │                          
+py:452-469                │                          │                          
+/tmp/claude-1000/-home-rh │ <module>                 │ docstring                
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/core/except │                          │                          
+ions.py:1-255             │                          │                          
+/tmp/claude-1000/-home-rh │ FieldDoesNotExist        │ docstring                
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/core/except │                          │                          
+ions.py:10-13             │                          │                          
+/tmp/claude-1000/-home-rh │ AppRegistryNotReady      │ docstring                
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/core/except │                          │                          
+ions.py:16-19             │                          │                          
+/tmp/claude-1000/-home-rh │ ObjectDoesNotExist       │ docstring                
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/core/except │                          │                          
+ions.py:22-25             │                          │                          
+/tmp/claude-1000/-home-rh │ MultipleObjectsReturned  │ docstring                
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/core/except │                          │                          
+ions.py:28-31             │                          │                          
+/tmp/claude-1000/-home-rh │ SuspiciousOperation      │ docstring                
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/core/except │                          │                          
+ions.py:34-35             │                          │                          
+/tmp/claude-1000/-home-rh │ SuspiciousMultipartForm  │ docstring                
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/core/except │                          │                          
+ions.py:38-41             │                          │                          
+/tmp/claude-1000/-home-rh │ SuspiciousFileOperation  │ docstring                
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/core/except │                          │                          
+ions.py:44-47             │                          │                          
+/tmp/claude-1000/-home-rh │ DisallowedHost           │ docstring                
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/core/except │                          │                          
+ions.py:50-53             │                          │                          
+/tmp/claude-1000/-home-rh │ DisallowedRedirect       │ docstring                
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/core/except │                          │                          
+ions.py:56-59             │                          │                          
+/tmp/claude-1000/-home-rh │ TooManyFieldsSent        │ docstring                
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/core/except │                          │                          
+ions.py:62-68             │                          │                          
+/tmp/claude-1000/-home-rh │ TooManyFilesSent         │ docstring                
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/core/except │                          │                          
+ions.py:71-77             │                          │                          
+/tmp/claude-1000/-home-rh │ RequestDataTooBig        │ docstring                
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/core/except │                          │                          
+ions.py:80-86             │                          │                          
+/tmp/claude-1000/-home-rh │ RequestAborted           │ docstring                
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/core/except │                          │                          
+ions.py:89-92             │                          │                          
+/tmp/claude-1000/-home-rh │ BadRequest               │ docstring                
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/core/except │                          │                          
+ions.py:95-98             │                          │                          
+/tmp/claude-1000/-home-rh │ PermissionDenied         │ docstring                
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/core/except │                          │                          
+ions.py:101-104           │                          │                          
+/tmp/claude-1000/-home-rh │ ViewDoesNotExist         │ docstring                
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/core/except │                          │                          
+ions.py:107-110           │                          │                          
+/tmp/claude-1000/-home-rh │ MiddlewareNotUsed        │ docstring                
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/core/except │                          │                          
+ions.py:113-116           │                          │                          
+/tmp/claude-1000/-home-rh │ ImproperlyConfigured     │ docstring                
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/core/except │                          │                          
+ions.py:119-122           │                          │                          
+/tmp/claude-1000/-home-rh │ FieldError               │ docstring                
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/core/except │                          │                          
+ions.py:125-128           │                          │                          
+/tmp/claude-1000/-home-rh │ ValidationError          │ docstring                
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/core/except │                          │                          
+ions.py:134-237           │                          │                          
+/tmp/claude-1000/-home-rh │ ValidationError.message_ │ comments                 
+awk-src-code-humansays/42 │ dict                     │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/core/except │                          │                          
+ions.py:181-186           │                          │                          
+/tmp/claude-1000/-home-rh │ EmptyResultSet           │ docstring                
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/core/except │                          │                          
+ions.py:240-243           │                          │                          
+/tmp/claude-1000/-home-rh │ FullResultSet            │ docstring                
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/core/except │                          │                          
+ions.py:246-249           │                          │                          
+/tmp/claude-1000/-home-rh │ SynchronousOnlyOperation │ docstring                
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/core/except │                          │                          
+ions.py:252-255           │                          │                          
+/tmp/claude-1000/-home-rh │ parse_date               │ docstring                
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/utils/datep │                          │                          
+arse.py:67-78             │                          │                          
+/tmp/claude-1000/-home-rh │ parse_duration           │ docstring                
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/utils/datep │                          │                          
+arse.py:132-154           │                          │                          
+/tmp/claude-1000/-home-rh │ <module>                 │ comments                 
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/utils/text. │                          │                          
+py:1-487                  │                          │                          
+/tmp/claude-1000/-home-rh │ capfirst                 │ docstring                
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/utils/text. │                          │                          
+py:25-31                  │                          │                          
+/tmp/claude-1000/-home-rh │ add_truncation_text      │ comments                 
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/utils/text. │                          │                          
+py:72-85                  │                          │                          
+/tmp/claude-1000/-home-rh │ TruncateHTMLParser.__ini │ boolean-modes            
+awk-src-code-humansays/42 │ t__                      │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/utils/text. │                          │                          
+py:102-107                │                          │                          
+/tmp/claude-1000/-home-rh │ TruncateHTMLParser.void_ │ lazy-import              
+awk-src-code-humansays/42 │ elements                 │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/utils/text. │                          │                          
+py:110-113                │                          │                          
+/tmp/claude-1000/-home-rh │ TruncateHTMLParser.feed  │ comments                 
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/utils/text. │                          │                          
+py:143-152                │                          │                          
+/tmp/claude-1000/-home-rh │ TruncateCharsHTMLParser. │ boolean-modes            
+awk-src-code-humansays/42 │ __init__                 │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/utils/text. │                          │                          
+py:156-163                │                          │                          
+/tmp/claude-1000/-home-rh │ Truncator._text_words    │ docstring                
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/utils/text. │                          │                          
+py:255-265                │                          │                          
+/tmp/claude-1000/-home-rh │ get_valid_filename       │ docstring                
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/utils/text. │                          │                          
+py:269-282                │                          │                          
+/tmp/claude-1000/-home-rh │ normalize_newlines       │ docstring                
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/utils/text. │                          │                          
+py:312-314                │                          │                          
+/tmp/claude-1000/-home-rh │ phone2numeric            │ docstring                
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/utils/text. │                          │                          
+py:318-348                │                          │                          
+/tmp/claude-1000/-home-rh │ compress_sequence        │ comments                 
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/utils/text. │                          │                          
+py:379-392                │                          │                          
+/tmp/claude-1000/-home-rh │ smart_split              │ docstring                
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/utils/text. │                          │                          
+py:411-427                │                          │                          
+/tmp/claude-1000/-home-rh │ unescape_string_literal  │ docstring                
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/utils/text. │                          │                          
+py:431-448                │                          │                          
+/tmp/claude-1000/-home-rh │ camel_case_to_spaces     │ docstring                
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/utils/text. │                          │                          
+py:472-476                │                          │                          
+/tmp/claude-1000/-home-rh │ _format_lazy             │ docstring                
+awk-src-code-humansays/42 │                          │                          
+e45627-db04-4271-86e5-066 │                          │                          
+a4e907e3f/scratchpad/djan │                          │                          
+go-src/django/utils/text. │                          │                          
+py:479-484                │                          │                          
