@@ -10,18 +10,22 @@ cd -- "$root"
 # shellcheck source=scripts/log.sh
 source "$root/scripts/log.sh"
 
-mapfile -t wheels < <(
-    find "$dist_dir" -maxdepth 1 -type f -name '*.whl' -print
+mapfile -t artifacts < <(
+    find "$dist_dir" -maxdepth 1 -type f \( -name '*.whl' -o -name '*.tar.gz' \) -print | sort
 )
 
-if ((${#wheels[@]} != 1)); then
-    log_error "Expected exactly one wheel in $dist_dir, found ${#wheels[@]}"
+if ((${#artifacts[@]} != 2)); then
+    log_error "Expected one wheel and one sdist in $dist_dir, found ${#artifacts[@]}"
     exit 1
 fi
 
-uv run \
-    --python "$python_version" \
-    --isolated \
-    --no-project \
-    --with "${wheels[0]}" \
-    scripts/smoke_test_package.py
+for artifact in "${artifacts[@]}"; do
+    log_step "Smoke testing $(basename -- "$artifact")"
+    uv run \
+        --python "$python_version" \
+        --isolated \
+        --no-project \
+        --with "$artifact" \
+        scripts/smoke_test_package.py
+    log_step_end
+done
