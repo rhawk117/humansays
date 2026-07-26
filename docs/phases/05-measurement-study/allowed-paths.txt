@@ -1,8 +1,0 @@
-# Phase 5 — run repair-pair evaluation and the narration study.
-tests/corpus/**
-scripts/**
-docs/evidence/**
-docs/rules/python.md
-docs/phases/05-measurement-study/**
-# Denied — the study measures, it does not change detectors
-!src/humansays/**

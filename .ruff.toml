@@ -2,8 +2,8 @@ line-length = 90
 preview = false
 unsafe-fixes = false
 # Vendored third-party fixture corpus, not humansays code -- not ours to lint.
-# docs/ is mid-restructuring in a separate workstream -- not ours to format.
-extend-exclude = ["tests/golden/poc-parity/corpus", "docs"]
+# docs/ is published prose; .agent-specs/ is agent execution material.
+extend-exclude = ["tests/golden/poc-parity/corpus", "docs", ".agent-specs"]
 
 [lint]
 select = [

@@ -1,6 +1,6 @@
 """Enforcement tests for the phase scope guard.
 
-Named by ``docs/process/scope-guard.md`` and by ``agent-protocol.md`` §4a.
+Named by ``.agent-specs/process/scope-guard.md`` and by ``agent-protocol.md`` §4a.
 If these do not pass, the claim that phase scope is enforced is unsupported.
 
 The eight cases run the real ``check_scope.py`` against a real temporary git
@@ -26,13 +26,13 @@ if TYPE_CHECKING:
 REPO_ROOT = Path(__file__).resolve().parents[2]
 GUARD_SOURCE = REPO_ROOT / 'scripts' / 'check_scope.py'
 PHASE = 'test-phase'
-ALLOWLIST = f'docs/phases/{PHASE}/allowed-paths.txt'
+ALLOWLIST = f'.agent-specs/phases/{PHASE}/allowed-paths.txt'
 
 # Mirrors the shape of a real phase allowlist: a package glob, the phase's own
 # directory, the guard itself (as 01-review lists it), and one deny line.
 PATTERNS = """\
 src/pkg/**
-docs/phases/test-phase/**
+.agent-specs/phases/test-phase/**
 scripts/check_scope.py
 !src/pkg/analysis/signature*
 """

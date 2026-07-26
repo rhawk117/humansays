@@ -1,0 +1,11 @@
+# Phase 4 — three vertical findings with matched fixtures. Pilot only.
+src/humansays/signals/**
+src/humansays/findings/**
+src/humansays/catalog/**
+tests/unit/**
+tests/corpus/**
+docs/site/rules/python.md
+.agent-specs/phases/04-pilot-rules/**
+# Denied — expansion is Phase 6, effects are Phase 7
+!src/humansays/analysis/effects/**
+!src/humansays/runtime/**

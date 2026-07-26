@@ -1,8 +1,7 @@
-# CLAUDE.md
+<!-- Copy to the repository root as CLAUDE.md. Keep it short: it is loaded
+     every session, and length costs salience. -->
 
-Project-specific instructions for working in this repo.
-
-## humansays — standing constraints
+# humansays — standing constraints
 
 Agent specs: `.agent-specs/`. Start at `.agent-specs/process/agent-protocol.md`.
 **Read only the phase file you are executing.**
@@ -46,19 +45,3 @@ Agent specs: `.agent-specs/`. Start at `.agent-specs/process/agent-protocol.md`.
 ## Not a metric
 
 Rule count. The guards in `.agent-specs/design/02-evaluation-model.md` §5 are.
-
-## Formatting and linting
-
-Use the project's own scripts instead of invoking `ruff`/`ty`/etc. by hand:
-
-- `scripts/format.sh` (or `make format`) — applies `ruff format` and
-  `ruff check --fix --unsafe-fixes` in place. This is the only quality script
-  that modifies repository files do not attempt to fix any linting issues without doing this first
-- `scripts/lint.sh` (or `make lint`) — read-only: `ruff format --check`,
-  `ruff check --no-fix`, `ty check`, `shellcheck`/`shfmt --diff`, `bandit`,
-  `deptry`, `lint-imports --config .importlinter.ini`, `vulture`. Run
-  `scripts/lint.sh <name>` for a single check (see the script's `main()` for
-  the full list of subcommands).
-
-Run `scripts/format.sh` before `scripts/lint.sh` when iterating locally,
-rather than reasoning about individual `ruff`/`ty` invocations.

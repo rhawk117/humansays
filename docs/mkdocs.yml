@@ -1,0 +1,82 @@
+site_name: humansays
+site_description: Static analysis that reports on code structure against documented criteria.
+site_url: https://rhawk117.github.io/humansays/
+repo_name: rhawk117/humansays
+repo_url: https://github.com/rhawk117/humansays
+edit_uri: edit/develop/docs/site/
+
+docs_dir: site
+site_dir: ../site
+
+theme:
+  name: material
+  icon:
+    repo: octicons/mark-github-24
+  palette:
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/lightbulb-auto
+        name: Switch to light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: teal
+      accent: amber
+      toggle:
+        icon: material/lightbulb
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: teal
+      accent: amber
+      toggle:
+        icon: material/lightbulb-outline
+        name: Switch to system preference
+  features:
+    - content.code.annotate
+    - content.code.copy
+    - content.tabs.link
+    - content.tooltips
+    - navigation.footer
+    - navigation.top
+    - navigation.tracking
+    - search.highlight
+    - search.suggest
+    - toc.follow
+
+plugins:
+  - search
+
+markdown_extensions:
+  - abbr
+  - attr_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.betterem
+  - pymdownx.caret
+  - pymdownx.highlight:
+      line_spans: __span
+      linenums_style: pymdownx-inline
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.superfences
+  - pymdownx.tilde
+  - pymdownx.blocks.admonition
+  - pymdownx.blocks.details
+  - pymdownx.blocks.tab:
+      alternate_style: true
+
+nav:
+  - Overview: index.md
+  - Style guide:
+      - style-guide/README.md
+      - Python: style-guide/python.md
+      - Rust: style-guide/rust.md
+  - Rules:
+      - rules/README.md
+      - Python: rules/python.md
+  - Roadmap:
+      - Future additions: roadmap/future-additions.md

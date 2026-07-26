@@ -4,7 +4,7 @@ Checks four sources, because a committed-diff-only check is trivially bypassed:
 committed changes on the branch, staged changes, unstaged changes, and
 untracked files.
 
-Pattern file format (docs/phases/<phase>/allowed-paths.txt):
+Pattern file format (.agent-specs/phases/<phase>/allowed-paths.txt):
 
     # comment
     src/humansays/**          allow
@@ -97,7 +97,7 @@ def changed_files(base: str) -> dict[str, str]:
 
 def widening_commits_are_isolated(base: str, phase: str) -> list[str]:
     """An allowlist change must be the only change in its commit."""
-    allowlist = f'docs/phases/{phase}/{ALLOWLIST_NAME}'
+    allowlist = f'.agent-specs/phases/{phase}/{ALLOWLIST_NAME}'
     problems: list[str] = []
     for sha in git('rev-list', f'{base}..HEAD'):
         files = git('show', '--name-only', '--pretty=format:', sha)
@@ -117,7 +117,7 @@ def main() -> int:
     ap.add_argument('--base', default='origin/main')
     args = ap.parse_args()
 
-    allowlist = Path(f'docs/phases/{args.phase}/{ALLOWLIST_NAME}')
+    allowlist = Path(f'.agent-specs/phases/{args.phase}/{ALLOWLIST_NAME}')
     if not allowlist.is_file():
         print(f'no allowlist for phase {args.phase}', file=sys.stderr)
         return 2
