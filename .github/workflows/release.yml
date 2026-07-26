@@ -169,3 +169,7 @@ jobs:
           fi
 
           gh "${args[@]}"
+
+  deploy-site:
+    needs: github-release
+    uses: ./.github/workflows/deploy-site.yml

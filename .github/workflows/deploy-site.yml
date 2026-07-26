@@ -1,38 +1,34 @@
-name: Documentation
+name: Deploy site
 
-# Disabled in CI: docs/ is being restructured and mkdocs currently fails to
-# build. Kept as a repository artifact, runnable manually until the docs
-# restructuring lands.
 on:
+  workflow_call:
   workflow_dispatch:
+  push:
+    branches: [develop]
 
 permissions:
   contents: read
 
 concurrency:
-  group: pages-${{ github.ref }}
-  cancel-in-progress: true
+  group: pages
+  cancel-in-progress: false
 
 jobs:
-  build-docs:
+  build:
     uses: ./.github/workflows/upload-mkdocs.yml
     with:
-      upload-artifact: ${{ github.event_name != 'pull_request' }}
+      upload-artifact: true
 
   deploy:
-    name: Deploy documentation
-    if: ${{ github.event_name != 'pull_request' }}
-    needs: build-docs
+    needs: build
     runs-on: ${{ vars.DEFAULT_RUNNER || 'ubuntu-24.04' }}
-
     permissions:
+      contents: read
       pages: write
       id-token: write
-
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-
     steps:
       - name: Deploy GitHub Pages
         id: deployment
