@@ -1,0 +1,41 @@
+name: Dependency Audit
+
+on:
+  pull_request:
+    paths: [uv.lock, pyproject.toml]
+  schedule:
+    - cron: "0 6 * * 1"   # Monday, weekly
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: audit-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  audit:
+    name: pip-audit (OSV)
+    runs-on: ${{ vars.DEFAULT_RUNNER || 'ubuntu-24.04' }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Bootstrap Runner
+        uses: ./.github/actions/bootstrap
+        with:
+          python-version: "3.14"
+          sync: "false"
+
+      - name: Audit locked dependencies
+        uses: ./.github/actions/uv-audit
+        with:
+          upload-report: "true"
