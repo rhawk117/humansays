@@ -8,27 +8,56 @@ A session executes tasks from exactly one `PHASE.md`. Do not read other phase
 files. They describe work that is deliberately deferred, and reading them
 reliably produces scope drift.
 
-## 2. Acceptance tests come first, in a separate session
+## 2. Acceptance tests come first
 
 For any task with a non-trivial correctness condition:
 
-1. Session A writes the failing test from the phase document and stops.
-2. **The operator commits it red.** Agents do not commit — see §8. Session A
-   reports the file it wrote; the operator reviews and commits.
-3. Session B receives the committed red test and the task, and makes it green.
+1. Write the failing test from the phase document.
+2. Run it and confirm it fails for the stated reason -- not on an import
+   error or a typo.
+3. Commit it red: `fix(scope): add failing test for <condition>`. A red
+   acceptance test is a valid checkpoint; the tree is green when the suite's
+   failures are exactly the ones the phase document predicts.
+4. Make it pass, and commit that separately.
 
 Models are substantially better at "make this red test green" than at
-"implement this specification." The phase documents are written to make this
-split easy — every task with a subtle condition names its acceptance test.
+"implement this specification". Committing the red test yourself preserves
+that split without routing through the operator.
 
-## 3. Scope is enforced mechanically
+## 3. Scope
 
-Every phase directory contains `paths.json`. `scripts/check_scope.py`
-fails if the diff touches anything outside it.
+Every phase directory contains `paths.json`:
 
-This exists because prose non-goals do not survive contact with a helpful model
-that has spotted a real bug in a file it was not asked to touch. See
+    {"note": "...", "allowed": ["src/**"], "deny": ["src/runtime/**"]}
+
+`uv run python scripts/check_scope.py <phase> --base develop` reports any
+change outside it, reading committed, staged, unstaged and untracked files.
+
+**No hook and no CI job runs this.** It is enforcement by obligation: run it
+at every task boundary, before every commit. A violation is not something to
+work around -- stop, report the path and why it is needed, and wait. See
 [`scope-guard.md`](scope-guard.md).
+
+## 3a. Allowlists are derived, not inherited
+
+The original allowlists were authored at roadmap time against a repository
+layout that did not exist yet. This is not hypothetical: Phase 2's allowlist
+denied the criteria document that Phase 2's own acceptance test requires.
+
+At phase start, derive the allowlist from the actual tree:
+
+1. List every symbol the phase changes, from `PHASE.md`.
+2. Search for every consumer of every one of those symbols.
+3. The allowlist is the set of files that search returns, plus the phase's
+   own directory.
+4. **Put the search output in the commit body** that establishes the
+   allowlist. A reviewer needs to see what was searched for, not only what
+   the result was.
+
+Mid-phase additions keep the widening ritual: an allowlist change lands in a
+commit containing nothing else, with a one-line reason. `check_scope.py`
+reports violations of that isolation rule, though it does not block them --
+see §3.
 
 ## 4. Constraints that can be tests, are tests
 
@@ -87,5 +116,77 @@ than a completed task built on a guess.
 
 ## 8. Git
 
-The operator owns git. Do not commit, push, rebase, or create branches unless
-explicitly asked. Report what you changed and let the operator decide.
+Agents commit and push their own branch. Agents do not merge, rewrite, or
+destroy.
+
+**Permitted:** `status`, `diff`, `log`, `show`, `add`, `commit`, `checkout`,
+`checkout -b`, `stash list`, `push`.
+
+**Forbidden, without exception:** `merge`, `rebase`, `reset`, `revert`,
+`cherry-pick`, `branch -m`, `tag`, `remote`, `worktree`, `clean`, and any
+command containing `--force` or `-f`.
+
+**`branch -D` has exactly one exception:** deleting a branch the agent itself
+created in the same session with a `tmp/` prefix. Any other `branch -D` is
+forbidden.
+
+There is no other "unless asked" clause. An agent that believes it needs a
+forbidden verb stops and reports what it wants to run and why. The operator
+runs it.
+
+`push` is permitted so the operator can follow along. Force-push is not,
+which is what keeps every push recoverable. The forbidden list is the set of
+verbs that destroy work or rewrite shared history; the permitted list is the
+set that creates recoverable checkpoints.
+
+### Commit conventions
+
+- **One commit per step that leaves the tree green**, not one per task. A red
+  acceptance test committed per §2 is a valid checkpoint.
+- **Format:** `prefix(scope): summary`, prefix one of
+  `feat|chore|ops|fix|release|docs`. Enforced by the `commit-msg` hook in
+  `.pre-commit-config.yaml`, whose behavior is asserted by
+  `tests/tooling/test_commit_msg.py`.
+- **Branches** off `develop`, named `prefix/short-title`. Push each commit.
+- **Squash merge** to `develop` as `prefix(short-title): summary [merges #N]`.
+  Performed by the operator -- it requires `merge`, a forbidden verb.
+- Run `scripts/precheck.sh` once per checkout before executing any phase. A
+  hook that was never installed in a given checkout enforces nothing there.
+
+### What is actually enforced
+
+| Rule | Enforcer |
+|---|---|
+| Commit message format | `commit-msg` hook, asserted by `tests/tooling/test_commit_msg.py` |
+| Hooks are installed | `scripts/precheck.sh`, if it is run |
+| Scope stays inside `paths.json` | **nothing** -- §3, agent obligation |
+| Allowlist derived from a search | **nothing** -- §3a, reviewer reads the commit body |
+| Drift folded downstream before close | **nothing** -- §9, reviewer checks at merge |
+| Forbidden git verbs | **nothing** -- §8, agent obligation |
+| One commit per green step | **nothing** -- convention |
+
+The bottom five rows are convention. They are listed so a reader knows which
+lines the repository catches and which depend on the agent doing as told.
+The commit-message hook is bypassable with `--no-verify`; no CI job backs it
+up, because a CI rejection of an already-written commit leaves an agent no
+remedy that §8 permits.
+
+## 9. Phase close-out
+
+A phase is not complete when its acceptance criteria pass. It is complete
+when every drift and defect entry it produced has been applied to the
+downstream phase documents it affects.
+
+1. List every drift entry, defect, blocker, compromise and deferred decision
+   the phase recorded.
+2. For each, identify the downstream phase document it changes.
+3. Apply the change to that document, **relocating the reasoning, not only
+   the conclusion.** A deferred decision that arrives downstream without the
+   argument for deferring it will be re-litigated or silently reversed.
+4. Commit as `ops(phase-N): fold drift into downstream phase docs`.
+5. **Only then** delete the entries. Deletion before relocation loses the
+   reasoning permanently, because evidence is not tracked.
+
+Evidence is per-phase and untracked -- working material, not an archive.
+Anything that must outlive the phase belongs in a phase document before the
+phase closes.
