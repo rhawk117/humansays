@@ -27,10 +27,10 @@ license-files = ["LICENSE"]
 dependencies = []
 
 [project.urls]
-Homepage = "https://github.com/rhawk117/askance"
-Repository = "https://github.com/rhawk117/askance"
-Issues = "https://github.com/rhawk117/askance/issues"
-Changelog = "https://github.com/rhawk117/askance/releases"
+Homepage = "https://github.com/rhawk117/humansays"
+Repository = "https://github.com/rhawk117/humansays"
+Issues = "https://github.com/rhawk117/humansays/issues"
+Changelog = "https://github.com/rhawk117/humansays/releases"
 
 [project.scripts]
 humansays = "humansays:main"
