@@ -45,7 +45,7 @@ jobs:
       artifact-name: ${{ steps.metadata.outputs.artifact-name }}
     steps:
       - name: Check Out Repository
-        uses: actions/checkout@v7.0.0
+        uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
 
@@ -73,7 +73,7 @@ jobs:
     runs-on: ${{ inputs.runner || vars.DEFAULT_RUNNER || 'ubuntu-24.04' }}
     steps:
       - name: Check out repository
-        uses: actions/checkout@v7.0.0 # v7.0.0
+        uses: actions/checkout@v7.0.1 # v7.0.0
         with:
           persist-credentials: false
 
