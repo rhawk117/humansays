@@ -34,7 +34,7 @@ jobs:
       version: ${{ steps.release.outputs.version }}
     steps:
       - name: Check Out Repository
-        uses: actions/checkout@v7.0.0
+        uses: actions/checkout@v7.0.1
         with:
           fetch-depth: 0
           persist-credentials: false
