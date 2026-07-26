@@ -1,0 +1,12 @@
+# Phase 7 — effect architecture.
+src/humansays/analysis/effects/**
+src/humansays/analysis/environment/**
+src/humansays/signals/effects.py
+src/humansays/findings/**
+data/audit-events.toml
+tests/unit/effects/**
+tests/corpus/**
+docs/design/03-effect-architecture.md
+docs/evidence/effect-gate.md
+docs/phases/07-effects/**
+!src/humansays/runtime/**

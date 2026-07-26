@@ -1,0 +1,29 @@
+[src]
+# Vendored third-party fixture corpus (not humansays code) and the one-time
+# oracle generator (only importable inside the ephemeral POC env) -- neither
+# is ours to type check. The rest of tests/ is excluded too: the "lint" CI job
+# installs only the lint dependency group (no pytest), so ty can't resolve
+# test-only imports there; the test matrix job runs the tests directly, which
+# is the stronger correctness signal for that code anyway.
+exclude = ["tests"]
+
+[analysis]
+respect-type-ignore-comments = true
+
+[rules]
+blanket-ignore-comment = "error"
+ignore-comment-unknown-rule = "error"
+invalid-ignore-comment = "error"
+unused-ignore-comment = "error"
+unused-type-ignore-comment = "error"
+
+# typing.override needs Python 3.12+ and this project supports 3.11+ with zero
+# runtime dependencies (no typing_extensions), so the decorator isn't available
+# everywhere this rule would require it.
+missing-override-decorator = "ignore"
+redundant-cast = "error"
+deprecated = "error"
+
+[terminal]
+error-on-warning = true
+output-format = "concise"
