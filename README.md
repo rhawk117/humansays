@@ -3,6 +3,7 @@
 [![CI](https://github.com/rhawk117/humansays/actions/workflows/integration.yml/badge.svg)](https://github.com/rhawk117/humansays/actions/workflows/integration.yml)
 [![PyPI](https://img.shields.io/pypi/v/humansays.svg)](https://pypi.org/project/humansays/)
 [![Python](https://img.shields.io/pypi/pyversions/humansays.svg)](https://pypi.org/project/humansays/)
+[![Release](https://img.shields.io/badge/release-v0.1.0a1-blue)](https://github.com/rhawk117/humansays/releases/tag/v0.1.0a1)
 
 A linting guardrail for LLM-generated Python code which raises structural doubts
 and a per-finding score before the code reaches a reviewer.
@@ -13,7 +14,10 @@ that touch neither `self` nor the class. It does not tell you the code is wrong.
 It tells you where a reviewer should look, and asks a question about each site.
 
 > **Rule identifiers are unstable until `0.1.0`.** The current `HS###` ids may be
-> renamed before then. Do not pin against them.
+> renamed before then. Do not pin against them. The current prerelease is
+> [`v0.1.0a1`](https://github.com/rhawk117/humansays/releases/tag/v0.1.0a1);
+> because it is flagged as a prerelease, GitHub does not surface it as the
+> repository's latest release.
 
 ## Install
 
