@@ -352,3 +352,179 @@ Stderr text and exit code as shown — `4`, via the `ConfigError` →
 `CONFIG_ERROR_EXIT` path in `cli.py:15-17`.
 
 ---
+
+## 6. HS002 parameters
+
+Every `HS002` finding from the self-scan, from `$SCRATCH/raw/signals.txt`:
+
+```
+HS002 src/humansays/reporting/ansi.py use_color 32 ['is_tty']
+HS002 src/humansays/reporting/ansi.py _style 40 ['color']
+HS002 src/humansays/reporting/ansi.py indicator_text 47 ['color']
+HS002 src/humansays/reporting/ansi.py score_text 60 ['color']
+```
+
+Four findings, all in `src/humansays/reporting/ansi.py`. Each symbol's `def`
+line as it appears on disk:
+
+```python
+def use_color(*, is_tty: bool) -> bool:                                  # line 32
+def _style(text: str, style: str, *, color: bool) -> str:                # line 40
+def indicator_text(target: Target, *, color: bool) -> str:               # line 47
+def score_text(score: Score, *, color: bool) -> str:                     # line 60
+```
+
+For every parameter in each signature, kind determined structurally from the
+`/` and `*` markers (no `/` marker appears in any of these four signatures —
+none has a positional-only parameter):
+
+| Symbol | `file:line` | Full signature | Parameter | Kind | Named in evidence? |
+| --- | --- | --- | --- | --- | --- |
+| `use_color` | `ansi.py:32` | `def use_color(*, is_tty: bool) -> bool:` | `is_tty` | keyword-only | yes |
+| `_style` | `ansi.py:40` | `def _style(text: str, style: str, *, color: bool) -> str:` | `text` | positional-or-keyword | no |
+| `_style` | `ansi.py:40` | (same) | `style` | positional-or-keyword | no |
+| `_style` | `ansi.py:40` | (same) | `color` | keyword-only | yes |
+| `indicator_text` | `ansi.py:47` | `def indicator_text(target: Target, *, color: bool) -> str:` | `target` | positional-or-keyword | no |
+| `indicator_text` | `ansi.py:47` | (same) | `color` | keyword-only | yes |
+| `score_text` | `ansi.py:60` | `def score_text(score: Score, *, color: bool) -> str:` | `score` | positional-or-keyword | no |
+| `score_text` | `ansi.py:60` | (same) | `color` | keyword-only | yes |
+
+---
+
+## 7. HS021 sites
+
+Every `HS021` finding from the self-scan, from `$SCRATCH/raw/signals.txt`:
+
+```
+HS021 src/humansays/reporting/render.py _load_rich 28 ['line 36: rich.console']
+HS021 src/humansays/reporting/render.py _load_rich 28 ['line 37: rich.table']
+HS021 src/humansays/reporting/render.py _load_rich 28 ['line 38: rich.text']
+```
+
+Two counts, derived separately because they differ:
+
+```bash
+$ grep '^HS021' "$SCRATCH/raw/signals.txt" | wc -l
+3
+$ grep '^HS021' "$SCRATCH/raw/signals.txt" | awk '{print $2, $3, $4}' | sort -u
+src/humansays/reporting/render.py _load_rich 28
+```
+
+**Number of HS021 signal rows emitted: 3.**
+**Number of distinct lazy-import sites (`path`, `symbol`, `line` tuples): 1.**
+
+All three rows share the tuple `(src/humansays/reporting/render.py,
+_load_rich, 28)`.
+
+---
+
+## 8. Baseline file
+
+The `reason` values below are quoted from the file. They are the baseline
+author's stated rationale, recorded here as data; this document takes no
+position on them.
+
+`tests/golden/self-scan-baseline.json`, in full:
+
+```json
+{
+  "entries": [
+    {
+      "path": "src/humansays/reporting/ansi.py",
+      "symbol": "use_color",
+      "line": 32,
+      "rule_id": "HS002",
+      "evidence": "is_tty",
+      "reason": "is_tty is keyword-only (`*, is_tty: bool`), required to implement the NO_COLOR/FORCE_COLOR/TERM=dumb color policy. HS002's declared_arguments() merges posonly/positional/kwonly indiscriminately, so it cannot tell a keyword-only flag from a positional mode switch -- false positive from that argument-kind defect, not a fixable structural issue.",
+      "expires_phase": "phase-2-argument-kind-fix"
+    },
+    {
+      "path": "src/humansays/reporting/ansi.py",
+      "symbol": "_style",
+      "line": 40,
+      "rule_id": "HS002",
+      "evidence": "color",
+      "reason": "color is keyword-only (`*, color: bool`), required to implement the NO_COLOR/FORCE_COLOR/TERM=dumb color policy. Same argument-kind defect as use_color.",
+      "expires_phase": "phase-2-argument-kind-fix"
+    },
+    {
+      "path": "src/humansays/reporting/ansi.py",
+      "symbol": "indicator_text",
+      "line": 47,
+      "rule_id": "HS002",
+      "evidence": "color",
+      "reason": "color is keyword-only (`*, color: bool`), required to implement the NO_COLOR/FORCE_COLOR/TERM=dumb color policy. Same argument-kind defect as use_color.",
+      "expires_phase": "phase-2-argument-kind-fix"
+    },
+    {
+      "path": "src/humansays/reporting/ansi.py",
+      "symbol": "score_text",
+      "line": 60,
+      "rule_id": "HS002",
+      "evidence": "color",
+      "reason": "color is keyword-only (`*, color: bool`), required to implement the NO_COLOR/FORCE_COLOR/TERM=dumb color policy. Same argument-kind defect as use_color.",
+      "expires_phase": "phase-2-argument-kind-fix"
+    },
+    {
+      "path": "src/humansays/reporting/render.py",
+      "symbol": "_load_rich",
+      "line": 28,
+      "rule_id": "HS021",
+      "evidence": "line 36: rich.console",
+      "reason": "_load_rich is the single lazy-import accessor for the optional `terminal` (rich) extra -- every other rendering helper receives rich's classes as a parameter instead of importing them, so this is the only place in the module an Import node exists. Required by the plan's rich-optional design; the three entries here are the three names imported by this one accessor, not three separate call sites.",
+      "expires_phase": "phase-2-signals-split"
+    },
+    {
+      "path": "src/humansays/reporting/render.py",
+      "symbol": "_load_rich",
+      "line": 28,
+      "rule_id": "HS021",
+      "evidence": "line 37: rich.table",
+      "reason": "See the rich.console entry above -- same accessor, same reason.",
+      "expires_phase": "phase-2-signals-split"
+    },
+    {
+      "path": "src/humansays/reporting/render.py",
+      "symbol": "_load_rich",
+      "line": 28,
+      "rule_id": "HS021",
+      "evidence": "line 38: rich.text",
+      "reason": "See the rich.console entry above -- same accessor, same reason.",
+      "expires_phase": "phase-2-signals-split"
+    }
+  ]
+}
+```
+
+Table form:
+
+| Path | Symbol | Line | `rule_id` | `evidence` | `expires_phase` | `reason` |
+| --- | --- | --- | --- | --- | --- | --- |
+| `reporting/ansi.py` | `use_color` | 32 | HS002 | `is_tty` | `phase-2-argument-kind-fix` | "is_tty is keyword-only (`*, is_tty: bool`), required to implement the NO_COLOR/FORCE_COLOR/TERM=dumb color policy. HS002's declared_arguments() merges posonly/positional/kwonly indiscriminately, so it cannot tell a keyword-only flag from a positional mode switch -- false positive from that argument-kind defect, not a fixable structural issue." |
+| `reporting/ansi.py` | `_style` | 40 | HS002 | `color` | `phase-2-argument-kind-fix` | "color is keyword-only (`*, color: bool`), required to implement the NO_COLOR/FORCE_COLOR/TERM=dumb color policy. Same argument-kind defect as use_color." |
+| `reporting/ansi.py` | `indicator_text` | 47 | HS002 | `color` | `phase-2-argument-kind-fix` | "color is keyword-only (`*, color: bool`), required to implement the NO_COLOR/FORCE_COLOR/TERM=dumb color policy. Same argument-kind defect as use_color." |
+| `reporting/ansi.py` | `score_text` | 60 | HS002 | `color` | `phase-2-argument-kind-fix` | "color is keyword-only (`*, color: bool`), required to implement the NO_COLOR/FORCE_COLOR/TERM=dumb color policy. Same argument-kind defect as use_color." |
+| `reporting/render.py` | `_load_rich` | 28 | HS021 | `line 36: rich.console` | `phase-2-signals-split` | "_load_rich is the single lazy-import accessor for the optional `terminal` (rich) extra -- every other rendering helper receives rich's classes as a parameter instead of importing them, so this is the only place in the module an Import node exists. Required by the plan's rich-optional design; the three entries here are the three names imported by this one accessor, not three separate call sites." |
+| `reporting/render.py` | `_load_rich` | 28 | HS021 | `line 37: rich.table` | `phase-2-signals-split` | "See the rich.console entry above -- same accessor, same reason." |
+| `reporting/render.py` | `_load_rich` | 28 | HS021 | `line 38: rich.text` | `phase-2-signals-split` | "See the rich.console entry above -- same accessor, same reason." |
+
+**Total entry count:** 7.
+**Distinct `rule_id` values:** `HS002`, `HS021` (2).
+**Distinct `expires_phase` values:** `phase-2-argument-kind-fix`,
+`phase-2-signals-split` (2).
+
+**Cross-check against the live scan:**
+
+```bash
+$ uv run python - <<'PY'
+import json
+base = json.load(open("tests/golden/self-scan-baseline.json"))["entries"]
+bkeys = {(e["path"], e["symbol"], e["line"], e["rule_id"], e["evidence"]) for e in base}
+print("baseline entries:", len(base), "distinct keys:", len(bkeys))
+PY
+baseline entries: 7 distinct keys: 7
+```
+
+Entry count and distinct-key count are equal (7 = 7).
+
+---
