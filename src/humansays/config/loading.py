@@ -10,6 +10,7 @@ import argparse
 import dataclasses
 import tomllib
 from collections.abc import Mapping, Sequence
+from importlib.metadata import version as package_version
 from pathlib import Path
 from types import MappingProxyType
 from typing import TYPE_CHECKING
@@ -116,6 +117,9 @@ def build_parser() -> argparse.ArgumentParser:
             'NUL- or newline-separated file list from standard input.'
         ),
         argument_default=argparse.SUPPRESS,
+    )
+    parser.add_argument(
+        '--version', action='version', version=f'%(prog)s {package_version("humansays")}'
     )
     parser.add_argument('paths', nargs='*')
     parser.add_argument('--config')
