@@ -7,6 +7,15 @@ scripts/check_scope.py
 tests/golden/self-scan-baseline.json
 src/humansays/reporting/**
 pyproject.toml
+# Widened for Sections C and D (tooling repair, prerelease). Forward scope
+# only: the guard is not run against this PR's migration history.
+uv.lock
+README.md
+docs/process/scope-guard.md
+tests/tooling/**
+scripts/smoke-package.sh
+scripts/smoke_test_package.py
+.github/workflows/release.yml
 # Denied — deferred to Phase 2, do not touch during review
 !src/humansays/analysis/signature*
 !src/humansays/analysis/**/signature*
