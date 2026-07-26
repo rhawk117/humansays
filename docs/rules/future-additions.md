@@ -99,15 +99,15 @@ A finding means "inspect this," not "rewrite this." Large functions and mutable 
 
 ## Command-line options
 
-| Option | Default | Effect |
-| --- | ---: | --- |
-| `--format text\|json` | `text` | Select the report format |
-| `--limit N` | `200` | Show at most `N` targets; `0` shows all |
-| `--symbol NAME` | none | Restrict output to one symbol |
-| `--exclude PATTERN` | none | Skip matching paths; repeatable |
+| Option                          | Default | Effect                                              |
+| ------------------------------- | ------: | --------------------------------------------------- |
+| `--format text\|json`           |  `text` | Select the report format                            |
+| `--limit N`                     |   `200` | Show at most `N` targets; `0` shows all             |
+| `--symbol NAME`                 |    none | Restrict output to one symbol                       |
+| `--exclude PATTERN`             |    none | Skip matching paths; repeatable                     |
 | `--fail-on never\|warning\|any` | `never` | Exit nonzero when findings reach the selected level |
-| `--min-score N` | none | Exit nonzero when the score is below `N` |
-| `--config PATH` | auto | Load an explicit configuration file |
+| `--min-score N`                 |    none | Exit nonzero when the score is below `N`            |
+| `--config PATH`                 |    auto | Load an explicit configuration file                 |
 
 ## Configuration
 
@@ -188,13 +188,13 @@ Rule identifiers may change before `0.1.0`, so prerelease integrations should co
 
 ## Exit codes
 
-| Code | Meaning |
-| ---: | --- |
-| `0` | The command completed without crossing a configured failure threshold |
-| `1` | Findings crossed `--fail-on`, or the score fell below `--min-score` |
-| `2` | The requested `--symbol` was not found |
-| `3` | No Python files were found |
-| `4` | The requested configuration file was missing |
+| Code | Meaning                                                               |
+| ---: | --------------------------------------------------------------------- |
+|  `0` | The command completed without crossing a configured failure threshold |
+|  `1` | Findings crossed `--fail-on`, or the score fell below `--min-score`   |
+|  `2` | The requested `--symbol` was not found                                |
+|  `3` | No Python files were found                                            |
+|  `4` | The requested configuration file was missing                          |
 
 ## Scope and limitations
 
