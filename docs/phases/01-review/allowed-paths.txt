@@ -1,0 +1,15 @@
+# Phase 1 — reconciliation review of already-built code.
+# Review-oriented: docs and evidence are the primary output. Code changes are
+# limited to the specific repairs named in PHASE.md sections B5, B6 and C.
+docs/evidence/phase-1-*.md
+docs/phases/01-review/**
+scripts/check_scope.py
+tests/golden/self-scan-baseline.json
+src/humansays/reporting/**
+pyproject.toml
+# Denied — deferred to Phase 2, do not touch during review
+!src/humansays/analysis/signature*
+!src/humansays/analysis/**/signature*
+!src/humansays/catalog/**
+!docs/rules/**
+!docs/design/**
