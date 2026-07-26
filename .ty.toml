@@ -1,0 +1,17 @@
+[analysis]
+respect-type-ignore-comments = true
+
+[rules]
+blanket-ignore-comment = "error"
+ignore-comment-unknown-rule = "error"
+invalid-ignore-comment = "error"
+unused-ignore-comment = "error"
+unused-type-ignore-comment = "error"
+
+missing-override-decorator = "error"
+redundant-cast = "error"
+deprecated = "error"
+
+[terminal]
+error-on-warning = true
+output-format = "concise"

@@ -1,8 +1,0 @@
-# Phase 9 — performance. No optimization may change any finding.
-src/humansays/**
-benchmarks/**
-scripts/bench.py
-docs/design/05-rust.md
-docs/evidence/perf-baseline.md
-docs/phases/09-performance/**
-!src/humansays/catalog/**
