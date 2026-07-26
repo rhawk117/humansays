@@ -1,0 +1,156 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      force:
+        description: Publish the current version even when no version diff is available
+        required: false
+        type: boolean
+        default: false
+  push:
+    branches: [main]
+    paths: [pyproject.toml]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  detect:
+    name: Detect Version Change
+    runs-on: ${{ vars.DEFAULT_RUNNER || 'ubuntu-24.04' }}
+    outputs:
+      changed: ${{ steps.release.outputs.changed }}
+      prerelease: ${{ steps.release.outputs.prerelease }}
+      tag: ${{ steps.release.outputs.tag }}
+      version: ${{ steps.release.outputs.version }}
+    steps:
+      - name: Check Out Repository
+        uses: actions/checkout@v7.0.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Bootstrap Runner
+        uses: ./.github/actions/bootstrap
+        with:
+          python-version: "3.14"
+
+      - name: Determine Release Metadata
+        id: release
+        shell: bash
+        env:
+          BEFORE_SHA: ${{ github.event.before }}
+          FORCE_RELEASE: ${{ inputs.force || false }}
+        run: |
+          set -euo pipefail
+
+          args=(scripts/release_info.py --before "$BEFORE_SHA")
+          if [[ "$FORCE_RELEASE" == "true" ]]; then
+              args+=(--force)
+          fi
+
+          uv run "${args[@]}"
+
+  continuous-integration:
+    if: ${{ needs.detect.outputs.changed == 'true' }}
+    needs: detect
+    uses: ./.github/workflows/ci-playbook.yml
+
+  package:
+    if: ${{ needs.detect.outputs.changed == 'true' }}
+    needs: [detect, continuous-integration]
+    uses: ./.github/workflows/build-package.yml
+    with:
+      artifact-name: release-distributions
+
+  # ::NOTE::fix-later
+  # publish-pypi:
+  #   name: Publish to PyPI
+  #   needs: [detect, package]
+  #   if: ${{ needs.detect.outputs.changed == 'true' }}
+  #   runs-on: ${{ vars.DEFAULT_RUNNER || 'ubuntu-24.04' }}
+  #   environment:
+  #     name: pypi
+  #     url: https://pypi.org/project/codemudgeon/
+
+  #   permissions:
+  #     contents: read
+  #     id-token: write
+
+  #   steps:
+  #     - name: Download distributions
+  #       uses: actions/download-artifact@v8.0.1
+  #       with:
+  #         name: ${{ needs.package.outputs.artifact-name }}
+  #         path: dist/
+
+  #     - name: Install uv
+  #       uses: astral-sh/setup-uv@v8.1.0
+  #       with:
+  #         version: "0.11.32"
+  #         enable-cache: false
+
+  #     - name: Publish Distributions
+  #       run: uv publish dist/*
+
+  github-release:
+    name: Publish GitHub Release
+    needs: [detect, package] # ::NOTE::publish-pypi
+    if: ${{ needs.detect.outputs.changed == 'true' }}
+    runs-on: ${{ vars.DEFAULT_RUNNER || 'ubuntu-24.04' }}
+    permissions:
+      contents: write
+    env:
+      TARGET_SHA: ${{ github.sha }}
+      IS_PRERELEASE: ${{ needs.detect.outputs.prerelease == 'true' }}
+      ARTIFACT_NAME: ${{ needs.package.outputs.artifact-name }}
+      RELEASE_TAG: ${{ needs.detect.outputs.tag }}
+    steps:
+      - name: Download distributions
+        uses: actions/download-artifact@v8.0.1
+        with:
+          name: ${{ env.ARTIFACT_NAME }}
+          path: dist/
+
+      - name: Create/Repair GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          mapfile -t assets < <(
+            find dist -maxdepth 1 -type f -print
+          )
+
+          if ((${#assets[@]} == 0)); then
+            printf '::error::no release assets were downloaded.\n' >&2
+            exit 1
+          fi
+
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            gh release upload "$RELEASE_TAG" "${assets[@]}" --clobber
+            exit 0
+          fi
+
+          args=(
+            release create "$RELEASE_TAG"
+            "${assets[@]}"
+            --generate-notes
+            --target "$TARGET_SHA"
+            --title "$RELEASE_TAG"
+          )
+
+          if [[ "$IS_PRERELEASE" == "true" ]]; then
+            args+=(--prerelease)
+          fi
+
+          gh "${args[@]}"

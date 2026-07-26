@@ -1,0 +1,46 @@
+name: Continuous Integration (CI)
+
+on:
+  pull_request:
+  workflow_call:
+  push:
+    branches: [main, develop]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  ci-runbook:
+    name: Lint + Test
+    uses: ./.github/workflows/ci-playbook.yml
+
+  package:
+    needs: [ci-runbook]
+    uses: ./.github/workflows/build-package.yml
+    with:
+      artifact-name: ci-distribution
+
+  ci-gate:
+    name: Continuous Integration Gate
+    needs: [ci-runbook, package]
+    if: ${{ always() }}
+    runs-on: ${{ vars.DEFAULT_RUNNER || 'ubuntu-24.04' }}
+    steps:
+      - name: Require Successful CI Jobs
+        env:
+          RUNBOOK_RESULT: ${{ needs.ci-runbook.result }}
+          PACKAGE_RESULT: ${{ needs.package.result }}
+        run: |
+          printf 'lint+test: %s\n' "$RUNBOOK_RESULT"
+          printf 'package:   %s\n' "$PACKAGE_RESULT"
+          if [[ "$RUNBOOK_RESULT" != "success" || "$PACKAGE_RESULT" != "success" ]]; then
+            exit 1
+          fi

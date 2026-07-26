@@ -1,0 +1,13 @@
+exclude_dirs:
+  - .git
+  - .venv
+  - build
+  - dist
+  - generated
+  - tests
+
+# do not create a tests allow-list. new Bandit checks should run by default.
+#
+# Add narrowly justified exclusions only:
+# skips:
+#   - B101

@@ -1,0 +1,72 @@
+name: Python Dependency Audit
+description: |
+  Audits the locked dependency graph with pip-audit (OSV vulnerability
+  service), writes a step-summary review, optionally uploads the report
+  as an artifact, and posts a PR comment on findings. Expects the
+  repository to be checked out with uv available; no `uv sync` needed.
+
+inputs:
+  upload-report:
+    required: false
+    default: 'true'
+    description: |
+      Whether to upload the pip-audit report as a workflow artifact
+
+runs:
+  using: composite
+  steps:
+    - name: Audit Dependencies (pip-audit)
+      id: audit
+      shell: bash
+      run: |
+        bash "${{ github.action_path }}/audit-deps.sh"
+
+    - name: Upload pip-audit Report
+      id: audit-report
+      if: ${{ !cancelled() && inputs.upload-report == 'true' }}
+      uses: actions/upload-artifact@v7
+      with:
+        name: pip-audit-report-${{ github.run_id }}
+        path: pip-audit-output.md
+        retention-days: 14
+        if-no-files-found: ignore
+
+    - name: Dependency Audit Step Summary
+      if: ${{ !cancelled() }}
+      shell: bash
+      run: |
+        {
+          printf '%s\n' "### Dependency Audit (pip-audit)" ""
+          if [[ "${{ steps.audit.outcome }}" == "success" ]]; then
+            printf '%s\n' ":white_check_mark: no known vulnerabilities found"
+          else
+            printf '%s\n' ":x: pip-audit reported findings"
+          fi
+          if [[ -f pip-audit-output.md ]]; then
+            printf '%s\n' "" "<details><summary>pip-audit report</summary>" ""
+            cat pip-audit-output.md
+            printf '%s\n' "" "</details>"
+          fi
+        } >> "$GITHUB_STEP_SUMMARY"
+
+    - name: Create Dependency Audit Message (Failure)
+      if: ${{ !cancelled() && steps.audit.outcome == 'failure' && github.event_name == 'pull_request' }}
+      shell: bash
+      run: |
+        {
+          printf '%s\n' "### :rotating_light: Dependency audit failed" ""
+          printf '%s\n' "pip-audit reported findings (CVE or known-malicious package) in the locked dependency graph:" ""
+          if [[ -f pip-audit-output.md ]]; then
+            cat pip-audit-output.md
+          fi
+          printf '%s\n' ""
+          printf '%s\n' "Full report: [artifact](${{ steps.audit-report.outputs.artifact-url }})"
+          printf '%s\n' "[Run logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+        } > COMMENT.md
+
+    - name: Post Notification on Pull Request
+      if: ${{ !cancelled() && steps.audit.outcome == 'failure' && github.event_name == 'pull_request' }}
+      uses: ./.github/actions/pr-comment
+      with:
+        marker: dependency-failure
+        body-file: COMMENT.md

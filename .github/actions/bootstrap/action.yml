@@ -1,0 +1,50 @@
+name: Set up Python project
+description: |
+  Install uv, select Python, and optionally synchronize dependency groups
+
+inputs:
+  python-version:
+    description: Python version used for the project environment
+    required: true
+  groups:
+    required: false
+    default: ""
+    description: Space-separated dependency groups to synchronize
+  sync:
+    required: false
+    default: "true"
+    description: Whether to synchronize the project environment
+  enable-cache:
+    required: false
+    default: "true"
+    description: Whether setup-uv should persist its cache
+
+runs:
+  using: composite
+  steps:
+    - name: Install UV + Python
+      uses: astral-sh/setup-uv@v8.1.0
+      with:
+        version: "0.11.32"
+        python-version: ${{ inputs.python-version }}
+        enable-cache: ${{ inputs.enable-cache }}
+        cache-dependency-glob: uv.lock
+
+    - name: Synchronize Project (UV)
+      if: ${{ inputs.sync == 'true' }}
+      shell: bash
+      env:
+        DEPENDENCY_GROUPS: ${{ inputs.groups }}
+      run: |
+        set -euo pipefail
+
+        args=(sync --locked --no-default-groups)
+        read -r -a groups <<< "$DEPENDENCY_GROUPS"
+
+        for group in "${groups[@]}"; do
+          if [[ -n "$group" ]]; then
+            args+=(--group "$group")
+          fi
+        done
+
+        uv "${args[@]}"
