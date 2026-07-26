@@ -36,15 +36,11 @@ jobs:
     steps:
       - name: Require Successful CI Jobs
         env:
-          PACKAGE_RESULT: ${{ needs.ci-runbook.result }}
-          QUALITY_RESULT: ${{ needs.quality.result }}
+          RUNBOOK_RESULT: ${{ needs.ci-runbook.result }}
+          PACKAGE_RESULT: ${{ needs.package.result }}
         run: |
-          printf 'quality: %s\n' "$QUALITY_RESULT"
-          printf 'tests:   %s\n' "$TEST_RESULT"
-          printf 'package: %s\n' "$PACKAGE_RESULT"
-
-          if [[ "$QUALITY_RESULT" != "success" ||
-                "$TEST_RESULT" != "success" ||
-                "$PACKAGE_RESULT" != "success" ]]; then
-              exit 1
+          printf 'lint+test: %s\n' "$RUNBOOK_RESULT"
+          printf 'package:   %s\n' "$PACKAGE_RESULT"
+          if [[ "$RUNBOOK_RESULT" != "success" || "$PACKAGE_RESULT" != "success" ]]; then
+            exit 1
           fi
