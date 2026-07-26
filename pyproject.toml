@@ -1,6 +1,6 @@
 [project]
 name = "humansays"
-version = "0.1.0"
+version = "0.1.0a1"
 requires-python = ">=3.11"
 description = "A linting guardrail for LLM-generated Python code which raises structural doubts and a per-finding score before the code reaches a reviewer"
 readme = "README.md"
