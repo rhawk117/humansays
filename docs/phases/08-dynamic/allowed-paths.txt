@@ -1,0 +1,9 @@
+# Phase 8 — calibration and observation.
+src/humansays/runtime/**
+src/humansays/cli.py
+tests/unit/runtime/**
+tests/integration/**
+docs/design/04-execution-modes.md
+docs/phases/08-dynamic/**
+# Denied — static rules unchanged this phase
+!src/humansays/signals/**

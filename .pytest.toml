@@ -7,6 +7,7 @@ strict = true
 testpaths = ["tests"]
 collect_imported_tests = false
 empty_parameter_set_mark = "fail_at_collect"
+pythonpath = ["tests"]
 
 faulthandler_timeout = "60"
 faulthandler_exit_on_timeout = true
@@ -16,6 +17,7 @@ tmp_path_retention_count = "3"
 
 addopts = [
     "-ra",
+    "--import-mode=importlib",
     "--tb=short",
     "--showlocals",
     "--durations=10",

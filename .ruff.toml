@@ -1,6 +1,9 @@
 line-length = 90
 preview = false
 unsafe-fixes = false
+# Vendored third-party fixture corpus, not humansays code -- not ours to lint.
+# docs/ is mid-restructuring in a separate workstream -- not ours to format.
+extend-exclude = ["tests/golden/poc-parity/corpus", "docs"]
 
 [lint]
 select = [
@@ -72,6 +75,12 @@ ignore = [
 ]
 [lint.per-file-ignores]
 "tests/**/*.py" = ["ARG001", "ARG002", "S101"]
+# Deliberately smelly fixture, byte-for-byte ported from the POC: its
+# lint violations are the point (each one is what a specific rule detects).
+"tests/fixture_module.py" = ["ANN001", "ANN201", "ANN205", "E731", "FBT002", "RET505", "SIM116"]
+# Ported verbatim from the POC's unittest.TestCase suite; assertions are kept
+# as unittest-style (not rewritten to plain assert) per the migration plan.
+"tests/parity/*.py" = ["PT009", "SIM115"]
 
 [lint.mccabe]
 max-complexity = 10
