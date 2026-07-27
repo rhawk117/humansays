@@ -1,15 +1,12 @@
 [pytest]
 minversion = "9.0"
 strict = true
-
 testpaths = ["tests"]
 collect_imported_tests = false
 empty_parameter_set_mark = "fail_at_collect"
 pythonpath = ["tests"]
-
 faulthandler_timeout = "60"
 faulthandler_exit_on_timeout = true
-
 tmp_path_retention_policy = "failed"
 tmp_path_retention_count = "3"
 
