@@ -57,7 +57,7 @@ code, which is disqualifying for untrusted dependencies and which this project
 has a rule about.
 
 **Never on the scan path.** Batch, cached, keyed on the composite fingerprint in
-[`../phases/07-effects/PHASE.md`](../phases/07-effects/PHASE.md) — not on the
+[the retired effects roadmap](../roadmap-retirement.md) — not on the
 lockfile hash alone.
 
 ### Layer 4 — first-party call graph

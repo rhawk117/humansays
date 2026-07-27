@@ -47,29 +47,33 @@ genuinely close to its positive.
 
 ## 5. Standing constraints
 
-- [ ] `deptry`: zero runtime dependencies
+- [ ] `deptry` passes, and `dependencies` in `pyproject.toml` is still empty.
+      `deptry` catches an undeclared import; the empty list is convention
 - [ ] `lint-imports`: both contracts pass
 - [ ] No third-party code is imported in order to analyze it
 - [ ] Nothing expensive was added to the scan path
 - [ ] No observed evidence contributes to a printed aggregate
-- [ ] Every new or changed rule cites a criteria-document section
+- [ ] Every new or changed rule links the `docs/site/philosophy/` page its
+      criteria come from, and that page links back from its "What enforces
+      this" section
 - [ ] No claim of being faster than Ruff, more comprehensive than Pylint, or an
       objective definition of clean code
 
 ## 6. Rule changes specifically
 
-- [ ] `claim`, `certainty` and `report` match `docs/site/rules/python.md` exactly
-- [ ] `impact` is empty unless Phase 5 populated it from repair correspondence
-- [ ] Any new `bug` claim cites a language reference or ships a reproducible
-      incorrect-behavior fixture. The current count of three is a fact, not a cap
+- [ ] `severity`, `confidence` and `weight` in `src/humansays/catalog.py` match
+      the rule's page under `docs/site/rules/` exactly
+- [ ] `severity` is `WARNING` only where the syntactic condition is close to the
+      concern the rule names; otherwise `ADVISORY`. There is no third level
+- [ ] `confidence` comes from a fixture-corpus proportion, not from an estimate
 - [ ] Every new rule has both a positive and a negative microfixture
 - [ ] Every new finding has an independence test proving it does not fire on
       single-dimension evidence
 
 ## 7. Structural quality
 
-Reviewed against `docs/site/style-guide/python.md` (see `docs/site/style-guide/README.md`) — the same document the tool
-enforces. Severity capped at medium unless a defect is demonstrated.
+Reviewed against the criteria under `docs/site/philosophy/`, the same document
+the tool enforces.
 
 - [ ] Responsibility, state ownership, effect boundaries
 - [ ] Testability without patching global state

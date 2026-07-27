@@ -195,7 +195,7 @@ def smoke_test() -> int:
 def main() -> None:
     try:
         smoke_test()
-    except Exception as exc:
+    except Exception as exc:  # noqa: BLE001 - the smoke test reports any failure as one message
         fail(f'unhandled runtime exception: `{exc!r}`')
 
 

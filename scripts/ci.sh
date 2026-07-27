@@ -10,7 +10,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 cd "$REPO_ROOT"
 
-# shellcheck source=scripts/log.sh
+# shellcheck disable=SC1091 source=scripts/log.sh
 source "$SCRIPT_DIR/log.sh"
 
 run_lint() {
@@ -30,6 +30,19 @@ run_test() {
     log_step "pytest"
     if ! uv run python -m pytest; then
         log_error "Tests failed"
+        failed=1
+    fi
+    log_step_end
+
+    return "$failed"
+}
+
+run_docs() {
+    local failed=0
+
+    log_step "mkdocs build --strict"
+    if ! uv run --group docs mkdocs build --strict --clean -f docs/mkdocs.yml; then
+        log_error "Documentation build failed"
         failed=1
     fi
     log_step_end
@@ -65,6 +78,7 @@ run_all() {
     local failed=0
 
     run_lint || failed=1
+    run_docs || failed=1
     run_test || failed=1
     run_validate || failed=1
 
@@ -74,6 +88,7 @@ run_all() {
 main() {
     case "${1:-all}" in
     test) run_test ;;
+    docs) run_docs ;;
     validate) run_validate ;;
     all)
         if ! run_all; then
@@ -83,7 +98,7 @@ main() {
         log_success "All CI checks passed"
         ;;
     *)
-        echo "Usage: $(basename "$0") [test|validate|all]" >&2
+        echo "Usage: $(basename "$0") [test|docs|validate|all]" >&2
         exit 1
         ;;
     esac

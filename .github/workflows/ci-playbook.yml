@@ -46,6 +46,13 @@ jobs:
         env:
           UV_NO_SYNC: "1"
 
+  # The four version jobs run concurrently at roughly 11 seconds each; whole-CI
+  # wall clock is about 54 seconds. Collapsing them into one job with a
+  # `uv run --python X.Y` loop was measured and rejected: it serializes the
+  # runs, `uv run --python` recreates .venv in place and so defeats setup-uv's
+  # uv.lock cache, and the repo is public, so Actions minutes are free. The
+  # only gain would be per-version failure attribution, which the matrix
+  # already provides.
   run-tests:
     strategy:
       fail-fast: false

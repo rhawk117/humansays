@@ -9,7 +9,7 @@ from pathlib import Path
 import poc_fixtures as fixtures
 
 from humansays.analysis.models import ParsedModule
-from humansays.analysis.rules import Analyzer
+from humansays.analysis.rules import RulesetEvaluator
 from humansays.catalog import RULES
 from humansays.config.models import Thresholds
 from humansays.enums import SignalName
@@ -20,7 +20,7 @@ DELETED_IDS = frozenset({'HS010', 'HS011', 'HS020'})
 
 def analyze(source: str) -> list:
     module = ParsedModule(Path('<snippet>'), source, ast.parse(source))
-    return Analyzer(module, Thresholds()).run()
+    return RulesetEvaluator(module, Thresholds()).run()
 
 
 def test_deleted_ids_are_absent_from_signal_name() -> None:

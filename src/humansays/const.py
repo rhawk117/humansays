@@ -8,7 +8,7 @@ make this module part of an import cycle).
 from collections import defaultdict, deque
 from types import MappingProxyType
 
-from .enums import Grade, Severity
+from humansays.enums import Grade, Severity
 
 MAPPING_PROXY = type(MappingProxyType({}))
 

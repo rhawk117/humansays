@@ -114,7 +114,7 @@ Testability         not analysed (no test paths configured)
 
 Only after it is shown to predict something: reviewer acceptance, defect
 density, repair success, or maintenance outcome. See
-[`phases/03-measurement`](../phases/05-measurement-study/PHASE.md) for the paired
+[the retired measurement roadmap](../roadmap-retirement.md) for the paired
 before/after corpus that makes this testable.
 
 Until then, any number the tool prints must be labelled uncalibrated in the
@@ -225,7 +225,7 @@ Accuracy needs separate measurement and none of it is available at MVP:
 precision per rule, reviewer dismissal rate, repair acceptance rate,
 false-positive concentration, recurrence after suppression, and the proportion
 of findings whose repair is behavior-preserving. These require a labelled corpus
-or human raters. See [`phases/03-measurement`](../phases/05-measurement-study/PHASE.md).
+or human raters. See [the retired measurement roadmap](../roadmap-retirement.md).
 
 ---
 

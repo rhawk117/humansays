@@ -220,3 +220,11 @@ __marimo__/
 
 # Brainstorming specs and plans -- local working material, never committed.
 .agent-specs/superpowers/
+
+# Migration provenance: local working material, not shipped.
+.migration/
+
+# Full-resolution artwork originals. Every image the site uses is the
+# downscaled copy under docs/site/assets/, which is the only directory mkdocs
+# copies into the build.
+/docs/*.png

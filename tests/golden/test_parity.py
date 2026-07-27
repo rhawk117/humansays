@@ -14,7 +14,7 @@ import tomllib
 from pathlib import Path
 
 from humansays.analysis.models import ParsedModule
-from humansays.analysis.rules import Analyzer
+from humansays.analysis.rules import RulesetEvaluator
 from humansays.config.models import Thresholds
 from humansays.enums import Grade
 from humansays.reporting.models import FileReport, ScanResult
@@ -76,7 +76,7 @@ def _humansays_findings(group: dict) -> dict:
         path = root / rel
         source = path.read_text(encoding='utf-8')
         module = ParsedModule(path, source, ast.parse(source, filename=str(path)))
-        findings = Analyzer(module, Thresholds()).run()
+        findings = RulesetEvaluator(module, Thresholds()).run()
         reports.append(FileReport(path, len(source.splitlines()), 0, 0, set(), findings))
         findings_out.extend(
             (

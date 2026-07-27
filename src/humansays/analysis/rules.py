@@ -1,20 +1,43 @@
 """Signal rules: turn extracted facts into findings.
 
-``cpython_ast`` owns the AST vocabulary and fact extraction; this module owns
-the judgement calls.
+``python_ast`` reads the tree and returns facts; this module owns the
+judgement calls, meaning which threshold a fact has to cross and what the
+resulting finding says.
 
-Known contract debt: this module still fuses ast-extraction (walking
-``FunctionVisitor`` results, module scopes) with rule evaluation (weight,
-severity, review question judgement calls). Splitting fact-extraction from
-signal-evaluation into a dedicated ``humansays.signals`` layer is out of scope
-for this migration -- see the plan's "Known contract debt" section -- so it
-stays under ``analysis`` for now even though the evaluation half of it does not
-strictly need ``ast``.
+Remaining contract debt: the evaluator still drives the traversal itself,
+dispatching on node type in ``run`` and ``_evaluate_class``, and still holds
+scopes keyed by ast nodes. A ``humansays.signals`` layer that evaluates purely
+over facts needs the fact model to carry the class and module shape that four
+rules currently read off the tree.
 """
 
 import ast
 from operator import attrgetter
 
+from humansays.analysis.models import (
+    AnalysisIndex,
+    FunctionFacts,
+    FunctionNode,
+    FunctionTarget,
+    MutationVocabulary,
+    ParsedModule,
+    Scope,
+    ScopeContext,
+)
+from humansays.analysis.python_ast import (
+    FUNCTION_NODES,
+    attribute_prefix_clusters,
+    base_class_names,
+    build_function_facts,
+    class_state_attributes,
+    collect_aliases,
+    collect_module_globals,
+    is_static_method,
+    lambda_sites,
+    module_scale_findings,
+    mutable_bindings,
+)
+from humansays.analysis.syntax import location_of, node_span
 from humansays.catalog import build_finding
 from humansays.config.models import Thresholds
 from humansays.const import (
@@ -26,41 +49,8 @@ from humansays.const import (
 from humansays.enums import SignalName
 from humansays.findings.models import Finding, Location, Observation
 
-from .cpython_ast import (
-    FUNCTION_NODES,
-    FunctionVisitor,
-    attribute_prefix_clusters,
-    build_signature,
-    collect_aliases,
-    collect_module_globals,
-    declared_class_attributes,
-    is_trivial_accessor,
-    module_scale_findings,
-)
-from .models import (
-    AnalysisIndex,
-    FunctionFacts,
-    FunctionNode,
-    MutationVocabulary,
-    ParsedModule,
-    Scope,
-    ScopeContext,
-)
-from .syntax import (
-    assigned_names,
-    code_line_count,
-    decorator_names,
-    dotted_name,
-    is_mutable_expression,
-    location_of,
-    node_span,
-    snippet,
-)
 
-STATIC_DECORATOR = 'staticmethod'
-
-
-class Analyzer:
+class RulesetEvaluator:
     def __init__(
         self,
         module: ParsedModule,
@@ -86,9 +76,11 @@ class Analyzer:
         self._mutable_bindings(self.module.tree.body, '<module>', 'module')
         for node in self.module.tree.body:
             if isinstance(node, FUNCTION_NODES):
-                self._analyze_function(node, node.name)
+                self._evaluate_function(node, node.name)
+
             elif isinstance(node, ast.ClassDef):
-                self._analyze_class(node)
+                self._evaluate_class(node)
+
         self._lambda_signals()
         return sorted(self.findings, key=attrgetter('sort_key'))
 
@@ -100,47 +92,40 @@ class Analyzer:
     ) -> None:
         self.findings.append(build_finding(signal, location, observation))
 
-    def _analyze_class(self, node: ast.ClassDef) -> None:
+    def _evaluate_class(self, node: ast.ClassDef) -> None:
         self.index.add_scope(Scope(node, node.name, *node_span(node)))
         self._mutable_bindings(node.body, node.name, 'class')
         self._base_classes(node)
         methods: list[FunctionFacts] = []
         for child in node.body:
-            if isinstance(child, FUNCTION_NODES):
-                name = f'{node.name}.{child.name}'
-                methods.append(self._analyze_function(child, name, node.name))
-                self._static_method(child, name)
+            if not isinstance(child, FUNCTION_NODES):
+                continue
+
+            name = f'{node.name}.{child.name}'
+            methods.append(self._evaluate_function(child, name, node.name))
+            self._static_method(child, name)
+
         self.index.classes[node.name] = methods
         self._class_state_surface(node, methods)
         self._class_cohesion(node, methods)
 
-    def _analyze_function(
+    def _evaluate_function(
         self,
         node: FunctionNode,
         qualified_name: str,
         class_name: str | None = None,
     ) -> FunctionFacts:
-        signature = build_signature(node)
-        visitor = FunctionVisitor(signature.parameters, self.context)
-        for statement in node.body:
-            visitor.visit(statement)
-        visitor.body.code_lines = code_line_count(self.module, node)
+        target = FunctionTarget(node, qualified_name, class_name)
+        facts = build_function_facts(self.module, target, self.context)
 
-        facts = FunctionFacts(
-            location=location_of(qualified_name, node),
-            class_name=class_name,
-            signature=type(signature)(
-                parameters=signature.parameters,
-                boolean_parameters=signature.boolean_parameters,
-                validated_parameters=dict(visitor.validated),
-            ),
-            body=visitor.body,
-            self_usage=visitor.usage,
-            trivial_accessor=is_trivial_accessor(node),
-        )
         self.index.functions.append(facts)
         self.index.add_scope(
-            Scope(node, qualified_name, facts.location.line, facts.location.end_line),
+            Scope(
+                node,
+                qualified_name,
+                facts.location.line,
+                facts.location.end_line,
+            ),
         )
         self._argument_signals(facts)
         self._size_signals(facts)
@@ -151,32 +136,37 @@ class Analyzer:
 
     def _static_method(self, node: FunctionNode, qualified_name: str) -> None:
         """HS015: a staticmethod is a module function wearing a class as a namespace."""
-        if STATIC_DECORATOR not in decorator_names(node):
+        if not is_static_method(node):
             return
+
         observation = Observation(
             'Method is declared @staticmethod, so it can reach neither instance '
             'nor class state.',
             (f'line {node.lineno}: @staticmethod {node.name}',),
         )
+
         self._record(SignalName.HS015, location_of(qualified_name, node), observation)
 
     def _lambda_signals(self) -> None:
         """HS016: lambdas are anonymous, unimportable, and awkward to test."""
-        for node in ast.walk(self.module.tree):
-            if not isinstance(node, ast.Lambda):
-                continue
-            scope = self.index.scope_for_line(node.lineno)
+        for site in lambda_sites(self.module.tree):
+            scope = self.index.scope_for_line(site.line)
             observation = Observation(
                 'Lambda expression stands in for a named function.',
-                (f'line {node.lineno}: {snippet(node)}',),
+                (f'line {site.line}: {site.source}',),
             )
-            self._record(SignalName.HS016, location_of(scope.symbol, node), observation)
+            self._record(
+                SignalName.HS016,
+                Location(scope.symbol, site.line, site.line),
+                observation,
+            )
 
     def _base_classes(self, node: ast.ClassDef) -> None:
         """HS018: multiple parents make the method resolution order the real design."""
-        bases = tuple(dotted_name(base) or snippet(base) for base in node.bases)
+        bases = base_class_names(node)
         if len(bases) <= self.thresholds.classes.max_base_classes:
             return
+
         observation = Observation(
             f'Class inherits from {len(bases)} parent classes.',
             bases,
@@ -196,6 +186,7 @@ class Analyzer:
                 ),
             )
             self._validated_bundle(facts)
+
         booleans = signature.operation_booleans
         setter = facts.name.startswith('set_') and len(operation) == 1
         if booleans and not setter:
@@ -215,11 +206,14 @@ class Analyzer:
             for parameter in facts.signature.operation_parameters
             if parameter in validated
         )
+
         if not names:
             return
+
         evidence = tuple(
             f'{parameter}: {min(validated[parameter])}' for parameter in names
         )
+
         self._record(
             SignalName.HS014,
             facts.location,
@@ -240,6 +234,7 @@ class Analyzer:
                     (f'configured threshold: {limits.max_lines}',),
                 ),
             )
+
         if facts.body.code_lines > limits.max_code_lines:
             self._record(
                 SignalName.HS022,
@@ -262,6 +257,7 @@ class Analyzer:
                 evidence.append(
                     f'class bodies receive +{limits.class_nesting_bonus} nesting',
                 )
+
             self._record(
                 SignalName.HS003,
                 facts.location,
@@ -285,6 +281,7 @@ class Analyzer:
             SignalName.HS005: 'Broad exception handling may collapse unrelated failures.',
             SignalName.HS021: 'Import is deferred into the function body.',
         }
+
         for signal, incidents in facts.body.incidents.items():
             for incident in incidents:
                 self._record(
@@ -333,34 +330,28 @@ class Analyzer:
         symbol: str,
         scope: str,
     ) -> None:
-        constructors = self.context.vocabulary.constructors
-        for statement in body:
-            if not isinstance(statement, (ast.Assign, ast.AnnAssign)):
-                continue
-            for name, value in assigned_names(statement):
-                if not is_mutable_expression(value, self.context.aliases, constructors):
-                    continue
-                line, end_line = node_span(statement)
-                self._record(
-                    SignalName.HS004,
-                    Location(symbol, line, end_line),
-                    Observation(
-                        f'Mutable {scope}-scope state `{name}` is shared beyond '
-                        'one instance or operation.',
-                        (f'{name} initialized as {type(value).__name__}',),
-                    ),
-                )
+        bindings = mutable_bindings(
+            body,
+            self.context.aliases,
+            self.context.vocabulary.constructors,
+        )
+        for binding in bindings:
+            self._record(
+                SignalName.HS004,
+                Location(symbol, binding.line, binding.end_line),
+                Observation(
+                    f'Mutable {scope}-scope state `{binding.name}` is shared beyond '
+                    'one instance or operation.',
+                    (f'{binding.name} initialized as {binding.constructor}',),
+                ),
+            )
 
     def _class_state_surface(
         self,
         node: ast.ClassDef,
         methods: list[FunctionFacts],
     ) -> None:
-        attributes = declared_class_attributes(node) | {
-            attribute
-            for method in methods
-            for attribute in method.self_usage.fields_written
-        }
+        attributes = class_state_attributes(node, methods)
         if len(attributes) <= self.thresholds.classes.max_attributes:
             return
         location = location_of(node.name, node)
@@ -430,6 +421,7 @@ def cohesion_candidates(methods: list[FunctionFacts]) -> list[FunctionFacts]:
         non_fields = names | method.self_usage.methods_called
         method.self_usage.fields_read -= non_fields
         method.self_usage.fields_written -= non_fields
+
     return [
         method
         for method in methods
@@ -450,5 +442,7 @@ def connected_components(usage: list[set[str]]) -> list[list[int]]:
             additions = {index for index in remaining if shared & usage[index]}
             component |= additions
             remaining -= additions
+
         components.append(sorted(component))
+
     return components

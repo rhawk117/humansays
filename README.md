@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/rhawk117/humansays/main/docs/site/assets/human-says-banner.png" width="760" alt="humansays">
+</p>
+
 # humansays
 
 [![CI](https://github.com/rhawk117/humansays/actions/workflows/integration.yml/badge.svg)](https://github.com/rhawk117/humansays/actions/workflows/integration.yml)
@@ -5,7 +9,9 @@
 [![Python](https://img.shields.io/pypi/pyversions/humansays.svg)](https://pypi.org/project/humansays/)
 [![License](https://img.shields.io/pypi/l/humansays.svg)](https://github.com/rhawk117/humansays/blob/main/LICENSE)
 
-A structural review tool for Python code that looks valid but still feels wrong.
+A python linter which evaluates how difficult AI generated code is to read, understand, test, maintain, and safely modify. It gives coding agents actionable and easy to reason about feedback on design problems that traditional linters, type checkers, and tests cannot detect.
+
+Full documentation: <https://rhawk117.github.io/humansays/>
 
 `humansays` parses Python with the standard-library AST and points reviewers toward code that deserves a second look. It reports structural signals such as long parameter lists, deep nesting, mutable module state, lazy imports, oversized functions and classes, and methods that use neither `self` nor the class.
 
@@ -32,13 +38,8 @@ It gives a human reviewer, or a tool acting on behalf of one, a smaller set of p
 pip install humansays
 ```
 
-For Rich-powered terminal output:
-
-```bash
-pip install "humansays[terminal]"
-```
-
-The base package has no runtime dependencies. The `terminal` extra installs `rich`; without it, text output falls back to plain ANSI formatting.
+There are no runtime dependencies and no extras. Text output is written with
+plain ANSI escapes, which `NO_COLOR`, `FORCE_COLOR`, and `TERM=dumb` control.
 
 ## Quick start
 
@@ -117,6 +118,8 @@ A finding means "inspect this," not "rewrite this." Large functions and mutable 
 2. `[tool.humansays]` in `pyproject.toml`
 
 The first discovered configuration source is used. Command-line arguments override file settings.
+
+The block below is an example of **loosened** thresholds, not the defaults. Every key and its real default is documented at [Configuration](https://rhawk117.github.io/humansays/configuration/).
 
 ```toml
 [tool.humansays.report]

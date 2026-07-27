@@ -10,6 +10,8 @@ site_dir: ../site
 
 theme:
   name: material
+  logo: assets/docs-icon.png
+  favicon: assets/favicon.ico
   icon:
     repo: octicons/mark-github-24
   palette:
@@ -45,6 +47,37 @@ theme:
 
 plugins:
   - search
+  - termynal:
+      prompt_literal_start:
+        - "$"
+        - ">>>"
+  # llmstxt post-processes rendered pages, so it must stay last.
+  - llmstxt:
+      markdown_description: >-
+        humansays is a Python linter that evaluates how difficult AI generated
+        code is to read, understand, test, maintain, and safely modify.
+      # `sections` is required, and naming a page that does not exist yet is a
+      # warning, which --strict turns into a failure. So this grows one entry
+      # at a time as pages land, rather than being written out in full here.
+      # The planned catalog is deliberately excluded: it is not what an agent
+      # should act on.
+      sections:
+        Usage:
+          - index.md
+          - getting-started.md
+          - configuration.md
+          - cli.md
+          - output.md
+        Rules:
+          - rules/*.md
+        Design philosophy:
+          - philosophy/*.md
+
+validation:
+  omitted_files: warn
+  unrecognized_links: warn
+  absolute_links: warn
+  anchors: warn
 
 markdown_extensions:
   - abbr
@@ -71,12 +104,36 @@ markdown_extensions:
 
 nav:
   - Overview: index.md
-  - Style guide:
-      - style-guide/README.md
-      - Python: style-guide/python.md
-      - Rust: style-guide/rust.md
+  - Getting started: getting-started.md
+  - Configuration: configuration.md
+  - CLI: cli.md
+  - Output and scoring: output.md
   - Rules:
-      - rules/README.md
-      - Python: rules/python.md
-  - Roadmap:
-      - Future additions: roadmap/future-additions.md
+      - Overview: rules/index.md
+      - Function shape: rules/function-shape.md
+      - Class design: rules/class-design.md
+      - State and boundaries: rules/state-and-boundaries.md
+      - Failure and imports: rules/failure-and-imports.md
+  - Design philosophy:
+      - Overview: philosophy/index.md
+      - Contracts and inputs: philosophy/contracts.md
+      - State and effects: philosophy/state-and-effects.md
+      - Keeping and extracting: philosophy/structure.md
+      - Arguments and failure: philosophy/arguments-and-failure.md
+      - Testability and thresholds: philosophy/testability.md
+  - Planned rules:
+      - Overview: planned/index.md
+      - SRP: planned/srp.md
+      - KISS: planned/kiss.md
+      - CQS: planned/cqs.md
+      - POLA: planned/pola.md
+      - COUP: planned/coup.md
+      - CONTRACT: planned/contract.md
+      - STATE: planned/state.md
+      - LIFE: planned/life.md
+      - FAIL: planned/fail.md
+      - CONC: planned/conc.md
+      - IDIOM: planned/idiom.md
+      - NIT: planned/nit.md
+      - DRY: planned/dry.md
+      - Reconciliation: planned/reconciliation.md

@@ -35,6 +35,15 @@ class ParsedModule:
 
 
 @dataclass(frozen=True, slots=True)
+class FunctionTarget:
+    """One function to extract facts from, and the names it is known by."""
+
+    node: FunctionNode
+    qualified_name: str
+    class_name: str | None = None
+
+
+@dataclass(frozen=True, slots=True)
 class Scope:
     node: ast.AST
     symbol: str
@@ -132,4 +141,5 @@ class AnalysisIndex:
         candidates = [scope for scope in self.scopes if scope.contains(line)]
         if not candidates:
             return self.scopes[0]
+
         return min(candidates, key=attrgetter('span'))
