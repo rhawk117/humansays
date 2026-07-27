@@ -67,14 +67,17 @@ def assigned_slots(statement: ast.stmt) -> set[str] | None:
 def annotated_attribute(statement: ast.AnnAssign) -> set[str]:
     if not isinstance(statement.target, ast.Name):
         return set()
+
     if dotted_name(statement.annotation) in CLASS_VAR_NAMES:
         return set()
+
     return {statement.target.id}
 
 
 def plain_attributes(statement: ast.Assign, method_names: set[str]) -> set[str]:
     if isinstance(statement.value, ast.Name) and statement.value.id in method_names:
         return set()
+
     return {
         target.id
         for target in statement.targets
@@ -87,14 +90,18 @@ def declared_class_attributes(node: ast.ClassDef) -> set[str]:
     method_names = {
         statement.name for statement in node.body if isinstance(statement, FUNCTION_NODES)
     }
+
     for statement in node.body:
         slots = assigned_slots(statement)
         if slots is not None:
             attributes.update(slots)
+
         elif isinstance(statement, ast.AnnAssign):
             attributes.update(annotated_attribute(statement))
+
         elif isinstance(statement, ast.Assign):
             attributes.update(plain_attributes(statement, method_names))
+
     return attributes
 
 
@@ -104,6 +111,7 @@ def attribute_prefix_clusters(attributes: Iterable[str]) -> dict[str, tuple[str,
         prefix, separator, _ = attribute.lstrip('_').partition('_')
         if separator and prefix not in NON_STRUCTURAL_PREFIXES:
             grouped[prefix].add(attribute)
+
     return {
         prefix: tuple(sorted(names))
         for prefix, names in grouped.items()
@@ -115,14 +123,23 @@ def argument_defaults(node: FunctionNode) -> dict[str, ast.AST]:
     positional = [*node.args.posonlyargs, *node.args.args]
     defaults: dict[str, ast.AST] = {}
     offset = len(node.args.defaults)
-    paired = zip(positional[len(positional) - offset :], node.args.defaults, strict=True)
+    paired = zip(
+        positional[len(positional) - offset :],
+        node.args.defaults,
+        strict=True,
+    )
+
     for argument, default in paired:
         defaults[argument.arg] = default
+
     for argument, default in zip(
-        node.args.kwonlyargs, node.args.kw_defaults, strict=True
+        node.args.kwonlyargs,
+        node.args.kw_defaults,
+        strict=True,
     ):
         if default is not None:
             defaults[argument.arg] = default
+
     return defaults
 
 
@@ -130,9 +147,21 @@ def declared_arguments(node: FunctionNode) -> list[ast.arg]:
     arguments = [*node.args.posonlyargs, *node.args.args, *node.args.kwonlyargs]
     if node.args.vararg:
         arguments.append(node.args.vararg)
+
     if node.args.kwarg:
         arguments.append(node.args.kwarg)
+
     return arguments
+
+
+def is_typed_default_value_bool(
+    argument: ast.arg,
+    default: ast.AST | None,
+) -> bool:
+    if annotation_is_bool(argument.annotation):
+        return True
+
+    return isinstance(default, ast.Constant) and isinstance(default.value, bool)
 
 
 def build_signature(node: FunctionNode) -> Signature:
@@ -141,12 +170,9 @@ def build_signature(node: FunctionNode) -> Signature:
     boolean = []
     for argument in arguments:
         default = defaults.get(argument.arg)
-        typed_bool = annotation_is_bool(argument.annotation)
-        default_bool = isinstance(default, ast.Constant) and isinstance(
-            default.value, bool
-        )
-        if typed_bool or default_bool:
+        if is_typed_default_value_bool(argument, default):
             boolean.append(argument.arg)
+
     return Signature(
         parameters=tuple(argument.arg for argument in arguments),
         boolean_parameters=tuple(boolean),
@@ -157,14 +183,18 @@ def is_trivial_accessor(node: FunctionNode) -> bool:
     if len(node.body) != 1:
         return False
     statement = node.body[0]
+
     if isinstance(statement, ast.Return):
         value = statement.value
         return isinstance(value, ast.Attribute) and root_name(value) == 'self'
+
     if not isinstance(statement, (ast.Assign, ast.AnnAssign)):
         return False
+
     targets = (
         statement.targets if isinstance(statement, ast.Assign) else [statement.target]
     )
+
     return all(
         isinstance(target, ast.Attribute) and root_name(target) == 'self'
         for target in targets
@@ -177,9 +207,11 @@ def collect_aliases(tree: ast.Module) -> dict[str, str]:
         if isinstance(statement, ast.Import):
             for name in statement.names:
                 aliases[name.asname or name.name.split('.', 1)[0]] = name.name
+
         elif isinstance(statement, ast.ImportFrom) and statement.module:
             for name in statement.names:
                 aliases[name.asname or name.name] = f'{statement.module}.{name.name}'
+
     return aliases
 
 
@@ -188,6 +220,7 @@ def collect_module_globals(tree: ast.Module) -> set[str]:
     for statement in tree.body:
         if isinstance(statement, (ast.Assign, ast.AnnAssign)):
             names.update(name for name, _ in assigned_names(statement))
+
     return names
 
 
@@ -195,15 +228,16 @@ def module_scale_findings(
     module: ParsedModule,
     thresholds: ModuleThresholds,
 ) -> list[Finding]:
-    """HS017: an oversized file has usually stopped being one subject."""
     count = len(module.lines)
     if count <= thresholds.max_lines:
         return []
+
     location = Location('<module>', 1, max(1, count))
     observation = Observation(
         f'Module spans {count} source lines.',
         (f'configured threshold: {thresholds.max_lines}',),
     )
+
     return [build_finding(SignalName.HS017, location, observation)]
 
 
@@ -235,14 +269,17 @@ class FunctionVisitor(ast.NodeVisitor):
                 self.usage.fields_written.add(node.attr)
             else:
                 self.usage.fields_read.add(node.attr)
+
         name = dotted_name(node)
         if name:
             self._record_boundary(name, node.lineno)
+
         self.generic_visit(node)
 
     def visit_Import(self, node: ast.Import) -> None:
         for name in node.names:
             self.context.aliases[name.asname or name.name.split('.', 1)[0]] = name.name
+
         self._record_lazy_import(node, sorted(name.name for name in node.names))
 
     def visit_ImportFrom(self, node: ast.ImportFrom) -> None:
@@ -359,37 +396,48 @@ class FunctionVisitor(ast.NodeVisitor):
         attribute = node.func
         if not isinstance(attribute, ast.Attribute):
             return
+
         if root_name(attribute) == 'self':
             self.usage.methods_called.add(attribute.attr)
+
         if attribute.attr not in self.context.vocabulary.methods:
             return
+
         owner = self._owner(attribute.value)
-        if owner:
-            label = call_name or attribute.attr
-            self.body.mutations[owner].add(f'line {node.lineno}: {label}(...)')
+        if not owner:
+            return
+
+        label = call_name or attribute.attr
+        self.body.mutations[owner].add(f'line {node.lineno}: {label}(...)')
 
     def _visit_nested(self, nodes: Iterable[ast.AST]) -> None:
         self.depth += 1
         self.body.maximum_nesting = max(self.body.maximum_nesting, self.depth)
         for node in nodes:
             self.visit(node)
+
         self.depth -= 1
 
     def _record_target(self, target: ast.AST, line: int) -> None:
-        owner = self._owner(target)
-        if owner:
-            self.body.mutations[owner].add(f'line {line}: assignment or deletion')
+        if not (owner := self._owner(target)):
+            return
+
+        self.body.mutations[owner].add(f'line {line}: assignment or deletion')
 
     def _owner(self, node: ast.AST) -> str | None:
         root = root_name(node)
         if root == 'self':
             return 'self'
+
         if root in self.parameters or root in self.context.module_globals:
             return root
+
         return None
 
     def _record_boundary(self, name: str, line: int) -> None:
         resolved = resolve_alias(name, self.context.aliases)
-        boundary = classify_boundary(resolved)
-        if boundary:
-            self.body.boundaries[boundary].add(f'line {line}: {resolved}')
+
+        if not (boundary := classify_boundary(resolved)):
+            return
+
+        self.body.boundaries[boundary].add(f'line {line}: {resolved}')

@@ -30,12 +30,14 @@ def read_stream_paths(stream: TextIO) -> list[str]:
 def resolve_specs(selection: Selection, stream: TextIO) -> list[str]:
     if not selection.paths:
         return read_stream_paths(stream)
+
     specs: list[str] = []
     for spec in selection.paths:
         if spec == STDIN_SPEC:
             specs.extend(read_stream_paths(stream))
         else:
             specs.append(spec)
+
     return specs
 
 
@@ -46,10 +48,12 @@ def is_included_python_file(
 ) -> bool:
     if candidate.suffix != '.py' or not candidate.is_file():
         return False
+
     try:
         relative = candidate.resolve().relative_to(root.resolve())
     except ValueError:
         return False
+
     directories = relative.parts[:-1]
     hidden = any(part.startswith('.') for part in directories)
     return not hidden and not excludes.intersection(relative.parts)
@@ -59,8 +63,10 @@ def expand_spec(spec: str, excludes: frozenset[str]) -> list[Path]:
     path = Path(spec)
     if path.is_file():
         return [path] if path.suffix == '.py' else []
+
     if not path.is_dir():
         return []
+
     return [
         candidate
         for candidate in sorted(path.rglob('*.py'))
@@ -73,6 +79,7 @@ def collect_files(specs: Iterable[str], excludes: frozenset[str]) -> list[Path]:
     for spec in specs:
         for path in expand_spec(spec, excludes):
             seen.setdefault(path, None)
+
     return list(seen)
 
 
@@ -95,6 +102,7 @@ def analyze_file(path: Path, settings: ScannerSettings) -> FileReport:
             for finding in findings
             if matches_symbol(finding.location.symbol, wanted)
         ]
+
     return FileReport(
         path=path,
         lines=len(parsed.lines),
@@ -108,11 +116,13 @@ def analyze_file(path: Path, settings: ScannerSettings) -> FileReport:
 def analyze_paths(paths: Iterable[Path], settings: ScannerSettings) -> ScanResult:
     reports: list[FileReport] = []
     errors: list[str] = []
+    potential_exceptions = (OSError, UnicodeError, SyntaxError, ValueError)
     for path in paths:
         try:
             reports.append(analyze_file(path, settings))
-        except (OSError, UnicodeError, SyntaxError, ValueError) as error:
+        except potential_exceptions as error:
             errors.append(f'{path}: {error}')
+
     named = [spec for spec in settings.selection.paths if spec != STDIN_SPEC]
     return ScanResult(
         label=', '.join(named) or '<stdin>',
@@ -133,19 +143,23 @@ def severity_exit(result: ScanResult, fail_on: FailOn) -> int:
     findings = result.findings
     if fail_on is FailOn.ANY and findings:
         return FINDINGS_EXIT
+
     warnings = [
         finding for finding in findings if finding.rule.severity is Severity.WARNING
     ]
     if fail_on is FailOn.WARNING and warnings:
         return FINDINGS_EXIT
+
     return 0
 
 
 def exit_code(result: ScanResult, score: Score, settings: ScannerSettings) -> int:
     if score.value < settings.report.min_score:
         return FINDINGS_EXIT
+
     if settings.report.fail_on is FailOn.NEVER:
         return 0
+
     return severity_exit(result, settings.report.fail_on)
 
 

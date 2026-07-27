@@ -31,8 +31,8 @@ def score_for(result: ScanResult) -> Score:
     value = round(PERFECT_SCORE / (1.0 + density / SCORE_TOLERANCE), 1)
     return Score(
         lines=lines,
+        value=value,
         penalty=round(penalty, 2),
         density=round(density, 3),
-        value=value,
         grade=grade_for(value),
     )

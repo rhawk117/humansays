@@ -132,4 +132,5 @@ class AnalysisIndex:
         candidates = [scope for scope in self.scopes if scope.contains(line)]
         if not candidates:
             return self.scopes[0]
+
         return min(candidates, key=attrgetter('span'))

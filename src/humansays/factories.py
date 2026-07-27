@@ -19,6 +19,7 @@ from .const import (
 def qualified_type_name(subject: type) -> str:
     if subject.__module__ == 'builtins':
         return subject.__name__
+
     return f'{subject.__module__}.{subject.__name__}'
 
 
@@ -43,6 +44,7 @@ def mutating_methods(
     for mutable_type, immutable_type in pairs:
         difference = public_callables(mutable_type) - public_callables(immutable_type)
         names.update(difference - NON_MUTATING_METHOD_DIFFERENCES)
+
     return frozenset(names)
 
 
