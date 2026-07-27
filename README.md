@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/rhawk117/humansays/main/docs/site/assets/humansays-mascot.png" width="280" alt="humansays">
+  <img src="https://raw.githubusercontent.com/rhawk117/humansays/main/docs/site/assets/human-says-banner.png" width="760" alt="humansays">
 </p>
 
 # humansays

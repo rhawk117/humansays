@@ -1,6 +1,11 @@
 # humansays
 
-![humansays](assets/humansays-mascot.png){ width="320" }
+![humansays](assets/human-says-banner.png)
+
+[![CI](https://github.com/rhawk117/humansays/actions/workflows/integration.yml/badge.svg)](https://github.com/rhawk117/humansays/actions/workflows/integration.yml)
+[![PyPI](https://img.shields.io/pypi/v/humansays.svg)](https://pypi.org/project/humansays/)
+[![Python](https://img.shields.io/pypi/pyversions/humansays.svg)](https://pypi.org/project/humansays/)
+[![License](https://img.shields.io/pypi/l/humansays.svg)](https://github.com/rhawk117/humansays/blob/main/LICENSE)
 
 A python linter which evaluates how difficult AI generated code is to read,
 understand, test, maintain, and safely modify. It gives coding agents
@@ -14,7 +19,9 @@ traditional linters, type checkers, and tests cannot detect.
 
 ## Install
 
-There are no runtime dependencies and no extras.
+There are no runtime dependencies and no extras. The package is on PyPI as
+[`humansays`](https://pypi.org/project/humansays/) and needs Python 3.11 or
+newer.
 
 <!-- termynal -->
 

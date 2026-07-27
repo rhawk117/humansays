@@ -1,5 +1,7 @@
 # Design philosophy
 
+![](../assets/human-says-happy.png){ align=right width="200" }
+
 This section states the model of how code should work that the rules encode. The
 shipped `HS###` rules are the automated subset of that model: the part whose
 condition can be read off the syntax tree without guessing. The rest of the

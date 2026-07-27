@@ -1,5 +1,7 @@
 # Rules
 
+![](../assets/human-says-clipart.png){ align=right width="150" }
+
 !!! warning "Early development"
     This is `0.1.0a1`. The `HS###` identifiers on this page are not stable and
     will change before `0.1.0`. Do not pin automation to them yet.

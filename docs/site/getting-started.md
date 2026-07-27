@@ -1,5 +1,7 @@
 # Getting started
 
+![](assets/human-says-happy-clipart.png){ align=right width="150" }
+
 !!! warning "Early development"
     This is `0.1.0a1`. The rule identifiers, the configuration schema, and
     the JSON output shape will change before `0.1.0`. Do not pin automation
