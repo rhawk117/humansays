@@ -1,7 +1,6 @@
 import ast
 from pathlib import Path
 
-import poc_fixtures as fixtures
 import pytest
 
 from humansays.analysis.models import ParsedModule
@@ -11,6 +10,7 @@ from humansays.findings.models import Score
 from humansays.reporting import render
 from humansays.reporting.models import FileReport, ReportRequest, ScanResult
 from humansays.scoring import score_for
+from tests.fixtures import sources
 
 SNAPSHOT = """\
 Python investigation targets snippet.py
@@ -21,7 +21,7 @@ snippet.py:10-11  Store  many-base-classes
 
 
 def _scan_result() -> tuple[ScanResult, Score]:
-    source = fixtures.MULTIPLE_INHERITANCE
+    source = sources.MULTIPLE_INHERITANCE
     module = ParsedModule(Path('snippet.py'), source, ast.parse(source))
     findings = RulesetEvaluator(module, Thresholds()).run()
     report = FileReport(

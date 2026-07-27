@@ -98,9 +98,6 @@ ignore = [
     "RET505",
     "SIM116",
 ]
-# Ported verbatim from the POC's unittest.TestCase suite; assertions are kept
-# as unittest-style (not rewritten to plain assert) per the migration plan.
-"tests/parity/*.py" = ["PT009", "SIM115"]
 
 [lint.flake8-tidy-imports]
 # Imports inside the package are written as `humansays.*`, never `from .x`.
