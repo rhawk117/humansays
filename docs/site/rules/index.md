@@ -100,7 +100,7 @@ implementation that is still owed:
     modernization belongs to a general linter and loses value on newer Python.
 
 The codes were retired rather than reused, so an `HS###` code means the same
-thing across versions. `tests/deletions/test_deleted_rules.py` holds the three
+thing across versions. `tests/unit/test_deleted_rules.py` holds the three
 in a `DELETED_IDS` set and asserts none of them can be emitted.
 [Reconciliation](../planned/reconciliation.md) has the full mapping.
 

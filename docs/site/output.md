@@ -45,12 +45,12 @@ JSON output is a single object printed with
 every level, so the output is stable and diffs cleanly between runs. Do not
 rely on `schema_version` appearing first; read it by key.
 
-Abridged from a real run against `tests/fixture_module.py`:
+Abridged from a real run against `docs/examples/smelly.py`:
 
 ```json
 {
   "errors": [],
-  "root": "tests/fixture_module.py",
+  "root": "docs/examples/smelly.py",
   "schema_version": 1,
   "score": {
     "density": 40.482,
@@ -65,13 +65,13 @@ Abridged from a real run against `tests/fixture_module.py`:
     "lines": 56,
     "signals": 10,
     "targets": 5,
-    "truncated": 4
+    "truncated": 0
   },
   "targets": [
     {
       "end_line": 47,
       "line": 29,
-      "path": "tests/fixture_module.py",
+      "path": "docs/examples/smelly.py",
       "signals": [
         {
           "observation": {
