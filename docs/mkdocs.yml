@@ -1,0 +1,139 @@
+site_name: humansays
+site_description: Static analysis that reports on code structure against documented criteria.
+site_url: https://rhawk117.github.io/humansays/
+repo_name: rhawk117/humansays
+repo_url: https://github.com/rhawk117/humansays
+edit_uri: edit/develop/docs/site/
+
+docs_dir: site
+site_dir: ../site
+
+theme:
+  name: material
+  logo: assets/docs-icon.png
+  favicon: assets/favicon.ico
+  icon:
+    repo: octicons/mark-github-24
+  palette:
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/lightbulb-auto
+        name: Switch to light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: teal
+      accent: amber
+      toggle:
+        icon: material/lightbulb
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: teal
+      accent: amber
+      toggle:
+        icon: material/lightbulb-outline
+        name: Switch to system preference
+  features:
+    - content.code.annotate
+    - content.code.copy
+    - content.tabs.link
+    - content.tooltips
+    - navigation.footer
+    - navigation.top
+    - navigation.tracking
+    - search.highlight
+    - search.suggest
+    - toc.follow
+
+plugins:
+  - search
+  - termynal:
+      prompt_literal_start:
+        - "$"
+        - ">>>"
+  # llmstxt post-processes rendered pages, so it must stay last.
+  - llmstxt:
+      markdown_description: >-
+        humansays is a Python linter that evaluates how difficult AI generated
+        code is to read, understand, test, maintain, and safely modify.
+      # `sections` is required, and naming a page that does not exist yet is a
+      # warning, which --strict turns into a failure. So this grows one entry
+      # at a time as pages land, rather than being written out in full here.
+      # The planned catalog is deliberately excluded: it is not what an agent
+      # should act on.
+      sections:
+        Usage:
+          - index.md
+          - getting-started.md
+          - configuration.md
+          - cli.md
+          - output.md
+        Rules:
+          - rules/*.md
+        Design philosophy:
+          - philosophy/*.md
+
+validation:
+  omitted_files: warn
+  unrecognized_links: warn
+  absolute_links: warn
+  anchors: warn
+
+markdown_extensions:
+  - abbr
+  - attr_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.betterem
+  - pymdownx.caret
+  - pymdownx.highlight:
+      line_spans: __span
+      linenums_style: pymdownx-inline
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.superfences
+  - pymdownx.tilde
+  - pymdownx.blocks.admonition
+  - pymdownx.blocks.details
+  - pymdownx.blocks.tab:
+      alternate_style: true
+
+nav:
+  - Overview: index.md
+  - Getting started: getting-started.md
+  - Configuration: configuration.md
+  - CLI: cli.md
+  - Output and scoring: output.md
+  - Rules:
+      - Overview: rules/index.md
+      - Function shape: rules/function-shape.md
+      - Class design: rules/class-design.md
+      - State and boundaries: rules/state-and-boundaries.md
+      - Failure and imports: rules/failure-and-imports.md
+  - Design philosophy:
+      - Overview: philosophy/index.md
+      - Contracts and inputs: philosophy/contracts.md
+      - State and effects: philosophy/state-and-effects.md
+      - Keeping and extracting: philosophy/structure.md
+      - Arguments and failure: philosophy/arguments-and-failure.md
+      - Testability and thresholds: philosophy/testability.md
+  - Planned rules:
+      - Overview: planned/index.md
+      - SRP: planned/srp.md
+      - KISS: planned/kiss.md
+      - CQS: planned/cqs.md
+      - POLA: planned/pola.md
+      - COUP: planned/coup.md
+      - CONTRACT: planned/contract.md
+      - STATE: planned/state.md
+      - LIFE: planned/life.md
+      - FAIL: planned/fail.md
+      - CONC: planned/conc.md
+      - IDIOM: planned/idiom.md
+      - NIT: planned/nit.md
+      - DRY: planned/dry.md
+      - Reconciliation: planned/reconciliation.md

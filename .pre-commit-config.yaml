@@ -27,3 +27,12 @@ repos:
     rev: v3.10.0-2
     hooks:
       - id: shfmt
+
+  - repo: local
+    hooks:
+      - id: commit-msg-format
+        name: commit message format
+        entry: python3 scripts/check_commit_msg.py
+        language: system
+        stages: [commit-msg]
+        pass_filenames: true

@@ -1,34 +1,63 @@
 import sys
+import traceback
 from collections.abc import Sequence
 from typing import TextIO
 
 from humansays import application
 from humansays.config.loading import ConfigError, load_settings
-from humansays.const import CONFIG_ERROR_EXIT, MISSING_SYMBOL_EXIT, NO_FILES_EXIT
-from humansays.reporting.render import emit
+from humansays.const import (
+    CONFIG_ERROR_EXIT,
+    INTERNAL_ERROR_EXIT,
+    MISSING_SYMBOL_EXIT,
+    NO_FILES_EXIT,
+    NO_FILES_TEMPLATE,
+    NO_PATHS_MESSAGE,
+)
+from humansays.reporting.models import ReportRequest
+from humansays.reporting.render import write_report
 from humansays.scoring import score_for
 
 
-def main(argv: Sequence[str] | None = None, stream: TextIO | None = None) -> int:
-    try:
-        settings = load_settings(argv)
-    except ConfigError as err:
-        print(f'error: config file not found: {err.path}', file=sys.stderr)
-        return CONFIG_ERROR_EXIT
+def _run(argv: Sequence[str] | None, stream: TextIO | None) -> int:
+    settings = load_settings(argv)
 
-    specs = application.resolve_specs(settings.selection, stream or sys.stdin)
+    source_stream = stream or sys.stdin
+    if not settings.selection.paths and source_stream.isatty():
+        print(NO_PATHS_MESSAGE, file=sys.stderr)
+        return NO_FILES_EXIT
+
+    specs = application.resolve_specs(settings.selection, source_stream)
     paths = application.collect_files(specs, settings.selection.excludes)
     if not paths:
         source = ', '.join(specs) or '<stdin>'
-        print(f'error: no Python files found in {source}', file=sys.stderr)
+        print(NO_FILES_TEMPLATE.format(source=source), file=sys.stderr)
         return NO_FILES_EXIT
 
     result = application.analyze_paths(paths, settings)
     wanted = settings.selection.symbol
+
     if wanted and not application.symbol_is_present(result, wanted):
         print(f'error: symbol {wanted!r} not found', file=sys.stderr)
         return MISSING_SYMBOL_EXIT
 
     score = score_for(result)
-    emit(result, score, settings.report)
-    return application.exit_code(result, score, settings)
+    code = application.exit_code(result, score, settings)
+    write_report(ReportRequest(result, score, settings.report, code))
+    return code
+
+
+def main(argv: Sequence[str] | None = None, stream: TextIO | None = None) -> int:
+    """Entry point. Every failure leaves here as an exit code, never a traceback.
+
+    ``SystemExit`` and ``KeyboardInterrupt`` derive from ``BaseException`` and
+    pass through untouched, so ``--help`` and Ctrl-C keep their own statuses.
+    """
+    try:
+        return _run(argv, stream)
+    except ConfigError as err:
+        print(f'error: {err}', file=sys.stderr)
+        return CONFIG_ERROR_EXIT
+    except Exception:  # noqa: BLE001
+        print('internal error: this is a humansays bug', file=sys.stderr)
+        traceback.print_exc(file=sys.stderr)
+        return INTERNAL_ERROR_EXIT

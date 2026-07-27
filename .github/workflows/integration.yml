@@ -22,6 +22,13 @@ jobs:
     name: Lint + Test
     uses: ./.github/workflows/ci-playbook.yml
 
+  # Runs concurrently with ci-runbook, so it costs no extra wall clock.
+  # upload-mkdocs defaults upload-artifact to false, so a pull request builds
+  # the site without uploading it.
+  docs:
+    name: Docs
+    uses: ./.github/workflows/upload-mkdocs.yml
+
   package:
     needs: [ci-runbook]
     uses: ./.github/workflows/build-package.yml
@@ -30,17 +37,20 @@ jobs:
 
   ci-gate:
     name: Continuous Integration Gate
-    needs: [ci-runbook, package]
+    needs: [ci-runbook, docs, package]
     if: ${{ always() }}
     runs-on: ${{ vars.DEFAULT_RUNNER || 'ubuntu-24.04' }}
     steps:
       - name: Require Successful CI Jobs
         env:
           RUNBOOK_RESULT: ${{ needs.ci-runbook.result }}
+          DOCS_RESULT: ${{ needs.docs.result }}
           PACKAGE_RESULT: ${{ needs.package.result }}
         run: |
           printf 'lint+test: %s\n' "$RUNBOOK_RESULT"
+          printf 'docs:      %s\n' "$DOCS_RESULT"
           printf 'package:   %s\n' "$PACKAGE_RESULT"
-          if [[ "$RUNBOOK_RESULT" != "success" || "$PACKAGE_RESULT" != "success" ]]; then
+          if [[ "$RUNBOOK_RESULT" != "success" || "$DOCS_RESULT" != "success" \
+             || "$PACKAGE_RESULT" != "success" ]]; then
             exit 1
           fi

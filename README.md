@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/rhawk117/humansays/main/docs/site/assets/human-says-banner.png" width="760" alt="humansays">
+</p>
+
 # humansays
 
 [![CI](https://github.com/rhawk117/humansays/actions/workflows/integration.yml/badge.svg)](https://github.com/rhawk117/humansays/actions/workflows/integration.yml)
@@ -5,7 +9,9 @@
 [![Python](https://img.shields.io/pypi/pyversions/humansays.svg)](https://pypi.org/project/humansays/)
 [![License](https://img.shields.io/pypi/l/humansays.svg)](https://github.com/rhawk117/humansays/blob/main/LICENSE)
 
-A structural review tool for Python code that looks valid but still feels wrong.
+A python linter which evaluates how difficult AI generated code is to read, understand, test, maintain, and safely modify. It gives coding agents actionable and easy to reason about feedback on design problems that traditional linters, type checkers, and tests cannot detect.
+
+Full documentation: <https://rhawk117.github.io/humansays/>
 
 `humansays` parses Python with the standard-library AST and points reviewers toward code that deserves a second look. It reports structural signals such as long parameter lists, deep nesting, mutable module state, lazy imports, oversized functions and classes, and methods that use neither `self` nor the class.
 
@@ -32,13 +38,8 @@ It gives a human reviewer, or a tool acting on behalf of one, a smaller set of p
 pip install humansays
 ```
 
-For Rich-powered terminal output:
-
-```bash
-pip install "humansays[terminal]"
-```
-
-The base package has no runtime dependencies. The `terminal` extra installs `rich`; without it, text output falls back to plain ANSI formatting.
+There are no runtime dependencies and no extras. Text output is written with
+plain ANSI escapes, which `NO_COLOR`, `FORCE_COLOR`, and `TERM=dumb` control.
 
 ## Quick start
 
@@ -118,6 +119,8 @@ A finding means "inspect this," not "rewrite this." Large functions and mutable 
 
 The first discovered configuration source is used. Command-line arguments override file settings.
 
+The block below is an example of **loosened** thresholds, not the defaults. Every key and its real default is documented at [Configuration](https://rhawk117.github.io/humansays/configuration/).
+
 ```toml
 [tool.humansays.report]
 format = "text"
@@ -193,8 +196,16 @@ Rule identifiers may change before `0.1.0`, so prerelease integrations should co
 | `0` | The command completed without crossing a configured failure threshold |
 | `1` | Findings crossed `--fail-on`, or the score fell below `--min-score` |
 | `2` | The requested `--symbol` was not found |
-| `3` | No Python files were found |
-| `4` | The requested configuration file was missing |
+| `3` | No paths were given, or no Python files were found |
+| `4` | The configuration could not be loaded |
+| `5` | One or more files could not be analyzed |
+| `70` | Internal error — this is a humansays bug |
+
+A file that cannot be parsed, read, or decoded is reported and makes the run
+exit `5`. Findings take precedence: a run with both findings and unanalyzed
+files exits `1`. The score and grade cover only the files that were analyzed,
+and the text report names the gap. Enforced by
+`tests/cli/test_exit_contract.py`.
 
 ## Scope and limitations
 

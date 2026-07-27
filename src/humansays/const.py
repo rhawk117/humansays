@@ -8,7 +8,7 @@ make this module part of an import cycle).
 from collections import defaultdict, deque
 from types import MappingProxyType
 
-from .enums import Grade, Severity
+from humansays.enums import Grade, Severity
 
 MAPPING_PROXY = type(MappingProxyType({}))
 
@@ -105,6 +105,25 @@ NO_FILES_EXIT = 3
 MISSING_SYMBOL_EXIT = 2
 FINDINGS_EXIT = 1
 CONFIG_ERROR_EXIT = 4
+UNANALYZED_EXIT = 5
+INTERNAL_ERROR_EXIT = 70
+
+_SCAN_HINT = 'Scan a directory or file:\n    humansays .\n    humansays src/'
+NO_PATHS_MESSAGE = (
+    f'error: no paths given.\n\n{_SCAN_HINT}\n\n'
+    "Or pipe a file list:\n    git ls-files '*.py' | humansays"
+)
+NO_FILES_TEMPLATE = 'error: no Python files found in {source}\n\n' + _SCAN_HINT
+
+EXIT_REASONS = MappingProxyType({
+    0: 'ok',
+    FINDINGS_EXIT: 'findings',
+    MISSING_SYMBOL_EXIT: 'symbol-not-found',
+    NO_FILES_EXIT: 'no-files',
+    CONFIG_ERROR_EXIT: 'config-error',
+    UNANALYZED_EXIT: 'unanalyzed',
+    INTERNAL_ERROR_EXIT: 'internal-error',
+})
 
 CLI_DESTINATIONS = MappingProxyType({
     'paths': ('selection', 'paths'),

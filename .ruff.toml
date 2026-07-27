@@ -2,8 +2,8 @@ line-length = 90
 preview = false
 unsafe-fixes = false
 # Vendored third-party fixture corpus, not humansays code -- not ours to lint.
-# docs/ is mid-restructuring in a separate workstream -- not ours to format.
-extend-exclude = ["tests/golden/poc-parity/corpus", "docs"]
+# docs/ is published prose; .agent-specs/ is agent execution material.
+extend-exclude = ["tests/golden/poc-parity/corpus", "docs", ".agent-specs"]
 
 [lint]
 select = [
@@ -54,6 +54,17 @@ select = [
     "ANN206",
     "FBT001",
     "FBT002",
+    "YTT",    # Unsafe or fragile Python-version checks
+    "BLE",    # Blind Exception/BaseException handling
+    "T10",    # Forgotten debugger calls
+    "ISC004", # Accidental string concatenation inside collections
+    "INP",    # Missing __init__.py files
+    "SLOT",   # Missing slots on immutable builtin subclasses
+    "PL",     # Ruff's Pylint correctness and structural rules
+    "ANN002", # Missing *args annotation
+    "ANN003", # Missing **kwargs annotation
+    "FBT003", # Positional Boolean at call sites
+    "D418",   # Docstring incorrectly attached to @overload
 ]
 
 ignore = [
@@ -62,9 +73,7 @@ ignore = [
     "RUF001",
     "RUF002",
     "RUF003",
-    "RUF006",
-    "RUF012",
-    "RUF029",
+    "PLR2004",
     "TRY400",
     "TRY003",
     "TRY301",
@@ -74,20 +83,33 @@ ignore = [
     "S106",
 ]
 [lint.per-file-ignores]
-"tests/**/*.py" = ["ARG001", "ARG002", "S101"]
+# Standalone entry points invoked by path, not an importable package.
+"scripts/**/*.py" = ["INP001"]
+"tests/**/*.py" = ["ARG001", "ARG002", "INP001", "PLR2004", "S101", "PLC0415"]
 # Deliberately smelly fixture, byte-for-byte ported from the POC: its
 # lint violations are the point (each one is what a specific rule detects).
-"tests/fixture_module.py" = ["ANN001", "ANN201", "ANN205", "E731", "FBT002", "RET505", "SIM116"]
+"tests/fixture_module.py" = [
+    "ANN001",
+    "ANN201",
+    "ANN205",
+    "E731",
+    "FBT002",
+    "PLR0911",
+    "RET505",
+    "SIM116",
+]
 # Ported verbatim from the POC's unittest.TestCase suite; assertions are kept
 # as unittest-style (not rewritten to plain assert) per the migration plan.
 "tests/parity/*.py" = ["PT009", "SIM115"]
 
+[lint.flake8-tidy-imports]
+# Imports inside the package are written as `humansays.*`, never `from .x`.
+# TID252 is the enforcer; `scripts/format.sh` rewrites any relative import.
+ban-relative-imports = "all"
+
 [lint.mccabe]
 max-complexity = 10
 
-
-[lint.flake8-quotes]
-docstring-quotes = "single"
 
 [lint.flake8-type-checking]
 exempt-modules = ["typing", "typing_extensions"]

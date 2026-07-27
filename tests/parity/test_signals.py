@@ -11,7 +11,7 @@ from pathlib import Path
 import poc_fixtures as fixtures
 
 from humansays.analysis.models import ParsedModule
-from humansays.analysis.rules import Analyzer
+from humansays.analysis.rules import RulesetEvaluator
 from humansays.cli import main
 from humansays.config.models import Thresholds
 from humansays.enums import Grade, Severity, SignalName
@@ -32,7 +32,7 @@ def _baselined_signals() -> frozenset[SignalName]:
 
 def analyze(source: str, thresholds: Thresholds | None = None) -> list[Finding]:
     module = ParsedModule(Path('<snippet>'), source, ast.parse(source))
-    return Analyzer(module, thresholds or Thresholds()).run()
+    return RulesetEvaluator(module, thresholds or Thresholds()).run()
 
 
 def signals(findings: list[Finding]) -> list[SignalName]:

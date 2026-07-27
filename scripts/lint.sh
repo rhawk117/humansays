@@ -1,16 +1,12 @@
 #!/usr/bin/env bash
 
-# Static analysis. Every check is read-only and never modifies repository
-# files. Run a single check by name, or `all` (default) to run every check
-# and aggregate the result.
-
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 cd "$REPO_ROOT"
 
-# shellcheck source=scripts/log.sh
+# shellcheck disable=SC1091 source=scripts/log.sh
 source "$SCRIPT_DIR/log.sh"
 
 run_format() {

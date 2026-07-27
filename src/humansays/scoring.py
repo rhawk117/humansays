@@ -11,10 +11,10 @@ Density rather than a raw count means a large clean module is not punished for
 its size, and a small module full of warnings cannot hide behind a low total.
 """
 
-from .const import GRADE_BANDS, PERFECT_SCORE, SCORE_TOLERANCE, SCORE_WINDOW
-from .enums import Grade
-from .findings.models import Score
-from .reporting.models import ScanResult
+from humansays.const import GRADE_BANDS, PERFECT_SCORE, SCORE_TOLERANCE, SCORE_WINDOW
+from humansays.enums import Grade
+from humansays.findings.models import Score
+from humansays.reporting.models import ScanResult
 
 
 def grade_for(value: float) -> Grade:
@@ -31,8 +31,8 @@ def score_for(result: ScanResult) -> Score:
     value = round(PERFECT_SCORE / (1.0 + density / SCORE_TOLERANCE), 1)
     return Score(
         lines=lines,
+        value=value,
         penalty=round(penalty, 2),
         density=round(density, 3),
-        value=value,
         grade=grade_for(value),
     )
