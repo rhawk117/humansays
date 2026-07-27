@@ -103,6 +103,12 @@ nav:
   - CLI: cli.md
   - Output and scoring: output.md
   - Rules:
+      - Overview: rules/index.md
+      - Function shape: rules/function-shape.md
+      - Class design: rules/class-design.md
+      - State and boundaries: rules/state-and-boundaries.md
+      - Failure and imports: rules/failure-and-imports.md
+  - Planned rules:
       - Overview: rules/python/index.md
       - SRP: rules/python/srp.md
       - KISS: rules/python/kiss.md
