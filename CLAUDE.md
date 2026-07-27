@@ -70,10 +70,10 @@ stopped doing. The per-phase tree those documents used to describe is gone.
 - `scripts/ci.sh docs` is the enforcer, and it runs inside `make ci`. In CI the
   `docs` job in `.github/workflows/integration.yml` runs the same build on every
   pull request.
-- `docs/site/planned/` describes 158 rules that are not implemented. Version
+- `docs/site/planned/` describes 175 rules that are not implemented. Version
   `0.1.0a1` ships 19. Never document a planned rule as shipped.
 - `docs/evidence/` sits outside `docs_dir` and is never built.
-- `.migration/` and `.mascots/` are untracked local working material.
+- `.mascots/` is untracked local working material.
 
 ## Imports
 

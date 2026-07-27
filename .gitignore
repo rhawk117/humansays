@@ -228,3 +228,7 @@ __marimo__/
 # downscaled copy under docs/site/assets/, which is the only directory mkdocs
 # copies into the build.
 /docs/*.png
+
+# Companion spec for the planned-catalog restructure. Working material; the
+# surviving public record is docs/site/planned/migration.md.
+/rule-group-migration.md

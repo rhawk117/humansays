@@ -8,12 +8,12 @@ attached to each finding is the thing a human still has to answer.
 
 ## HS001 many-arguments
 
-| Field | Value |
-|---|---|
-| Severity | WARNING |
-| Confidence | 0.80 |
-| Weight | 3.0 |
-| Tuned by | `thresholds.functions.max_arguments`, default `3` |
+| Field           | Value                                                                                        |
+| --------------- | -------------------------------------------------------------------------------------------- |
+| Severity        | WARNING                                                                                      |
+| Confidence      | 0.80                                                                                         |
+| Weight          | 3.0                                                                                          |
+| Tuned by        | `thresholds.functions.max_arguments`, default `3`                                            |
 | Review question | Do these values form a request object, reusable configuration, or multiple responsibilities? |
 
 **When it fires.** The count of operation parameters is strictly greater than
@@ -49,12 +49,12 @@ def send(self, recipient, message, retries):
 
 ## HS002 boolean-modes
 
-| Field | Value |
-|---|---|
-| Severity | ADVISORY |
-| Confidence | 0.82 |
-| Weight | 1.0 |
-| Tuned by | Not configurable |
+| Field           | Value                                                                                       |
+| --------------- | ------------------------------------------------------------------------------------------- |
+| Severity        | ADVISORY                                                                                    |
+| Confidence      | 0.82                                                                                        |
+| Weight          | 1.0                                                                                         |
+| Tuned by        | Not configurable                                                                            |
 | Review question | Would keyword-only arguments, an enum, or separate operations communicate the modes better? |
 
 **When it fires.** At least one operation parameter is boolean, and the
@@ -91,12 +91,12 @@ def render(data, style: Style):
 
 ## HS003 deep-nesting
 
-| Field | Value |
-|---|---|
-| Severity | WARNING |
-| Confidence | 0.76 |
-| Weight | 3.0 |
-| Tuned by | `thresholds.functions.max_nesting`, default `3`, plus `class_nesting_bonus`, default `1` |
+| Field           | Value                                                                                      |
+| --------------- | ------------------------------------------------------------------------------------------ |
+| Severity        | WARNING                                                                                    |
+| Confidence      | 0.76                                                                                       |
+| Weight          | 3.0                                                                                        |
+| Tuned by        | `thresholds.functions.max_nesting`, default `3`, plus `class_nesting_bonus`, default `1`   |
 | Review question | Would guard clauses, a state model, or one meaningful extraction clarify the control flow? |
 
 **When it fires.** The deepest nesting reached in the body is strictly greater
@@ -145,12 +145,12 @@ def settle(orders):
 
 ## HS009 long-function
 
-| Field | Value |
-|---|---|
-| Severity | ADVISORY |
-| Confidence | 0.55 |
-| Weight | 1.0 |
-| Tuned by | `thresholds.functions.max_lines`, default `50` |
+| Field           | Value                                                                                    |
+| --------------- | ---------------------------------------------------------------------------------------- |
+| Severity        | ADVISORY                                                                                 |
+| Confidence      | 0.55                                                                                     |
+| Weight          | 1.0                                                                                      |
+| Tuned by        | `thresholds.functions.max_lines`, default `50`                                           |
 | Review question | Is the function cohesive, or does it mix workflow, decisions, and lower-level mechanics? |
 
 **When it fires.** The physical span of the definition is strictly greater than
@@ -191,12 +191,12 @@ def build_report(records):
 
 ## HS014 validated-argument-bundle
 
-| Field | Value |
-|---|---|
-| Severity | WARNING |
-| Confidence | 0.88 |
-| Weight | 3.0 |
-| Tuned by | `thresholds.functions.max_arguments`, default `3` |
+| Field           | Value                                                                                           |
+| --------------- | ----------------------------------------------------------------------------------------------- |
+| Severity        | WARNING                                                                                         |
+| Confidence      | 0.88                                                                                            |
+| Weight          | 3.0                                                                                             |
+| Tuned by        | `thresholds.functions.max_arguments`, default `3`                                               |
 | Review question | Should these arguments and their validation become one request, value, or configuration object? |
 
 **When it fires.** This rule is checked only after HS001 has fired, so the
@@ -240,12 +240,12 @@ def schedule(window: Window, policy: RetryPolicy):
 
 ## HS016 lambda-expression
 
-| Field | Value |
-|---|---|
-| Severity | WARNING |
-| Confidence | 0.99 |
-| Weight | 3.0 |
-| Tuned by | Not configurable |
+| Field           | Value                                                                                          |
+| --------------- | ---------------------------------------------------------------------------------------------- |
+| Severity        | WARNING                                                                                        |
+| Confidence      | 0.99                                                                                           |
+| Weight          | 3.0                                                                                            |
+| Tuned by        | Not configurable                                                                               |
 | Review question | What would this expression be named, and would a named function make it testable and reusable? |
 
 **When it fires.** Every `lambda` expression in the module fires, once each.
@@ -284,12 +284,12 @@ active = sorted(users, key=last_seen)
 
 ## HS019 many-branches
 
-| Field | Value |
-|---|---|
-| Severity | WARNING |
-| Confidence | 0.74 |
-| Weight | 3.0 |
-| Tuned by | `thresholds.functions.max_branches`, default `5` |
+| Field           | Value                                                                                                |
+| --------------- | ---------------------------------------------------------------------------------------------------- |
+| Severity        | WARNING                                                                                              |
+| Confidence      | 0.74                                                                                                 |
+| Weight          | 3.0                                                                                                  |
+| Tuned by        | `thresholds.functions.max_branches`, default `5`                                                     |
 | Review question | Do these conditionals encode one decision that belongs in a table, mapping, or polymorphic dispatch? |
 
 **When it fires.** The branch count for the body is strictly greater than
@@ -341,12 +341,12 @@ def rate(kind):
 
 ## HS022 dense-function
 
-| Field | Value |
-|---|---|
-| Severity | WARNING |
-| Confidence | 0.72 |
-| Weight | 3.0 |
-| Tuned by | `thresholds.functions.max_code_lines`, default `65` |
+| Field           | Value                                                                      |
+| --------------- | -------------------------------------------------------------------------- |
+| Severity        | WARNING                                                                    |
+| Confidence      | 0.72                                                                       |
+| Weight          | 3.0                                                                        |
+| Tuned by        | `thresholds.functions.max_code_lines`, default `65`                        |
 | Review question | How many distinct steps are in here, and which of them has a name already? |
 
 **When it fires.** The count of executable lines in the definition is strictly

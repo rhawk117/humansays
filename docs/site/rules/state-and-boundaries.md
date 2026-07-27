@@ -10,12 +10,12 @@ design. Background on the reasoning behind these rules lives in
 
 ## HS004 shared-mutable-state
 
-| Field | Value |
-|---|---|
-| Severity | WARNING |
-| Confidence | 0.95 |
-| Weight | 3.0 |
-| Tuned by | Not configurable |
+| Field           | Value                                                                             |
+| --------------- | --------------------------------------------------------------------------------- |
+| Severity        | WARNING                                                                           |
+| Confidence      | 0.95                                                                              |
+| Weight          | 3.0                                                                               |
+| Tuned by        | Not configurable                                                                  |
 | Review question | Is the lifetime intentional, who owns mutation, and can tests isolate this state? |
 
 **When it fires.** The scanner walks two scopes: the statements directly in the
@@ -67,12 +67,12 @@ class Registry:
 
 ## HS006 multiple-mutation-owners
 
-| Field | Value |
-|---|---|
-| Severity | WARNING |
-| Confidence | 0.70 |
-| Weight | 3.0 |
-| Tuned by | Not configurable |
+| Field           | Value                                                                               |
+| --------------- | ----------------------------------------------------------------------------------- |
+| Severity        | WARNING                                                                             |
+| Confidence      | 0.70                                                                                |
+| Weight          | 3.0                                                                                 |
+| Tuned by        | Not configurable                                                                    |
 | Review question | Are mutation authority, transaction boundaries, and partial-failure behavior clear? |
 
 **When it fires.** While walking one function body, the scanner attributes each
@@ -131,12 +131,12 @@ class Ledger:
 
 ## HS007 mixed-boundaries
 
-| Field | Value |
-|---|---|
-| Severity | WARNING |
-| Confidence | 0.65 |
-| Weight | 3.0 |
-| Tuned by | Not configurable |
+| Field           | Value                                                                                   |
+| --------------- | --------------------------------------------------------------------------------------- |
+| Severity        | WARNING                                                                                 |
+| Confidence      | 0.65                                                                                    |
+| Weight          | 3.0                                                                                     |
+| Tuned by        | Not configurable                                                                        |
 | Review question | Should one function coordinate this many standard-library boundary categories directly? |
 
 **When it fires.** As it walks a function body the scanner resolves every dotted
@@ -144,12 +144,12 @@ attribute reference and every call target through the module's import aliases,
 then checks the resolved name against four categories of standard-library module
 listed in `BOUNDARY_MODULES`:
 
-| Category | Modules |
-|---|---|
-| `database` | `sqlite3` |
-| `filesystem` | `os`, `pathlib`, `shutil`, `tempfile` |
-| `network` | `ftplib`, `http.client`, `smtplib`, `socket`, `urllib.request` |
-| `process` | `multiprocessing`, `subprocess` |
+| Category     | Modules                                                        |
+| ------------ | -------------------------------------------------------------- |
+| `database`   | `sqlite3`                                                      |
+| `filesystem` | `os`, `pathlib`, `shutil`, `tempfile`                          |
+| `network`    | `ftplib`, `http.client`, `smtplib`, `socket`, `urllib.request` |
+| `process`    | `multiprocessing`, `subprocess`                                |
 
 A name matches if it equals a listed module or begins with that module plus a
 dot, so `pathlib.Path.write_text` lands in `filesystem`. The rule fires when the
@@ -200,12 +200,12 @@ def deploy(path, host, runner):
 
 ## HS017 long-file
 
-| Field | Value |
-|---|---|
-| Severity | WARNING |
-| Confidence | 0.60 |
-| Weight | 3.0 |
-| Tuned by | `thresholds.modules.max_lines`, default `500` |
+| Field           | Value                                                                                         |
+| --------------- | --------------------------------------------------------------------------------------------- |
+| Severity        | WARNING                                                                                       |
+| Confidence      | 0.60                                                                                          |
+| Weight          | 3.0                                                                                           |
+| Tuned by        | `thresholds.modules.max_lines`, default `500`                                                 |
 | Review question | Does this file hold one subject, or have several modules been accumulated into one namespace? |
 
 **When it fires.** This is the one module-level rule of the four, and it is

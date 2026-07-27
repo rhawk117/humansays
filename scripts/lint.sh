@@ -22,6 +22,26 @@ run_format() {
     return "$failed"
 }
 
+run_markdown() {
+    local failed=0
+
+    log_step "pymarkdown scan"
+    if ! uv run pymarkdown scan -r docs/site; then
+        log_error "Markdown lint failed"
+        failed=1
+    fi
+    log_step_end
+
+    log_step "mdformat --check"
+    if ! uv run mdformat --number --check docs/site; then
+        log_error "Markdown format check failed; run 'make format'"
+        failed=1
+    fi
+    log_step_end
+
+    return "$failed"
+}
+
 run_ruff() {
     local failed=0
 
@@ -127,6 +147,7 @@ run_all() {
     local failed=0
 
     run_format || failed=1
+    run_markdown || failed=1
     run_ruff || failed=1
     run_typecheck || failed=1
     run_shell || failed=1
@@ -141,6 +162,7 @@ run_all() {
 main() {
     case "${1:-all}" in
     format) run_format ;;
+    markdown) run_markdown ;;
     ruff) run_ruff ;;
     typecheck) run_typecheck ;;
     shell) run_shell ;;
@@ -156,7 +178,7 @@ main() {
         log_success "All lint checks passed"
         ;;
     *)
-        echo "Usage: $(basename "$0") [format|ruff|typecheck|shell|security|deps|imports|deadcode|all]" >&2
+        echo "Usage: $(basename "$0") [format|markdown|ruff|typecheck|shell|security|deps|imports|deadcode|all]" >&2
         exit 1
         ;;
     esac

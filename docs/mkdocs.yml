@@ -39,6 +39,7 @@ theme:
     - content.tabs.link
     - content.tooltips
     - navigation.footer
+    - navigation.indexes
     - navigation.top
     - navigation.tracking
     - search.highlight
@@ -81,7 +82,9 @@ validation:
 
 markdown_extensions:
   - abbr
+  - admonition
   - attr_list
+  - def_list
   - footnotes
   - md_in_html
   - tables
@@ -89,6 +92,7 @@ markdown_extensions:
       permalink: true
   - pymdownx.betterem
   - pymdownx.caret
+  - pymdownx.details
   - pymdownx.highlight:
       line_spans: __span
       linenums_style: pymdownx-inline
@@ -97,10 +101,12 @@ markdown_extensions:
   - pymdownx.mark
   - pymdownx.superfences
   - pymdownx.tilde
-  - pymdownx.blocks.admonition
-  - pymdownx.blocks.details
-  - pymdownx.blocks.tab:
-      alternate_style: true
+
+extra_javascript:
+  # Vendored rather than pulled from a CDN: the docs build has to work with no
+  # network, which is the same constraint the parity corpus is vendored under.
+  - assets/tablesort.min.js
+  - assets/tablesort-init.js
 
 nav:
   - Overview: index.md
@@ -123,17 +129,20 @@ nav:
       - Testability and thresholds: philosophy/testability.md
   - Planned rules:
       - Overview: planned/index.md
-      - SRP: planned/srp.md
+      - SOLID: planned/solid.md
       - KISS: planned/kiss.md
       - CQS: planned/cqs.md
       - POLA: planned/pola.md
-      - COUP: planned/coup.md
+      - LOD: planned/lod.md
       - CONTRACT: planned/contract.md
-      - STATE: planned/state.md
+      - ENCAP: planned/encap.md
       - LIFE: planned/life.md
-      - FAIL: planned/fail.md
+      - ERR: planned/err.md
       - CONC: planned/conc.md
+      - SBD: planned/sbd.md
       - IDIOM: planned/idiom.md
-      - NIT: planned/nit.md
+      - YAGNI: planned/yagni.md
+      - SMELL: planned/smell.md
       - DRY: planned/dry.md
+      - Migration: planned/migration.md
       - Reconciliation: planned/reconciliation.md

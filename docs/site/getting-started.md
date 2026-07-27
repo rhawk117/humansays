@@ -1,8 +1,9 @@
 # Getting started
 
-![](assets/human-says-happy-clipart.png){ align=right width="150" }
+![The humansays mascot](assets/human-says-happy-clipart.png){ align=right width="150" }
 
 !!! warning "Early development"
+
     This is `0.1.0a1`. The rule identifiers, the configuration schema, and
     the JSON output shape will change before `0.1.0`. Do not pin automation
     to `HS###` codes yet.
@@ -85,13 +86,13 @@ which is what makes the pre-commit integration below work.
 
 ## Grade bands
 
-| Score | Grade |
-|---|---|
-| 90 and above | A |
-| 75 to 89 | B |
-| 60 to 74 | C |
-| 40 to 59 | D |
-| below 40 | F |
+| Score        | Grade |
+| ------------ | ----- |
+| 90 and above | A     |
+| 75 to 89     | B     |
+| 60 to 74     | C     |
+| 40 to 59     | D     |
+| below 40     | F     |
 
 A grade is a summary of density, not a pass mark. Nothing in the tool treats
 a `B` as acceptable or an `F` as broken. If you want a threshold, set one
@@ -167,7 +168,7 @@ so the hook only scans what changed.
 ## Next
 
 - [Configuration](configuration.md) for every key, its default, and the TOML
-  block that sets it
+    block that sets it
 - [CLI](cli.md) for every flag
 - [Output and scoring](output.md) for the JSON shape and how the score is
-  computed
+    computed

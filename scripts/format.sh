@@ -21,6 +21,10 @@ main() {
     uv run ruff check . --fix --unsafe-fixes
     log_step_end
 
+    log_step "mdformat"
+    uv run mdformat --number docs/site
+    log_step_end
+
     log_step "shfmt"
     require_cmd shfmt
     shfmt -w scripts/*.sh

@@ -1,8 +1,9 @@
 # Rules
 
-![](../assets/human-says-clipart.png){ align=right width="150" }
+![The humansays mascot](../assets/human-says-clipart.png){ align=right width="150" }
 
 !!! warning "Early development"
+
     This is `0.1.0a1`. The `HS###` identifiers on this page are not stable and
     will change before `0.1.0`. Do not pin automation to them yet.
 
@@ -16,28 +17,28 @@ A rule is a named condition plus the metadata needed to weigh it. In
 `src/humansays/catalog.py` each one is a `RuleSpec` with five fields:
 
 `signal`
-: The human-readable name printed in text output, for example
-  `many-arguments`. This is what you see on a target line, not the `HS###`
-  code.
+:   The human-readable name printed in text output, for example
+    `many-arguments`. This is what you see on a target line, not the `HS###`
+    code.
 
 `severity`
-: `WARNING` or `ADVISORY`. There are exactly two. There is no error level and
-  no bug level.
+:   `WARNING` or `ADVISORY`. There are exactly two. There is no error level and
+    no bug level.
 
 `confidence`
-: How reliably the syntactic condition indicates the thing the rule is
-  actually about. `HS015` sits at `0.99` because a `staticmethod` decorator
-  either is or is not present. `HS009` sits at `0.55` because a long function
-  is sometimes just a long function.
+:   How reliably the syntactic condition indicates the thing the rule is
+    actually about. `HS015` sits at `0.99` because a `staticmethod` decorator
+    either is or is not present. `HS009` sits at `0.55` because a long function
+    is sometimes just a long function.
 
 `weight`
-: `3.0` for a `WARNING`, `1.0` for an `ADVISORY`. Set from `WARNING_WEIGHT`
-  and `ADVISORY_WEIGHT` in `catalog.py`. A third constant, `NOTICE_WEIGHT`,
-  is defined at `0.0` and no rule uses it.
+:   `3.0` for a `WARNING`, `1.0` for an `ADVISORY`. Set from `WARNING_WEIGHT`
+    and `ADVISORY_WEIGHT` in `catalog.py`. A third constant, `NOTICE_WEIGHT`,
+    is defined at `0.0` and no rule uses it.
 
 `review_question`
-: The question a reviewer should be asking at that location. This is the
-  payload of the rule. The tool cannot answer it, which is the point.
+:   The question a reviewer should be asking at that location. This is the
+    payload of the rule. The tool cannot answer it, which is the point.
 
 ## How a finding becomes a score
 
@@ -63,27 +64,27 @@ JSON shape.
 
 ## The 19 shipped rules
 
-| Code | Signal | Severity | Confidence | Weight | Page |
-|---|---|---|---|---|---|
-| HS001 | `many-arguments` | WARNING | 0.80 | 3.0 | [Function shape](function-shape.md) |
-| HS002 | `boolean-modes` | ADVISORY | 0.82 | 1.0 | [Function shape](function-shape.md) |
-| HS003 | `deep-nesting` | WARNING | 0.76 | 3.0 | [Function shape](function-shape.md) |
-| HS004 | `shared-mutable-state` | WARNING | 0.95 | 3.0 | [State and boundaries](state-and-boundaries.md) |
-| HS005 | `broad-exception` | WARNING | 0.96 | 3.0 | [Failure and imports](failure-and-imports.md) |
-| HS006 | `multiple-mutation-owners` | WARNING | 0.70 | 3.0 | [State and boundaries](state-and-boundaries.md) |
-| HS007 | `mixed-boundaries` | WARNING | 0.65 | 3.0 | [State and boundaries](state-and-boundaries.md) |
-| HS008 | `low-class-cohesion` | ADVISORY | 0.65 | 1.0 | [Class design](class-design.md) |
-| HS009 | `long-function` | ADVISORY | 0.55 | 1.0 | [Function shape](function-shape.md) |
-| HS012 | `many-class-attributes` | ADVISORY | 0.72 | 1.0 | [Class design](class-design.md) |
-| HS013 | `attribute-prefix-cluster` | WARNING | 0.84 | 3.0 | [Class design](class-design.md) |
-| HS014 | `validated-argument-bundle` | WARNING | 0.88 | 3.0 | [Function shape](function-shape.md) |
-| HS015 | `static-method` | WARNING | 0.99 | 3.0 | [Class design](class-design.md) |
-| HS016 | `lambda-expression` | WARNING | 0.99 | 3.0 | [Function shape](function-shape.md) |
-| HS017 | `long-file` | WARNING | 0.60 | 3.0 | [State and boundaries](state-and-boundaries.md) |
-| HS018 | `many-base-classes` | WARNING | 0.78 | 3.0 | [Class design](class-design.md) |
-| HS019 | `many-branches` | WARNING | 0.74 | 3.0 | [Function shape](function-shape.md) |
-| HS021 | `lazy-import` | ADVISORY | 0.85 | 1.0 | [Failure and imports](failure-and-imports.md) |
-| HS022 | `dense-function` | WARNING | 0.72 | 3.0 | [Function shape](function-shape.md) |
+| Code  | Signal                      | Severity | Confidence | Weight | Page                                            |
+| ----- | --------------------------- | -------- | ---------- | ------ | ----------------------------------------------- |
+| HS001 | `many-arguments`            | WARNING  | 0.80       | 3.0    | [Function shape](function-shape.md)             |
+| HS002 | `boolean-modes`             | ADVISORY | 0.82       | 1.0    | [Function shape](function-shape.md)             |
+| HS003 | `deep-nesting`              | WARNING  | 0.76       | 3.0    | [Function shape](function-shape.md)             |
+| HS004 | `shared-mutable-state`      | WARNING  | 0.95       | 3.0    | [State and boundaries](state-and-boundaries.md) |
+| HS005 | `broad-exception`           | WARNING  | 0.96       | 3.0    | [Failure and imports](failure-and-imports.md)   |
+| HS006 | `multiple-mutation-owners`  | WARNING  | 0.70       | 3.0    | [State and boundaries](state-and-boundaries.md) |
+| HS007 | `mixed-boundaries`          | WARNING  | 0.65       | 3.0    | [State and boundaries](state-and-boundaries.md) |
+| HS008 | `low-class-cohesion`        | ADVISORY | 0.65       | 1.0    | [Class design](class-design.md)                 |
+| HS009 | `long-function`             | ADVISORY | 0.55       | 1.0    | [Function shape](function-shape.md)             |
+| HS012 | `many-class-attributes`     | ADVISORY | 0.72       | 1.0    | [Class design](class-design.md)                 |
+| HS013 | `attribute-prefix-cluster`  | WARNING  | 0.84       | 3.0    | [Class design](class-design.md)                 |
+| HS014 | `validated-argument-bundle` | WARNING  | 0.88       | 3.0    | [Function shape](function-shape.md)             |
+| HS015 | `static-method`             | WARNING  | 0.99       | 3.0    | [Class design](class-design.md)                 |
+| HS016 | `lambda-expression`         | WARNING  | 0.99       | 3.0    | [Function shape](function-shape.md)             |
+| HS017 | `long-file`                 | WARNING  | 0.60       | 3.0    | [State and boundaries](state-and-boundaries.md) |
+| HS018 | `many-base-classes`         | WARNING  | 0.78       | 3.0    | [Class design](class-design.md)                 |
+| HS019 | `many-branches`             | WARNING  | 0.74       | 3.0    | [Function shape](function-shape.md)             |
+| HS021 | `lazy-import`               | ADVISORY | 0.85       | 1.0    | [Failure and imports](failure-and-imports.md)   |
+| HS022 | `dense-function`            | WARNING  | 0.72       | 3.0    | [Function shape](function-shape.md)             |
 
 ## The gaps at HS010, HS011, and HS020
 
@@ -92,11 +93,11 @@ is a prototype check that was deliberately dropped rather than an
 implementation that is still owed:
 
 - `HS010`, comment counting. The raw count was noisy and duplicated evidence
-  the narration signals already carried.
+    the narration signals already carried.
 - `HS011`, docstring counting. A raw docstring count did not establish a
-  structural problem on its own.
+    structural problem on its own.
 - `HS020`, `from __future__ import annotations`. Version-dependent
-  modernization belongs to a general linter and loses value on newer Python.
+    modernization belongs to a general linter and loses value on newer Python.
 
 The codes were retired rather than reused, so an `HS###` code means the same
 thing across versions. `tests/deletions/test_deleted_rules.py` holds the three

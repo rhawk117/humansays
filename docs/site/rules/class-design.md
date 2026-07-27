@@ -9,12 +9,12 @@ module level, in `src/humansays/analysis/rules.py`.
 
 ## HS008 low-class-cohesion
 
-| Field | Value |
-|---|---|
-| Severity | ADVISORY |
-| Confidence | `0.65` |
-| Weight | `1.0` |
-| Tuned by | Not configurable (`COHESION_METHOD_MINIMUM`, `COHESION_FIELD_MINIMUM`) |
+| Field           | Value                                                                                                 |
+| --------------- | ----------------------------------------------------------------------------------------------------- |
+| Severity        | ADVISORY                                                                                              |
+| Confidence      | `0.65`                                                                                                |
+| Weight          | `1.0`                                                                                                 |
+| Tuned by        | Not configurable (`COHESION_METHOD_MINIMUM`, `COHESION_FIELD_MINIMUM`)                                |
 | Review question | Do these clusters represent independently changing responsibilities that should have separate owners? |
 
 **When it fires.** For every method, humansays collects the `self` attributes it
@@ -90,12 +90,12 @@ class Report:
 
 ## HS012 many-class-attributes
 
-| Field | Value |
-|---|---|
-| Severity | ADVISORY |
-| Confidence | `0.72` |
-| Weight | `1.0` |
-| Tuned by | `thresholds.classes.max_attributes` (default `6`) |
+| Field           | Value                                                                               |
+| --------------- | ----------------------------------------------------------------------------------- |
+| Severity        | ADVISORY                                                                            |
+| Confidence      | `0.72`                                                                              |
+| Weight          | `1.0`                                                                               |
+| Tuned by        | `thresholds.classes.max_attributes` (default `6`)                                   |
 | Review question | Do subsets of this state have separate invariants, lifetimes, or reasons to change? |
 
 **When it fires.** The rule counts the class state surface, which is the union
@@ -103,11 +103,11 @@ of two sets. The first is what the class body declares:
 
 - Every string entry in a `__slots__` assignment.
 - Every annotated assignment whose target is a plain name, unless the
-  annotation is `ClassVar` or `typing.ClassVar` (the `CLASS_VAR_NAMES` set).
+    annotation is `ClassVar` or `typing.ClassVar` (the `CLASS_VAR_NAMES` set).
 - Every plain assignment to a name target, unless the name is all uppercase
-  (treated as a constant) or the assigned value is a bare name matching a
-  method defined in the same class body (a method alias such as
-  `render = to_html`).
+    (treated as a constant) or the assigned value is a bare name matching a
+    method defined in the same class body (a method alias such as
+    `render = to_html`).
 
 The second is every attribute written through `self` anywhere in the class's
 methods, so `self.x = ...` in `__init__` or in any other method counts even
@@ -168,13 +168,13 @@ class Job:
 
 ## HS013 attribute-prefix-cluster
 
-| Field | Value |
-|---|---|
-| Severity | WARNING |
-| Confidence | `0.84` |
-| Weight | `3.0` |
-| Tuned by | `thresholds.classes.max_attributes` (default `6`) gates it; the cluster size is not configurable (`CLUSTER_MINIMUM`) |
-| Review question | Does each prefix identify a cohesive value object or component hidden inside this class? |
+| Field           | Value                                                                                                                |
+| --------------- | -------------------------------------------------------------------------------------------------------------------- |
+| Severity        | WARNING                                                                                                              |
+| Confidence      | `0.84`                                                                                                               |
+| Weight          | `3.0`                                                                                                                |
+| Tuned by        | `thresholds.classes.max_attributes` (default `6`) gates it; the cluster size is not configurable (`CLUSTER_MINIMUM`) |
+| Review question | Does each prefix identify a cohesive value object or component hidden inside this class?                             |
 
 **When it fires.** HS013 is evaluated only after HS012 has already fired for the
 same class, so a class at or under `max_attributes` is never checked for
@@ -236,12 +236,12 @@ class Mailer:
 
 ## HS015 static-method
 
-| Field | Value |
-|---|---|
-| Severity | WARNING |
-| Confidence | `0.99` |
-| Weight | `3.0` |
-| Tuned by | Not configurable (`STATIC_DECORATOR`) |
+| Field           | Value                                                                                                             |
+| --------------- | ----------------------------------------------------------------------------------------------------------------- |
+| Severity        | WARNING                                                                                                           |
+| Confidence      | `0.99`                                                                                                            |
+| Weight          | `3.0`                                                                                                             |
+| Tuned by        | Not configurable (`STATIC_DECORATOR`)                                                                             |
 | Review question | The method can reach neither instance nor class state, so what does class scope buy over a module-level function? |
 
 **When it fires.** Every function defined directly in a class body is checked
@@ -294,12 +294,12 @@ class Invoice:
 
 ## HS018 many-base-classes
 
-| Field | Value |
-|---|---|
-| Severity | WARNING |
-| Confidence | `0.78` |
-| Weight | `3.0` |
-| Tuned by | `thresholds.classes.max_base_classes` (default `1`) |
+| Field           | Value                                                                                           |
+| --------------- | ----------------------------------------------------------------------------------------------- |
+| Severity        | WARNING                                                                                         |
+| Confidence      | `0.78`                                                                                          |
+| Weight          | `3.0`                                                                                           |
+| Tuned by        | `thresholds.classes.max_base_classes` (default `1`)                                             |
 | Review question | Is this composition, mixin layering, or an inheritance chain that hides the real collaborators? |
 
 **When it fires.** The rule reads the base expressions listed in the `class`
