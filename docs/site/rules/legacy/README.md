@@ -1,5 +1,9 @@
 # Rule book conventions
 
+!!! warning "Superseded"
+    This catalog describes the previous rule model and is kept for reference
+    only. The current catalog is under Rules → Python.
+
 ## Adding or changing a rule
 
 1. **Cite a criteria-document section.** No rule ships without one. CI enforces.

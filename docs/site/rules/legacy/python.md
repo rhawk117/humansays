@@ -1,5 +1,9 @@
 # Python rule book
 
+!!! warning "Superseded"
+    This catalog describes the previous rule model and is kept for reference
+    only. The current catalog is under Rules → Python.
+
 Every rule cites the section of *Python Code Design and Review Criteria* it
 enforces. No rule may exist without a citation. CI reports criteria sections
 with zero coverage.
