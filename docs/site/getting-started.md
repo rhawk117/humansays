@@ -33,15 +33,15 @@ Point it at one file.
 <!-- termynal -->
 
 ```console
-$ humansays tests/fixture_module.py
-Python investigation targets tests/fixture_module.py
+$ humansays docs/examples/smelly.py
+Python investigation targets docs/examples/smelly.py
 files=1 lines=56 targets=5 errors=0
 score 15.6 (F)  penalty 22.67 over 56 lines  density 40.482/100 lines
-tests/fixture_module.py:29-47  Store.dispatch  many-arguments lambda-expression many-branches boolean-modes lazy-import
-tests/fixture_module.py:8-10  <module>  shared-mutable-state lambda-expression
-tests/fixture_module.py:21-56  Store  many-base-classes
-tests/fixture_module.py:25-27  Store.normalize  static-method
-truncated=1; use --limit 0 for all targets
+docs/examples/smelly.py:29-47  Store.dispatch  many-arguments lambda-expression many-branches boolean-modes lazy-import
+docs/examples/smelly.py:8-10  <module>  shared-mutable-state lambda-expression
+docs/examples/smelly.py:21-56  Store  many-base-classes
+docs/examples/smelly.py:25-27  Store.normalize  static-method
+docs/examples/smelly.py:49-56  Store.walk  deep-nesting
 ```
 
 Reading it top to bottom:
@@ -58,8 +58,9 @@ penalty in a larger file scores better.
 Each **target line** is `path:start-end`, then the symbol, then every signal
 name that fired against it. `Store.dispatch` above tripped five.
 
-The **truncation line** appears when there are more targets than `--limit`
-allows. The default limit is 200. Pass `--limit 0` for all of them.
+A **truncation line** follows the targets when there are more of them than
+`--limit` allows. Five targets is well under the default limit of 200, so the
+run above does not print one. Pass `--limit 0` to lift the cap entirely.
 
 ## Scanning a package
 

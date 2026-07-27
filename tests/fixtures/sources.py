@@ -1,14 +1,9 @@
-"""Source fixtures.
+"""Source snippets the analyzer tests run against.
 
-Every snippet the tests analyze lives here, named for the rule it exercises, so
-a test reads as "analyze this fixture, expect this signal" and a fixture can be
-reused by more than one test. ``SMELLY_MODULE`` is also written to disk by the
-CLI tests, which need a real path to feed through stdin.
+Each is named for the rule it exercises, so a test reads as "analyze this
+snippet, expect this signal". These stay plain module constants rather than
+fixtures: they are immutable strings with no setup cost and no per-test state.
 """
-
-from pathlib import Path
-
-FIXTURE_MODULE_PATH = Path(__file__).resolve().parent / 'fixture_module.py'
 
 STATIC_METHOD = """
 class Router:

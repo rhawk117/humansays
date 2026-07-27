@@ -1,10 +1,17 @@
+from __future__ import annotations
+
 import io
 import json
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 import pytest
 
 from humansays.cli import main
+
+if TYPE_CHECKING:
+    from pathlib import Path
+
+    from pytest_mock import MockerFixture
 
 
 def run(tmp_path: Path, config: str, name: str = 'humansays.toml') -> int:
@@ -60,12 +67,12 @@ def test_valid_flat_config_still_loads(tmp_path: Path) -> None:
 def test_unexpected_errors_exit_seventy(
     tmp_path: Path,
     capsys: pytest.CaptureFixture[str],
-    monkeypatch: pytest.MonkeyPatch,
+    mocker: MockerFixture,
 ) -> None:
-    def explode(*args: object, **kwargs: object) -> None:
-        raise RuntimeError('boom')
-
-    monkeypatch.setattr('humansays.cli.application.collect_files', explode)
+    mocker.patch(
+        'humansays.cli.application.collect_files',
+        side_effect=RuntimeError('boom'),
+    )
     source = tmp_path / 'good.py'
     source.write_text('def ok(a):\n    return a\n')
 

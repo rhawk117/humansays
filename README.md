@@ -205,7 +205,7 @@ A file that cannot be parsed, read, or decoded is reported and makes the run
 exit `5`. Findings take precedence: a run with both findings and unanalyzed
 files exits `1`. The score and grade cover only the files that were analyzed,
 and the text report names the gap. Enforced by
-`tests/cli/test_exit_contract.py`.
+`tests/integration/test_exit_contract.py`.
 
 ## Scope and limitations
 

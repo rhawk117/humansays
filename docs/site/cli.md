@@ -102,7 +102,7 @@ inside a method rather than a plain function.
 ## Exit codes
 
 Read from `src/humansays/const.py` and `src/humansays/cli.py`. Enforced by
-`tests/cli/test_exit_contract.py`.
+`tests/integration/test_exit_contract.py`.
 
 | Code | Meaning                                                               |
 | ---- | --------------------------------------------------------------------- |
