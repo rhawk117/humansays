@@ -86,18 +86,6 @@ ignore = [
 # Standalone entry points invoked by path, not an importable package.
 "scripts/**/*.py" = ["INP001"]
 "tests/**/*.py" = ["ARG001", "ARG002", "INP001", "PLR2004", "S101", "PLC0415"]
-# Deliberately smelly fixture, byte-for-byte ported from the POC: its
-# lint violations are the point (each one is what a specific rule detects).
-"tests/fixture_module.py" = [
-    "ANN001",
-    "ANN201",
-    "ANN205",
-    "E731",
-    "FBT002",
-    "PLR0911",
-    "RET505",
-    "SIM116",
-]
 
 [lint.flake8-tidy-imports]
 # Imports inside the package are written as `humansays.*`, never `from .x`.
