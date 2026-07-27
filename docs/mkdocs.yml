@@ -83,6 +83,7 @@ nav:
       - Rust: style-guide/rust.md
   - Rules:
       - Python:
+          - Overview: rules/python/index.md
           - SRP: rules/python/srp.md
           - KISS: rules/python/kiss.md
           - CQS: rules/python/cqs.md
