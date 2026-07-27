@@ -31,8 +31,8 @@ that migration lands. Treat the published site as the source of truth.
 
 ## On the retired phase roadmap
 
-This tree previously organized work into nine sequential phases under
-`phases/`. That structure predated the shift to `NEW_RULES.md` as the
+This tree previously organized work into nine sequential phase
+directories. That structure predated the shift to `NEW_RULES.md` as the
 project's source of truth and has been retired: see
 [`roadmap-retirement.md`](roadmap-retirement.md) for the phase-by-phase
 disposition and [`backlog.md`](backlog.md) for the unordered work it left

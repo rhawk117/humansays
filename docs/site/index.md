@@ -5,4 +5,3 @@ documented criteria set.
 
 - [Style guide](style-guide/README.md) — the criteria documents rules cite
 - [Rules](rules/python/index.md) — the rule catalog
-- [Roadmap](roadmap/future-additions.md) — proposed additions
