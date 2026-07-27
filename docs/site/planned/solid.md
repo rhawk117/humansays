@@ -17,31 +17,36 @@ Background reading:
 Fowler's refactoring catalog, and Fowler's
 [Reducing Coupling](https://martinfowler.com/ieeeSoftware/coupling.pdf).
 
-| ID       | Rule                                            | Default | Concern |
-| -------- | ----------------------------------------------- | ------- | ------- |
-| SOLID001 | Role conflict                                   | on      | review  |
-| SOLID002 | Effect in domain type                           | on      | review  |
-| SOLID003 | Mixed responsibilities                          | on      | review  |
-| SOLID004 | Mixed abstraction levels                        | on      | review  |
-| SOLID005 | Low field cohesion                              | on      | review  |
-| SOLID006 | God constructor                                 | on      | review  |
-| SOLID007 | Unclassifiable unit                             | on      | review  |
-| SOLID008 | Incohesive class                                | on      | review  |
-| SOLID009 | Logging mixed with domain mutation              | on      | review  |
-| SOLID010 | Configuration object drives unrelated workflows | on      | review  |
-| SOLID011 | Data object used as behavior switchboard        | on      | review  |
-| SOLID012 | Boolean mode switch                             | on      | review  |
-| SOLID013 | Repeated type or value dispatch                 | on      | review  |
-| SOLID014 | Function signature encodes multiple workflows   | on      | review  |
-| SOLID015 | Concrete factory return                         | on      | hazard  |
-| SOLID016 | Name mangled shadow                             | on      | hazard  |
-| SOLID017 | Undeclared dependency                           | on      | hazard  |
-| SOLID018 | Env read in logic                               | on      | hazard  |
-| SOLID019 | Clock read inline                               | on      | hazard  |
-| SOLID020 | Randomness inline                               | on      | hazard  |
-| SOLID021 | Settings singleton access                       | on      | review  |
-| SOLID022 | Hidden dependency surface                       | on      | hazard  |
-| SOLID023 | Untestable without environment                  | on      | hazard  |
+| ID       | Rule                                             | Default | Concern  |
+| -------- | ------------------------------------------------ | ------- | -------- |
+| SOLID001 | Role conflict                                    | on      | review   |
+| SOLID002 | Effect in domain type                            | on      | review   |
+| SOLID003 | Mixed responsibilities                           | on      | review   |
+| SOLID004 | Mixed abstraction levels                         | on      | review   |
+| SOLID005 | Low field cohesion                               | on      | review   |
+| SOLID006 | God constructor                                  | on      | review   |
+| SOLID007 | Unclassifiable unit                              | on      | review   |
+| SOLID008 | Incohesive class                                 | on      | review   |
+| SOLID009 | Logging mixed with domain mutation               | on      | review   |
+| SOLID010 | Configuration object drives unrelated workflows  | on      | review   |
+| SOLID011 | Data object used as behavior switchboard         | on      | review   |
+| SOLID012 | Boolean mode switch                              | on      | review   |
+| SOLID013 | Repeated type or value dispatch                  | on      | review   |
+| SOLID014 | Function signature encodes multiple workflows    | on      | review   |
+| SOLID015 | Concrete factory return                          | on      | hazard   |
+| SOLID016 | Name mangled shadow                              | on      | hazard   |
+| SOLID017 | Undeclared dependency                            | on      | hazard   |
+| SOLID018 | Env read in logic                                | on      | hazard   |
+| SOLID019 | Clock read inline                                | on      | hazard   |
+| SOLID020 | Randomness inline                                | on      | hazard   |
+| SOLID021 | Settings singleton access                        | on      | review   |
+| SOLID022 | Hidden dependency surface                        | on      | hazard   |
+| SOLID023 | Untestable without environment                   | on      | hazard   |
+| SOLID024 | Scattered variant dispatch                       | hint    | advisory |
+| SOLID025 | Unsupported inherited operation                  | hint    | advisory |
+| SOLID026 | Disjoint consumer usage                          | hint    | advisory |
+| SOLID027 | Policy code constructing concrete infrastructure | hint    | advisory |
+| SOLID028 | Substantial method detached from its class       | hint    | advisory |
 
 ## Rule details
 
@@ -228,3 +233,43 @@ Fowler's refactoring catalog, and Fowler's
 **Detection/default.** eff + own + cg
 
 **Message template.** `{unit}` cannot be constructed or exercised without `{environment}`, according to independent test, ownership, and effect evidence.
+
+### SOLID024 Scattered variant dispatch
+
+**Claim.** design
+
+**Detection/default.** The same set of variant values is branched on in more than one method or function
+
+**Message template.** `{unit}` branches on `{discriminator}` in `{site_count}` places. Should the variants own their own behavior?
+
+### SOLID025 Unsupported inherited operation
+
+**Claim.** design
+
+**Detection/default.** An override raises `NotImplementedError` or an equivalent refusal for an operation its base declares as supported
+
+**Message template.** `{subclass}.{method}` refuses an operation `{base}` declares as supported. Should the two share a base at all?
+
+### SOLID026 Disjoint consumer usage
+
+**Claim.** design
+
+**Detection/default.** No consumer of a type uses more than a disjoint subset of its public methods
+
+**Message template.** `{type}` has `{consumer_count}` consumers, and no two use overlapping methods. Should the contract be split?
+
+### SOLID027 Policy code constructing concrete infrastructure
+
+**Claim.** design
+
+**Detection/default.** A unit holding decision logic instantiates a concrete client, connection, session, or engine directly
+
+**Message template.** `{unit}` decides `{policy}` and constructs `{infrastructure}` itself. Should the collaborator be supplied by the caller?
+
+### SOLID028 Substantial method detached from its class
+
+**Claim.** design
+
+**Detection/default.** A method uses neither `self` nor any class attribute, exceeds `min_detached_method_characters` effective characters, and contains at least two executable statements. Effective characters exclude comments, docstrings, and whitespace, so a long docstring cannot trip it
+
+**Message template.** `{class}.{method}` is `{characters}` characters and touches no class state. Should it live at module scope?
