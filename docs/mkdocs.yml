@@ -104,5 +104,11 @@ nav:
       - Legacy catalog:
           - rules/legacy/README.md
           - Python: rules/legacy/python.md
+  - Reference:
+      - reference/index.md
+      - CLI: reference/cli.md
+      - Configuration: reference/configuration.md
+      - Output and scoring: reference/output.md
+      - Shipped rules: reference/shipped-rules.md
   - Roadmap:
       - Future additions: roadmap/future-additions.md
