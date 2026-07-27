@@ -38,50 +38,64 @@ terminal.
 
 ## JSON output
 
-JSON output is a single object printed with `json.dumps(..., indent=2)`:
+JSON output is a single object printed with
+`json.dumps(..., indent=2, sort_keys=True)`. Keys are sorted alphabetically at
+every level, so the output is stable and diffs cleanly between runs. Do not
+rely on `schema_version` appearing first; read it by key.
+
+Abridged from a real run against `tests/fixture_module.py`:
 
 ```json
 {
+  "errors": [],
+  "root": "tests/fixture_module.py",
   "schema_version": 1,
-  "root": "<label>",
   "score": {
-    "lines": 0,
-    "penalty": 0.0,
-    "density": 0.0,
-    "value": 100.0,
-    "grade": "A"
+    "density": 40.482,
+    "grade": "F",
+    "lines": 56,
+    "penalty": 22.67,
+    "value": 15.6
   },
   "summary": {
-    "files": 0,
-    "lines": 0,
-    "targets": 0,
-    "signals": 0,
     "errors": 0,
-    "truncated": 0
+    "files": 1,
+    "lines": 56,
+    "signals": 10,
+    "targets": 5,
+    "truncated": 4
   },
   "targets": [
     {
-      "path": "src/example.py",
-      "symbol": "SomeClass.some_method",
-      "line": 10,
-      "end_line": 25,
+      "end_line": 47,
+      "line": 29,
+      "path": "tests/fixture_module.py",
       "signals": [
         {
-          "rule_id": "HS001",
-          "indicator": "many-arguments",
-          "severity": "warning",
-          "confidence": 0.8,
-          "weight": 3.0,
-          "message": "...",
-          "evidence": ["..."],
-          "review_question": "..."
+          "observation": {
+            "evidence": ["mode", "target", "payload", "retries", "verbose"],
+            "message": "Function accepts 5 operation arguments."
+          },
+          "rule": {
+            "confidence": 0.8,
+            "review_question": "Do these values form a request object, reusable configuration, or multiple responsibilities?",
+            "severity": "warning",
+            "signal": "many-arguments",
+            "weight": 3.0
+          },
+          "rule_id": "HS001"
         }
-      ]
+      ],
+      "symbol": "Store.dispatch"
     }
-  ],
-  "errors": ["path: error message"]
+  ]
 }
 ```
+
+A signal is nested rather than flat: `rule` carries the catalog metadata,
+`observation` carries what was actually seen at that location, and `rule_id`
+sits alongside them because it is a property of the rule rather than one of
+its fields.
 
 `targets` is truncated to `--limit` entries the same way as text output;
 `summary.truncated` reports how many were left out. `errors` lists one
@@ -92,7 +106,7 @@ string per file that failed to parse.
 Read from `src/humansays/scoring.py:1-38` and `src/humansays/const.py`.
 
 Each finding contributes a penalty of `weight * confidence`, where `weight`
-and `confidence` come from the rule that fired (see `shipped-rules.md`). The
+and `confidence` come from the rule that fired (see [Rules](rules/index.md)). The
 scan's total penalty is the sum of every finding's penalty.
 
 ```
