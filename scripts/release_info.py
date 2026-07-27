@@ -73,10 +73,20 @@ def is_prerelease(value: str) -> bool:
 
 
 def write_output(name: str, value: str) -> None:
-    output_path = os.environ.get('GITHUB_OUTPUT')
-    if output_path:
-        with Path(output_path).open('a', encoding='utf-8') as file:
-            file.write(f'{name}={value}\n')
+
+    if not (output_path := os.getenv('GITHUB_OUTPUT')):
+        return
+
+    with Path(output_path).open('a', encoding='utf-8') as file:
+        file.write(f'{name}={value}\n')
+
+
+def write_summary(content: str) -> None:
+    if not (step_summary := os.getenv('GITHUB_STEP_SUMMARY')):
+        return
+
+    with Path(step_summary).open('a', encoding='utf-8') as file:
+        file.write(content)
 
 
 def main() -> int:
@@ -99,15 +109,13 @@ def main() -> int:
         write_output(name, value)
 
     output_content = '\n'.join([
-        f'previous version: {previous or "<unavailable>"}'
-        f'current version: {current}'
-        f'release needed: {str(changed).lower()}'
-        f'release tag: {tag}'
+        f'previous version: {previous or "<unavailable>"}',
+        f'current version: {current}',
+        f'release needed: {str(changed).lower()}',
+        f'release tag: {tag}',
     ])
 
-    if step_summary := os.getenv('GITHUB_STEP_SUMMARY'):
-        Path(step_summary).write_text(output_content)
-
+    write_summary(output_content)
     print(f'::notice::{output_content}')
     return 0
 

@@ -1,5 +1,3 @@
-# pytest.toml
-
 [pytest]
 minversion = "9.0"
 strict = true

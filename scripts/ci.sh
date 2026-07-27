@@ -10,7 +10,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 cd "$REPO_ROOT"
 
-# shellcheck source=scripts/log.sh
+# shellcheck disable=SC1091 source=scripts/log.sh
 source "$SCRIPT_DIR/log.sh"
 
 run_lint() {
