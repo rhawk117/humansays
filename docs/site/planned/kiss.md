@@ -13,17 +13,15 @@ and
 [Replace Nested Conditional with Guard Clauses](https://refactoring.com/catalog/replaceNestedConditionalWithGuardClauses.html)
 in Martin Fowler's refactoring catalog.
 
-| ID      | Rule                            | Default | Concern |
-| ------- | ------------------------------- | ------- | ------- |
-| KISS001 | Effect in comprehension         | on      | review  |
-| KISS002 | Helper chain                    | on      | review  |
-| KISS003 | Boolean mode switch             | on      | review  |
-| KISS004 | Control flow pressure           | on      | review  |
-| KISS005 | Long loop body                  | on      | review  |
-| KISS006 | Branch pyramid                  | on      | review  |
-| KISS007 | Compound domain condition       | on      | review  |
-| KISS008 | Repeated type or value dispatch | on      | review  |
-| KISS009 | Exception handler fanout        | on      | review  |
+| ID      | Rule                      | Default | Concern |
+| ------- | ------------------------- | ------- | ------- |
+| KISS001 | Effect in comprehension   | on      | review  |
+| KISS002 | Helper chain              | on      | review  |
+| KISS004 | Control flow pressure     | on      | review  |
+| KISS005 | Long loop body            | on      | review  |
+| KISS006 | Branch pyramid            | on      | review  |
+| KISS007 | Compound domain condition | on      | review  |
+| KISS009 | Exception handler fanout  | on      | review  |
 
 ## Rule details
 
@@ -42,14 +40,6 @@ in Martin Fowler's refactoring catalog.
 **Detection/default.** ≥3 private helpers callable only in sequence
 
 **Message template.** `{class}` contains a chain of `{helper_count}` private helpers that can only execute in one sequence.
-
-### KISS003 Boolean mode switch
-
-**Claim.** design
-
-**Detection/default.** Boolean selecting between two behaviors in the body
-
-**Message template.** Boolean `{parameter}` selects between `{mode_count}` workflows inside `{symbol}`.
 
 ### KISS004 Control flow pressure
 
@@ -82,14 +72,6 @@ in Martin Fowler's refactoring catalog.
 **Detection/default.** Conditional contains more than three Boolean operands or mixes several domain decisions
 
 **Message template.** This predicate has `{operand_count}` Boolean inputs and a theoretical truth table of `{representable_states}` combinations.
-
-### KISS008 Repeated type or value dispatch
-
-**Claim.** design
-
-**Detection/default.** Conditional chain selects behavior from one type, tag, enum or literal discriminator
-
-**Message template.** Eight branches differ only by the selected callable, so this conditional is functioning as a dispatch dictionary.
 
 ### KISS009 Exception handler fanout
 

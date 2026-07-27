@@ -123,17 +123,20 @@ nav:
       - Testability and thresholds: philosophy/testability.md
   - Planned rules:
       - Overview: planned/index.md
-      - SRP: planned/srp.md
+      - SOLID: planned/solid.md
       - KISS: planned/kiss.md
       - CQS: planned/cqs.md
       - POLA: planned/pola.md
-      - COUP: planned/coup.md
+      - LOD: planned/lod.md
       - CONTRACT: planned/contract.md
       - ENCAP: planned/encap.md
       - LIFE: planned/life.md
       - ERR: planned/err.md
       - CONC: planned/conc.md
+      - SBD: planned/sbd.md
       - IDIOM: planned/idiom.md
+      - YAGNI: planned/yagni.md
       - SMELL: planned/smell.md
       - DRY: planned/dry.md
+      - Migration: planned/migration.md
       - Reconciliation: planned/reconciliation.md

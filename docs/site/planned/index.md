@@ -97,19 +97,23 @@ Every message template is one sentence and must substitute measured values when 
 
 ## Domains
 
-- [SRP](srp.md)
+- [SOLID](solid.md)
 - [KISS](kiss.md)
 - [CQS](cqs.md)
 - [POLA](pola.md)
-- [COUP](coup.md)
+- [LOD](lod.md)
 - [CONTRACT](contract.md)
 - [ENCAP](encap.md)
 - [LIFE](life.md)
 - [ERR](err.md)
 - [CONC](conc.md)
+- [SBD](sbd.md)
 - [IDIOM](idiom.md)
+- [YAGNI](yagni.md)
 - [SMELL](smell.md)
 - [DRY](dry.md)
+
+Rules that changed identifier are listed in [Migration](migration.md).
 
 ## Provenance
 

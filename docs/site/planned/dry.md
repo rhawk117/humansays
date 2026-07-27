@@ -10,7 +10,6 @@ catalog entry [Extract Function](https://refactoring.com/catalog/extractFunction
 | ID     | Rule                        | Default | Concern  |
 | ------ | --------------------------- | ------- | -------- |
 | DRY001 | Uniform try wrapping        | off     | advisory |
-| DRY002 | Over parameterized helper   | off     | advisory |
 | DRY003 | Symmetric boilerplate       | off     | advisory |
 | DRY004 | Manual dataclass projection | off     | advisory |
 
@@ -21,12 +20,6 @@ catalog entry [Extract Function](https://refactoring.com/catalog/extractFunction
 - **Claim:** risk
 - **Detection/default:** Every method wrapped in an identical broad try/except
 - **Message template:** `{class}` wraps `{count}` methods in the same broad exception structure, duplicating one failure policy.
-
-### DRY002 Over parameterized helper
-
-- **Claim:** design
-- **Detection/default:** Helper taking parameters never varied across call sites
-- **Message template:** Helper `{helper}` accepts `{parameters}` even though every call site supplies the same values.
 
 ### DRY003 Symmetric boilerplate
 

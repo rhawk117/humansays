@@ -21,7 +21,6 @@ covers the aliasing case that several rules below concern themselves with.
 | ENCAP004 | Mutable class attribute                 | on      | hazard  |
 | ENCAP005 | Leaked internal mutable                 | on      | hazard  |
 | ENCAP006 | Shared mutable binding                  | on      | hazard  |
-| STATE007 | Field write outside owner               | on      | hazard  |
 | ENCAP008 | Aliased collection store                | on      | hazard  |
 | ENCAP009 | Partial init                            | on      | review  |
 | ENCAP010 | Invariant bypass                        | on      | hazard  |
@@ -85,14 +84,6 @@ covers the aliasing case that several rules below concern themselves with.
 **Detection/default.** Module-level mutable bound and mutated from ≥2 scopes
 
 **Message template.** Mutable module binding `{name}` is written from `{scope_count}` scopes, leaving no single owner for its transitions.
-
-### STATE007 Field write outside owner
-
-**Claim.** risk
-
-**Detection/default.** External code writes another object's non-private attribute
-
-**Message template.** `{symbol}` writes `{target}.{field}` from outside the owning object.
 
 ### ENCAP008 Aliased collection store
 

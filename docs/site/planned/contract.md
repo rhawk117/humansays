@@ -13,18 +13,17 @@ summarizes Meyer's framing of the caller-facing side of that agreement.
 [PEP 3102](https://peps.python.org/pep-3102/) covers keyword-only arguments,
 the Python mechanism behind several of the signature rules below.
 
-| ID          | Rule                                          | Default | Concern |
-| ----------- | --------------------------------------------- | ------- | ------- |
-| CONTRACT001 | Untyped dict parameter                        | on      | review  |
-| CONTRACT002 | Untyped dict return                           | on      | review  |
-| CONTRACT003 | Many operation arguments                      | on      | review  |
-| CONTRACT004 | Optional not keyword only                     | on      | review  |
-| CONTRACT005 | Mutually exclusive flags                      | on      | hazard  |
-| CONTRACT006 | Unchecked any operation                       | on      | hazard  |
-| CONTRACT007 | Positional record return                      | on      | review  |
-| CONTRACT008 | Positional dataclass ambiguity                | on      | hazard  |
-| CONTRACT009 | Type contract friction                        | on      | review  |
-| CONTRACT010 | Function signature encodes multiple workflows | on      | review  |
+| ID          | Rule                           | Default | Concern |
+| ----------- | ------------------------------ | ------- | ------- |
+| CONTRACT001 | Untyped dict parameter         | on      | review  |
+| CONTRACT002 | Untyped dict return            | on      | review  |
+| CONTRACT003 | Many operation arguments       | on      | review  |
+| CONTRACT004 | Optional not keyword only      | on      | review  |
+| CONTRACT005 | Mutually exclusive flags       | on      | hazard  |
+| CONTRACT006 | Unchecked any operation        | on      | hazard  |
+| CONTRACT007 | Positional record return       | on      | review  |
+| CONTRACT008 | Positional dataclass ambiguity | on      | hazard  |
+| CONTRACT009 | Type contract friction         | on      | review  |
 
 ## Rule detail
 
@@ -99,11 +98,3 @@ the Python mechanism behind several of the signature rules below.
 **Detection/default.** shp + (cg or cf)
 
 **Message template.** value is typed as Any but is repeatedly cast, narrowed and ignored around the same missing contract.
-
-### CONTRACT010 Function signature encodes multiple workflows
-
-**Claim.** design
-
-**Detection/default.** Disjoint parameter subsets are used on mutually exclusive paths.
-
-**Message template.** `{symbol}` has `{workflow_count}` mutually exclusive parameter subsets, so one signature represents multiple workflows.
