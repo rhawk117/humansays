@@ -14,8 +14,10 @@ A future planning session draws from this list, and only the next piece of work 
 - A repair-direction harness that is runnable with a passing self-test on synthetic input, kept separate from any study run.
 - A rule preferring `object` over `typing.Any` where the stricter checker behavior is wanted; the current catalog flags unsafe use of `Any` and flags uninformative `object` annotations but does not encode this preference.
 - A rule treating decorators written as classes with `__call__` as preferable to closure-based decorators, for easier test overrides and simpler lifetime reasoning; opinionated and not currently covered.
+- A single precedence rule across the three rule identifier schemes, and an account of the vacant IDs in the `SignalName` enum, which suggest rules were dropped once already without a record.
 - A subprocess-instrumentation policy that records which child processes were and were not instrumented and reports the uninstrumented ones.
 - A CI check that fails when a rule page under `docs/site/rules/` does not link a `docs/site/philosophy/` page, or when that page does not link back from its "What enforces this" section. The 19 shipped rules satisfy the pairing today and `CLAUDE.md` rule 9 states it as convention, because nothing verifies it. The 158 planned rules under `docs/site/planned/` have no criteria citation at all: they carried `HS-` source-provenance slugs such as `HS-PURPOSE-10`, and those were dropped when the catalog moved, so each planned rule still needs a philosophy section named for it before it ships.
+- A first tranche of the roughly 65 candidate rules, once a stated criterion exists for choosing which ones ship. No criterion is written down today, so the selection would be arbitrary.
 - An argument-kind model that distinguishes positional, keyword-only, and variadic parameters so operation-input rules separate inputs from configuration rather than counting both.
 - An effect-classification vocabulary derived once from CPython audit events, versioned, and documented as incomplete rather than as a full semantic effect system.
 - An evidence-gated decision on a Rust component, triggered only by stable findings and schema, a golden fact corpus, and cross-runtime syntax fixtures, with each optimization carrying a before/after measurement.
@@ -30,6 +32,11 @@ A future planning session draws from this list, and only the next piece of work 
 - Parse-error strictness: separate analyzed, skipped, and failed counts in the summary, and a strict mode that exits non-zero on any parse or analysis error.
 - Path-scoped rule activation that can enable, disable, or reweight rules by path glob.
 - Profiles defined as an expected set of emittable rule IDs with a snapshot test, where the selection flags are written afterward and asserted to reproduce the set.
+- Reconciling the git-ownership statements in `CLAUDE.md` and `.agent-specs/process/agent-protocol.md`, which appear to conflict on who may commit.
+- Reviewing `scripts/check_scope.py`: whether the `--base` default is right, and whether staged edits to the allowlist escape the commit-isolation check.
 - Rule evaluation that runs only the enabled rules, so profile selection prunes work rather than only filtering output.
 - Single-traversal fact extraction that replaces the multiple tree walks of the proof of concept.
 - Supporting signals reported as evidence beneath the finding that cites them rather than as separate findings.
+- Whether findings should move off exit `1` so `1` could mean "crashed", matching shell convention. Deferred because every crash path now exits `4` or `70`, so the ambiguity is closed without a breaking renumber.
+- Whether `scripts/precheck.sh` should install `pre-commit` rather than requiring it. `require_cmd pre-commit` (line 14) precedes `uv sync --all-groups` (line 17), but `pre-commit` is not declared anywhere in `pyproject.toml`, so `uv sync` would never provide it. Verified July 2026: this does not block a fresh checkout, since `pre-commit` is a system prerequisite and `require_cmd` reports its absence clearly.
+- Whether the text report should carry an explicit pass/fail verdict line. JSON gained a `status` block; text was deliberately left byte-identical to avoid churning the snapshot tests.
