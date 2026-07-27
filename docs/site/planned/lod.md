@@ -6,7 +6,10 @@ a field belonging to another object, has coupled itself to a structure it does
 not control — and that structure can change without the function ever appearing
 in the diff.
 
-None of the rules below are implemented yet. They are planned.
+!!! warning "Not implemented"
+
+    These rules are designed, not shipped. Nothing on this page runs in
+    version `0.1.0a1`, which implements [19 rules](../rules/index.md).
 
 Background reading: the
 [Law of Demeter](https://en.wikipedia.org/wiki/Law_of_Demeter) and
@@ -21,32 +24,44 @@ Fowler's refactoring catalog.
 
 ## Rule details
 
-### LOD001 Field write outside owner
+### LOD001 Field write outside owner { #LOD001 }
 
-**Claim.** risk
+Claim
+:   risk
 
-**Detection/default.** External code writes another object's non-private attribute
+Detection
+:   External code writes another object's non-private attribute
 
-**Message template.** `{symbol}` writes `{target}.{field}` from outside the owning object. Should the owner make the change?
+Message
+:   `{symbol}` writes `{target}.{field}` from outside the owning object. Should the owner make the change?
 
-### LOD002 Single attribute dependency
+### LOD002 Single attribute dependency { #LOD002 }
 
-**Claim.** design
+Claim
+:   design
 
-**Detection/default.** Function accepts an object but only reads one attribute from it
+Detection
+:   Function accepts an object but only reads one attribute from it
 
-**Message template.** `send_notice()` accepts `User` and reads only `user.email`. Should it take the value instead?
+Message
+:   `send_notice()` accepts `User` and reads only `user.email`. Should it take the value instead?
 
-### LOD003 Chain reached past an unconstructed value
+### LOD003 Chain reached past an unconstructed value { #LOD003 }
 
-**Claim.** design
+Claim
+:   design
 
-**Detection/default.** A call or attribute chain exceeding `max_chain_depth` on a value the function did not construct
+Detection
+:   A call or attribute chain exceeding `max_chain_depth` on a value the function did not construct
 
-**Message template.** `{symbol}` reaches `{depth}` levels into `{root}`, a value it did not construct. Should the intermediate object expose what is needed?
+Message
+:   `{symbol}` reaches `{depth}` levels into `{root}`, a value it did not construct. Should the intermediate object expose what is needed?
 
-Two exemptions apply. A chain rooted in a value the function constructed itself
-is never reported — reaching as far as you like into something you built couples
-you to nothing you do not already own. And `allow_chaining`, a list of dotted
-names, exempts fluent-builder APIs where chaining is the intended interface
-rather than a leak of structure.
+!!! note "Two exemptions"
+
+    A chain rooted in a value the function constructed itself is never
+    reported. Reaching as far as you like into something you built couples you
+    to nothing you do not already own.
+
+    `allow_chaining`, a list of dotted names, exempts fluent-builder APIs where
+    chaining is the intended interface rather than a leak of structure.

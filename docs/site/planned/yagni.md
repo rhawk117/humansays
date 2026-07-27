@@ -9,7 +9,10 @@ need, and none of them claims the abstraction is wrong — an interface with one
 implementation today may have three next quarter. The domain ships unweighted
 for that reason.
 
-None of the rules below are implemented yet. They are planned.
+!!! warning "Not implemented"
+
+    These rules are designed, not shipped. Nothing on this page runs in
+    version `0.1.0a1`, which implements [19 rules](../rules/index.md).
 
 Background reading:
 [Martin Fowler on Yagni](https://martinfowler.com/bliki/Yagni.html) and
@@ -27,58 +30,79 @@ Background reading:
 
 ## Rule details
 
-### YAGNI001 Zero state namespace
+### YAGNI001 Zero state namespace { #YAGNI001 }
 
-**Claim.** design
+Claim
+:   design
 
-**Detection/default.** No state, ≤2 stateless methods
+Detection
+:   No state, ≤2 stateless methods
 
-**Message template.** `{class}` has no state and `{method_count}` stateless methods. Should these be module-level functions?
+Message
+:   `{class}` has no state and `{method_count}` stateless methods. Should these be module-level functions?
 
-### YAGNI002 Stateless single method
+### YAGNI002 Stateless single method { #YAGNI002 }
 
-**Claim.** design
+Claim
+:   design
 
-**Detection/default.** Class wrapping exactly one stateless method
+Detection
+:   Class wrapping exactly one stateless method
 
-**Message template.** `{class}` wraps one stateless method and adds no state, lifecycle, or polymorphic contract. Should the method stand alone?
+Message
+:   `{class}` wraps one stateless method and adds no state, lifecycle, or polymorphic contract. Should the method stand alone?
 
-### YAGNI003 Ceremonial abstraction
+### YAGNI003 Ceremonial abstraction { #YAGNI003 }
 
-**Claim.** design
+Claim
+:   design
 
-**Detection/default.** cg + shp
+Detection
+:   cg + shp
 
-**Message template.** `{abstraction}` adds indirection with no observed state, variation, lifecycle, or reused behavior. Is the indirection carrying anything?
+Message
+:   `{abstraction}` adds indirection with no observed state, variation, lifecycle, or reused behavior. Is the indirection carrying anything?
 
-### YAGNI004 Abc as interface
+### YAGNI004 Abc as interface { #YAGNI004 }
 
-**Claim.** design
+Claim
+:   design
 
-**Detection/default.** ABC has no state, concrete behavior, construction invariant, registration behavior or lifecycle hooks
+Detection
+:   ABC has no state, concrete behavior, construction invariant, registration behavior or lifecycle hooks
 
-**Message template.** `Repository` is an ABC containing only abstract methods. Should the contract be structural?
+Message
+:   `Repository` is an ABC containing only abstract methods. Should the contract be structural?
 
-### YAGNI005 Stateless method declared on a class
+### YAGNI005 Stateless method declared on a class { #YAGNI005 }
 
-**Claim.** design
+Claim
+:   design
 
-**Detection/default.** A static method does not use class identity and has no observed class-specific contract.
+Detection
+:   A static method does not use class identity and has no observed class-specific contract.
 
-**Message template.** `{class}.{method}` uses neither instance nor class state. Should it live at module scope?
+Message
+:   `{class}.{method}` uses neither instance nor class state. Should it live at module scope?
 
-### YAGNI006 Inheritance used only for configuration
+### YAGNI006 Inheritance used only for configuration { #YAGNI006 }
 
-**Claim.** design
+Claim
+:   design
 
-**Detection/default.** Subclasses vary only class constants or declarative fields and add no behavior.
+Detection
+:   Subclasses vary only class constants or declarative fields and add no behavior.
 
-**Message template.** `{subclass_count}` subclasses of `{base}` vary configuration values and add no behavior. Should the configuration be data?
+Message
+:   `{subclass_count}` subclasses of `{base}` vary configuration values and add no behavior. Should the configuration be data?
 
-### YAGNI007 Over parameterized helper
+### YAGNI007 Over parameterized helper { #YAGNI007 }
 
-**Claim.** design
+Claim
+:   design
 
-**Detection/default.** Helper taking parameters never varied across call sites
+Detection
+:   Helper taking parameters never varied across call sites
 
-**Message template.** Helper `{helper}` accepts `{parameters}`, and every call site supplies the same values. Should the parameters be dropped?
+Message
+:   Helper `{helper}` accepts `{parameters}`, and every call site supplies the same values. Should the parameters be dropped?

@@ -1,7 +1,9 @@
 # CONTRACT rules
 
-CONTRACT rules are planned. None of them is implemented today, and nothing on
-this page is available to run.
+!!! warning "Not implemented"
+
+    These rules are designed, not shipped. Nothing on this page runs in
+    version `0.1.0a1`, which implements [19 rules](../rules/index.md).
 
 CONTRACT rules define explicit agreements between operations and callers about parameter types, return semantics, and behavioral patterns. These rules flag parameter design issues, type contract friction, and hidden complexity in function signatures that force callers to reason about implementation details.
 
@@ -27,74 +29,101 @@ the Python mechanism behind several of the signature rules below.
 
 ## Rule detail
 
-### CONTRACT001 Untyped dict parameter
+### CONTRACT001 Untyped dict parameter { #CONTRACT001 }
 
-**Claim.** design
+Claim
+:   design
 
-**Detection/default.** `dict[str, Any]`/`dict[str, object]` as operation input
+Detection
+:   `dict[str, Any]`/`dict[str, object]` as operation input
 
-**Message template.** `{symbol}` matches untyped dict parameter: `dict[str, Any]`/`dict[str, object]` as operation input.
+Message
+:   `{symbol}` matches untyped dict parameter: `dict[str, Any]`/`dict[str, object]` as operation input.
 
-### CONTRACT002 Untyped dict return
+### CONTRACT002 Untyped dict return { #CONTRACT002 }
 
-**Claim.** design
+Claim
+:   design
 
-**Detection/default.** Same in return position
+Detection
+:   Same in return position
 
-**Message template.** `{symbol}` matches untyped dict return: Same in return position.
+Message
+:   `{symbol}` matches untyped dict return: Same in return position.
 
-### CONTRACT003 Many operation arguments
+### CONTRACT003 Many operation arguments { #CONTRACT003 }
 
-**Claim.** design
+Claim
+:   design
 
-**Detection/default.** Operation inputs only. 4 weak, 5 or 6 moderate, 7+ strong
+Detection
+:   Operation inputs only. 4 weak, 5 or 6 moderate, 7+ strong
 
-**Message template.** `{symbol}` exposes `{actual}` operation inputs, increasing the contract a caller must understand at once.
+Message
+:   `{symbol}` exposes `{actual}` operation inputs, increasing the contract a caller must understand at once.
 
-### CONTRACT004 Optional not keyword only
+### CONTRACT004 Optional not keyword only { #CONTRACT004 }
 
-**Claim.** design
+Claim
+:   design
 
-**Detection/default.** Defaulted parameter reachable positionally
+Detection
+:   Defaulted parameter reachable positionally
 
-**Message template.** Defaulted parameter `{parameter}` remains positional, allowing call sites to hide which option they change.
+Message
+:   Defaulted parameter `{parameter}` remains positional, allowing call sites to hide which option they change.
 
-### CONTRACT005 Mutually exclusive flags
+### CONTRACT005 Mutually exclusive flags { #CONTRACT005 }
 
-**Claim.** risk
+Claim
+:   risk
 
-**Detection/default.** ≥2 booleans where only one may be true
+Detection
+:   ≥2 booleans where only one may be true
 
-**Message template.** `{symbol}` accepts `{flag_count}` flags with `{representable}` combinations although only `{valid}` are valid.
+Message
+:   `{symbol}` accepts `{flag_count}` flags with `{representable}` combinations although only `{valid}` are valid.
 
-### CONTRACT006 Unchecked any operation
+### CONTRACT006 Unchecked any operation { #CONTRACT006 }
 
-**Claim.** risk
+Claim
+:   risk
 
-**Detection/default.** An `Any`-typed value is called, indexed or attribute-accessed
+Detection
+:   An `Any`-typed value is called, indexed or attribute-accessed
 
-**Message template.** `value` is typed as `Any` but requires `.save()`, so the implementation knows a contract that the annotation omits.
+Message
+:   `value` is typed as `Any` but requires `.save()`, so the implementation knows a contract that the annotation omits.
 
-### CONTRACT007 Positional record return
+### CONTRACT007 Positional record return { #CONTRACT007 }
 
-**Claim.** design
+Claim
+:   design
 
-**Detection/default.** Function returns a tuple with at least three semantically distinct values
+Detection
+:   Function returns a tuple with at least three semantically distinct values
 
-**Message template.** `inspect()` returns four positional values whose meanings are unavailable without reading the implementation.
+Message
+:   `inspect()` returns four positional values whose meanings are unavailable without reading the implementation.
 
-### CONTRACT008 Positional dataclass ambiguity
+### CONTRACT008 Positional dataclass ambiguity { #CONTRACT008 }
 
-**Claim.** risk
+Claim
+:   risk
 
-**Detection/default.** Dataclass exposes more than three positional fields or adjacent same-typed fields
+Detection
+:   Dataclass exposes more than three positional fields or adjacent same-typed fields
 
-**Message template.** `Connection` exposes four positional `str` fields that the type checker cannot distinguish when transposed.
+Message
+:   `Connection` exposes four positional `str` fields that the type checker cannot distinguish when transposed.
 
-### CONTRACT009 Type contract friction
+### CONTRACT009 Type contract friction { #CONTRACT009 }
 
-**Claim.** design
+Claim
+:   design
 
-**Detection/default.** shp + (cg or cf)
+Detection
+:   shp + (cg or cf)
 
-**Message template.** value is typed as Any but is repeatedly cast, narrowed and ignored around the same missing contract.
+Message
+:   value is typed as Any but is repeatedly cast, narrowed and ignored around the same missing contract.

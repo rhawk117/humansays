@@ -2,7 +2,10 @@
 
 Python-specific semantics whose equivalent rules differ by language.
 
-These rules are planned. None of them is available in a release yet.
+!!! warning "Not implemented"
+
+    These rules are designed, not shipped. Nothing on this page runs in
+    version `0.1.0a1`, which implements [19 rules](../rules/index.md).
 
 The conventions behind this domain come from
 [PEP 20, the Zen of Python](https://peps.python.org/pep-0020/) and
@@ -22,56 +25,101 @@ The conventions behind this domain come from
 
 ## Rule details
 
-### IDIOM002 Context variable created in local scope
+### IDIOM002 Context variable created in local scope { #IDIOM002 }
 
-- **Claim:** risk
-- **Detection/default:** `ContextVar` is created inside a function or closure
-- **Message template:** `ContextVar("request_id")` is created inside a closure, giving each invocation a new variable retained by its contexts.
+Claim
+:   risk
 
-### IDIOM005 Module attribute hook
+Detection
+:   `ContextVar` is created inside a function or closure
 
-- **Claim:** risk
-- **Detection/default:** Top-level `__getattr__` or `__dir__`
-- **Message template:** Module-level `__getattr__` makes missing attributes execute dynamic lookup instead of failing normally.
+Message
+:   `ContextVar("request_id")` is created inside a closure, giving each invocation a new variable retained by its contexts.
 
-### IDIOM007 Mutable nonlocal closure
+### IDIOM005 Module attribute hook { #IDIOM005 }
 
-- **Claim:** risk
-- **Detection/default:** A nested function writes a `nonlocal` binding
-- **Message template:** This returned closure mutates `failures` through `nonlocal`, hiding shared state inside lexical scope.
+Claim
+:   risk
 
-### IDIOM008 Numeric truthiness collapses absence
+Detection
+:   Top-level `__getattr__` or `__dir__`
 
-- **Claim:** risk
-- **Detection/default:** A direct truthiness test is applied to a statically numeric optional value; bool is excluded.
-- **Message template:** `if not {name}` sends both `0` and `None` through this branch; if zero is valid, compare with `None` explicitly.
+Message
+:   Module-level `__getattr__` makes missing attributes execute dynamic lookup instead of failing normally.
 
-### IDIOM010 Frozen state bypass
+### IDIOM007 Mutable nonlocal closure { #IDIOM007 }
 
-- **Claim:** risk
-- **Detection/default:** Explicit `object.__setattr__` or `object.__delattr__`
-- **Message template:** `object.__setattr__` bypasses the frozen object's declared construction and mutation contract.
+Claim
+:   risk
 
-### IDIOM012 Stdlib idiom reimplementation
+Detection
+:   A nested function writes a `nonlocal` binding
 
-- **Claim:** design
-- **Detection/default:** Code matches a curated pattern implemented by the standard library
-- **Message template:** This `try` and empty `except FileNotFoundError` reimplements `contextlib.suppress`.
+Message
+:   This returned closure mutates `failures` through `nonlocal`, hiding shared state inside lexical scope.
 
-### IDIOM013 Protocol not runtime-checkable
+### IDIOM008 Numeric truthiness collapses absence { #IDIOM008 }
 
-- **Claim:** risk
-- **Detection/default:** `Protocol` declaration lacks `@runtime_checkable`
-- **Message template:** Protocol `Repository` declares a program contract but cannot be checked with `isinstance()` at runtime.
+Claim
+:   risk
 
-### IDIOM014 Custom metaclass
+Detection
+:   A direct truthiness test is applied to a statically numeric optional value; bool is excluded.
 
-- **Claim:** risk
-- **Detection/default:** Application class declares or derives from a custom metaclass
-- **Message template:** `Service` uses a custom metaclass even though no library-level class-construction requirement is evident.
+Message
+:   `if not {name}` sends both `0` and `None` through this branch; if zero is valid, compare with `None` explicitly.
 
-### IDIOM016 Import inside function or method
+### IDIOM010 Frozen state bypass { #IDIOM010 }
 
-- **Claim:** design
-- **Detection/default:** An import occurs below module scope outside configured optional-dependency or cycle-breaking boundaries.
-- **Message template:** `{symbol}` imports `{module}` lazily, hiding an import dependency and possible first-call cost inside execution.
+Claim
+:   risk
+
+Detection
+:   Explicit `object.__setattr__` or `object.__delattr__`
+
+Message
+:   `object.__setattr__` bypasses the frozen object's declared construction and mutation contract.
+
+### IDIOM012 Stdlib idiom reimplementation { #IDIOM012 }
+
+Claim
+:   design
+
+Detection
+:   Code matches a curated pattern implemented by the standard library
+
+Message
+:   This `try` and empty `except FileNotFoundError` reimplements `contextlib.suppress`.
+
+### IDIOM013 Protocol not runtime-checkable { #IDIOM013 }
+
+Claim
+:   risk
+
+Detection
+:   `Protocol` declaration lacks `@runtime_checkable`
+
+Message
+:   Protocol `Repository` declares a program contract but cannot be checked with `isinstance()` at runtime.
+
+### IDIOM014 Custom metaclass { #IDIOM014 }
+
+Claim
+:   risk
+
+Detection
+:   Application class declares or derives from a custom metaclass
+
+Message
+:   `Service` uses a custom metaclass even though no library-level class-construction requirement is evident.
+
+### IDIOM016 Import inside function or method { #IDIOM016 }
+
+Claim
+:   design
+
+Detection
+:   An import occurs below module scope outside configured optional-dependency or cycle-breaking boundaries.
+
+Message
+:   `{symbol}` imports `{module}` lazily, hiding an import dependency and possible first-call cost inside execution.

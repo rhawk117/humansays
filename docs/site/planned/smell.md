@@ -2,7 +2,10 @@
 
 SMELL rules are deliberately opinionated reviewer hints that surface design patterns worth examining. They are unweighted by default.
 
-These rules are planned. None of them is available in a release yet.
+!!! warning "Not implemented"
+
+    These rules are designed, not shipped. Nothing on this page runs in
+    version `0.1.0a1`, which implements [19 rules](../rules/index.md).
 
 The naming and layout conventions this domain leans on are set out in
 [PEP 8, the style guide for Python code](https://peps.python.org/pep-0008/).
@@ -30,110 +33,200 @@ The naming and layout conventions this domain leans on are set out in
 
 ## Rule details
 
-### SMELL001 Frozen candidate
+### SMELL001 Frozen candidate { #SMELL001 }
 
-- **Claim:** design
-- **Detection/default:** No writes after construction, not frozen
-- **Message template:** `{class}` has no observed post-construction writes, making mutability an unused capability.
+Claim
+:   design
 
-### SMELL004 Explicit deletion
+Detection
+:   No writes after construction, not frozen
 
-- **Claim:** design
-- **Detection/default:** Any `del` statement targeting a name, attribute, item or slice
-- **Message template:** `del {target}` changes state or object shape explicitly; review whether an owned transition or replacement value would make the lifecycle clearer.
+Message
+:   `{class}` has no observed post-construction writes, making mutability an unused capability.
 
-### SMELL005 Exception as control flow
+### SMELL004 Explicit deletion { #SMELL004 }
 
-- **Claim:** design
-- **Detection/default:** Raise/catch pair inside the same function
-- **Message template:** This exception appears to select an expected branch; review whether an explicit condition would communicate the normal control flow more clearly.
+Claim
+:   design
 
-### SMELL006 Handler over broad observed
+Detection
+:   Any `del` statement targeting a name, attribute, item or slice
 
-- **Claim:** risk
-- **Detection/default:** Handler caught only one concrete type across N executions
-- **Message template:** This handler catches `{declared_type}`, while `{execution_count}` observed executions produced only `{observed_types}`; review whether the broader boundary is intentional.
+Message
+:   `del {target}` changes state or object shape explicitly; review whether an owned transition or replacement value would make the lifecycle clearer.
 
-### SMELL007 Sectioning comment
+### SMELL005 Exception as control flow { #SMELL005 }
 
-- **Claim:** design
-- **Detection/default:** Comment acting as a step header inside a body
-- **Message template:** Comment `{comment}` sections a function at a point where responsibility may change; review whether the boundary should be executable.
+Claim
+:   design
 
-### SMELL008 Restating comment
+Detection
+:   Raise/catch pair inside the same function
 
-- **Claim:** design
-- **Detection/default:** Comment tokens substantially overlap the statement below
-- **Message template:** Comment `{comment}` substantially repeats the following statement and adds little explanatory context.
+Message
+:   This exception appears to select an expected branch; review whether an explicit condition would communicate the normal control flow more clearly.
 
-### SMELL009 Comment density high
+### SMELL006 Handler over broad observed { #SMELL006 }
 
-- **Claim:** design
-- **Detection/default:** Comment-to-code ratio above threshold within one function
-- **Message template:** `{symbol}` has a comment-to-code ratio of `{ratio}`; density is evidence only.
+Claim
+:   risk
 
-### SMELL010 Docstring restates signature
+Detection
+:   Handler caught only one concrete type across N executions
 
-- **Claim:** design
-- **Detection/default:** Docstring naming only parameters and types
-- **Message template:** The docstring for `{symbol}` restates parameter names and types without describing behavior or constraints.
+Message
+:   This handler catches `{declared_type}`, while `{execution_count}` observed executions produced only `{observed_types}`; review whether the broader boundary is intentional.
 
-### SMELL011 Todo marker
+### SMELL007 Sectioning comment { #SMELL007 }
 
-- **Claim:** design
-- **Detection/default:** `TODO`, `FIXME`, `XXX`, `HACK`
-- **Message template:** `{scope}` contains `{count}` TODO/FIXME/HACK markers; density is project-health evidence only.
+Claim
+:   design
 
-### SMELL012 Placeholder implementation
+Detection
+:   Comment acting as a step header inside a body
 
-- **Claim:** risk
-- **Detection/default:** `pass`, `...`, `NotImplementedError` in non-abstract context
-- **Message template:** `{symbol}` contains placeholder implementation `{placeholder}` outside an abstract or stub context.
+Message
+:   Comment `{comment}` sections a function at a point where responsibility may change; review whether the boundary should be executable.
 
-### SMELL014 Compensating commentary
+### SMELL008 Restating comment { #SMELL008 }
 
-- **Claim:** design
-- **Detection/default:** nam + (shp or cf)
-- **Message template:** `{symbol}` uses `{comment_count}` comments to mark responsibility changes that also appear in control-flow and shape evidence.
+Claim
+:   design
 
-### SMELL015 Application contract typed as object
+Detection
+:   Comment tokens substantially overlap the statement below
 
-- **Claim:** design
-- **Detection/default:** `object` used as an application-level parameter, return, variable, attribute or generic annotation
-- **Message template:** `value` is annotated as `object`, which communicates no useful application-level type contract.
+Message
+:   Comment `{comment}` substantially repeats the following statement and adds little explanatory context.
 
-### SMELL016 Direct environ index
+### SMELL009 Comment density high { #SMELL009 }
 
-- **Claim:** design
-- **Detection/default:** `os.environ[...]` outside tests or the configured configuration boundary
-- **Message template:** `DATABASE_URL` is read directly inside application logic instead of entering through the configuration boundary.
+Claim
+:   design
 
-### SMELL017 Cached singleton factory
+Detection
+:   Comment-to-code ratio above threshold within one function
 
-- **Claim:** design
-- **Detection/default:** Zero-argument cached function returns one process-lifetime object
-- **Message template:** `{factory}` is a cached zero-argument factory whose mutable result behaves as a process singleton.
+Message
+:   `{symbol}` has a comment-to-code ratio of `{ratio}`; density is evidence only.
 
-### SMELL018 Missing dataclass slots
+### SMELL010 Docstring restates signature { #SMELL010 }
 
-- **Claim:** design
-- **Detection/default:** Closed-shape value dataclass does not use `slots=True`
-- **Message template:** `Coordinate` has a fixed field set but retains a dynamic instance dictionary without an observed use.
+Claim
+:   design
 
-### SMELL019 Nested context managers
+Detection
+:   Docstring naming only parameters and types
 
-- **Claim:** design
-- **Detection/default:** A `with` statement directly contains another compatible `with` statement
-- **Message template:** These context managers can share one `with` statement without changing their lifetime or exception scope.
+Message
+:   The docstring for `{symbol}` restates parameter names and types without describing behavior or constraints.
 
-### SMELL021 Name mangled member
+### SMELL011 Todo marker { #SMELL011 }
 
-- **Claim:** design
-- **Detection/default:** Class declares a non-dunder member with two leading underscores
-- **Message template:** `__connect` is name-mangled to `_Service__connect`, preventing ordinary subclass overriding without providing real privacy.
+Claim
+:   design
 
-### SMELL023 Named behavior expressed as lambda
+Detection
+:   `TODO`, `FIXME`, `XXX`, `HACK`
 
-- **Claim:** design
-- **Detection/default:** A non-trivial lambda is assigned, stored, or passed as durable behavior.
-- **Message template:** This lambda contains `{operation_count}` operations and durable behavior; a named function may communicate its contract more clearly.
+Message
+:   `{scope}` contains `{count}` TODO/FIXME/HACK markers; density is project-health evidence only.
+
+### SMELL012 Placeholder implementation { #SMELL012 }
+
+Claim
+:   risk
+
+Detection
+:   `pass`, `...`, `NotImplementedError` in non-abstract context
+
+Message
+:   `{symbol}` contains placeholder implementation `{placeholder}` outside an abstract or stub context.
+
+### SMELL014 Compensating commentary { #SMELL014 }
+
+Claim
+:   design
+
+Detection
+:   nam + (shp or cf)
+
+Message
+:   `{symbol}` uses `{comment_count}` comments to mark responsibility changes that also appear in control-flow and shape evidence.
+
+### SMELL015 Application contract typed as object { #SMELL015 }
+
+Claim
+:   design
+
+Detection
+:   `object` used as an application-level parameter, return, variable, attribute or generic annotation
+
+Message
+:   `value` is annotated as `object`, which communicates no useful application-level type contract.
+
+### SMELL016 Direct environ index { #SMELL016 }
+
+Claim
+:   design
+
+Detection
+:   `os.environ[...]` outside tests or the configured configuration boundary
+
+Message
+:   `DATABASE_URL` is read directly inside application logic instead of entering through the configuration boundary.
+
+### SMELL017 Cached singleton factory { #SMELL017 }
+
+Claim
+:   design
+
+Detection
+:   Zero-argument cached function returns one process-lifetime object
+
+Message
+:   `{factory}` is a cached zero-argument factory whose mutable result behaves as a process singleton.
+
+### SMELL018 Missing dataclass slots { #SMELL018 }
+
+Claim
+:   design
+
+Detection
+:   Closed-shape value dataclass does not use `slots=True`
+
+Message
+:   `Coordinate` has a fixed field set but retains a dynamic instance dictionary without an observed use.
+
+### SMELL019 Nested context managers { #SMELL019 }
+
+Claim
+:   design
+
+Detection
+:   A `with` statement directly contains another compatible `with` statement
+
+Message
+:   These context managers can share one `with` statement without changing their lifetime or exception scope.
+
+### SMELL021 Name mangled member { #SMELL021 }
+
+Claim
+:   design
+
+Detection
+:   Class declares a non-dunder member with two leading underscores
+
+Message
+:   `__connect` is name-mangled to `_Service__connect`, preventing ordinary subclass overriding without providing real privacy.
+
+### SMELL023 Named behavior expressed as lambda { #SMELL023 }
+
+Claim
+:   design
+
+Detection
+:   A non-trivial lambda is assigned, stored, or passed as durable behavior.
+
+Message
+:   This lambda contains `{operation_count}` operations and durable behavior; a named function may communicate its contract more clearly.

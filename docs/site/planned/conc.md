@@ -2,7 +2,10 @@
 
 The CONC domain addresses concurrency safety in async code: task and state ownership, proper lock usage, and race conditions.
 
-These rules are planned. None of them is available in a release yet.
+!!! warning "Not implemented"
+
+    These rules are designed, not shipped. Nothing on this page runs in
+    version `0.1.0a1`, which implements [19 rules](../rules/index.md).
 
 Background reading on the hazards these rules are meant to describe:
 [Coroutines and Tasks](https://docs.python.org/3/library/asyncio-task.html) and
@@ -26,74 +29,134 @@ in the Python standard library documentation.
 
 ## Rule details
 
-### CONC001 Shared state across await
+### CONC001 Shared state across await { #CONC001 }
 
-- **Claim:** risk
-- **Detection/default:** Shared state is read, an `await` occurs, then state is written from the stale read
-- **Message template:** `counter` is read before an `await` and written afterward, allowing another task to invalidate the update.
+Claim
+:   risk
 
-### CONC002 Lock held across await
+Detection
+:   Shared state is read, an `await` occurs, then state is written from the stale read
 
-- **Claim:** risk
-- **Detection/default:** Async code awaits while holding a lock or semaphore
-- **Message template:** `{symbol}` matches lock held across await: Async code awaits while holding a lock or semaphore.
+Message
+:   `counter` is read before an `await` and written afterward, allowing another task to invalidate the update.
 
-### CONC003 Blocking call in async
+### CONC002 Lock held across await { #CONC002 }
 
-- **Claim:** risk
-- **Detection/default:** Async function reaches a known blocking primitive without delegation
-- **Message template:** `{symbol}` matches blocking call in async: Async function reaches a known blocking primitive without delegation.
+Claim
+:   risk
 
-### CONC004 Concurrency primitive mismatch
+Detection
+:   Async code awaits while holding a lock or semaphore
 
-- **Claim:** risk
-- **Detection/default:** Coordination primitive is used outside the thread, task or process domain it protects
-- **Message template:** `{symbol}` matches concurrency primitive mismatch: Coordination primitive is used outside the thread, task or process domain it protects.
+Message
+:   `{symbol}` matches lock held across await: Async code awaits while holding a lock or semaphore.
 
-### CONC005 Detached task has no owner
+### CONC003 Blocking call in async { #CONC003 }
 
-- **Claim:** risk
-- **Detection/default:** Created task or submitted work has no retained, awaited or supervised handle
-- **Message template:** `{symbol}` matches detached task: Created task or submitted work has no retained, awaited or supervised handle.
+Claim
+:   risk
 
-### CONC006 Inconsistent lock order
+Detection
+:   Async function reaches a known blocking primitive without delegation
 
-- **Claim:** risk
-- **Detection/default:** Different paths acquire the same locks in different orders
-- **Message template:** `{symbol}` matches inconsistent lock order: Different paths acquire the same locks in different orders.
+Message
+:   `{symbol}` matches blocking call in async: Async function reaches a known blocking primitive without delegation.
 
-### CONC007 Race or deadlock observed
+### CONC004 Concurrency primitive mismatch { #CONC004 }
 
-- **Claim:** defect
-- **Detection/default:** Instrumentation observes conflicting access, circular waiting or schedule-dependent failure
-- **Message template:** `{symbol}` matches race or deadlock observed: Instrumentation observes conflicting access, circular waiting or schedule-dependent failure.
+Claim
+:   risk
 
-### CONC008 Async shared scope mutation
+Detection
+:   Coordination primitive is used outside the thread, task or process domain it protects
 
-- **Claim:** risk
-- **Detection/default:** Async function writes a `global` or `nonlocal` binding
-- **Message template:** `{symbol}` matches async shared scope mutation: Async function writes a `global` or `nonlocal` binding.
+Message
+:   `{symbol}` matches concurrency primitive mismatch: Coordination primitive is used outside the thread, task or process domain it protects.
 
-### CONC009 Async state has no task owner
+### CONC005 Detached task has no owner { #CONC005 }
 
-- **Claim:** risk
-- **Detection/default:** own + cf + (cg or run)
-- **Message template:** Three async functions mutate the same scope binding across suspension points without an identified task-local owner.
+Claim
+:   risk
 
-### CONC010 Async lifecycle is not awaited or closed
+Detection
+:   Created task or submitted work has no retained, awaited or supervised handle
 
-- **Claim:** risk
-- **Detection/default:** An async iterator, context, stream, process, or client is created without an observed await/close/exit owner.
-- **Message template:** `{resource}` is created in `{symbol}` without an observed await, close, or async-context owner.
+Message
+:   `{symbol}` matches detached task: Created task or submitted work has no retained, awaited or supervised handle.
 
-### CONC011 External await has no timeout boundary
+### CONC006 Inconsistent lock order { #CONC006 }
 
-- **Claim:** design
-- **Detection/default:** An external await is not dominated by a configured timeout or cancellation scope.
-- **Message template:** `{symbol}` awaits `{effect}` without an observed timeout or cancellation boundary.
+Claim
+:   risk
 
-### CONC012 Cancellation path can leave partial state
+Detection
+:   Different paths acquire the same locks in different orders
 
-- **Claim:** risk
-- **Detection/default:** Owned state is mutated across a suspension point without rollback or cancellation-safe ordering.
-- **Message template:** `{symbol}` mutates `{state}` across an `await`, so cancellation can expose a partially completed transition.
+Message
+:   `{symbol}` matches inconsistent lock order: Different paths acquire the same locks in different orders.
+
+### CONC007 Race or deadlock observed { #CONC007 }
+
+Claim
+:   defect
+
+Detection
+:   Instrumentation observes conflicting access, circular waiting or schedule-dependent failure
+
+Message
+:   `{symbol}` matches race or deadlock observed: Instrumentation observes conflicting access, circular waiting or schedule-dependent failure.
+
+### CONC008 Async shared scope mutation { #CONC008 }
+
+Claim
+:   risk
+
+Detection
+:   Async function writes a `global` or `nonlocal` binding
+
+Message
+:   `{symbol}` matches async shared scope mutation: Async function writes a `global` or `nonlocal` binding.
+
+### CONC009 Async state has no task owner { #CONC009 }
+
+Claim
+:   risk
+
+Detection
+:   own + cf + (cg or run)
+
+Message
+:   Three async functions mutate the same scope binding across suspension points without an identified task-local owner.
+
+### CONC010 Async lifecycle is not awaited or closed { #CONC010 }
+
+Claim
+:   risk
+
+Detection
+:   An async iterator, context, stream, process, or client is created without an observed await/close/exit owner.
+
+Message
+:   `{resource}` is created in `{symbol}` without an observed await, close, or async-context owner.
+
+### CONC011 External await has no timeout boundary { #CONC011 }
+
+Claim
+:   design
+
+Detection
+:   An external await is not dominated by a configured timeout or cancellation scope.
+
+Message
+:   `{symbol}` awaits `{effect}` without an observed timeout or cancellation boundary.
+
+### CONC012 Cancellation path can leave partial state { #CONC012 }
+
+Claim
+:   risk
+
+Detection
+:   Owned state is mutated across a suspension point without rollback or cancellation-safe ordering.
+
+Message
+:   `{symbol}` mutates `{state}` across an `await`, so cancellation can expose a partially completed transition.

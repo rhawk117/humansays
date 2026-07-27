@@ -1,7 +1,9 @@
 # ERR rules
 
-ERR rules are planned. None of them is implemented today, and nothing on this
-page is available to run.
+!!! warning "Not implemented"
+
+    These rules are designed, not shipped. Nothing on this page runs in
+    version `0.1.0a1`, which implements [19 rules](../rules/index.md).
 
 ERR rules examine failure boundaries, recovery strategies, retries, and rollback logic. They identify risks in partial state updates, swallowed exceptions, and unordered external effects.
 
@@ -34,122 +36,167 @@ handling it.
 
 ## Rule detail
 
-### ERR001 Mutation between external effects
+### ERR001 Mutation between external effects { #ERR001 }
 
-**Claim.** risk
+Claim
+:   risk
 
-**Detection/default.** Mutation, then effect, then mutation
+Detection
+:   Mutation, then effect, then mutation
 
-**Message template.** `{symbol}` mutates state before and after `{effect}`, exposing a partial-state window if the effect fails.
+Message
+:   `{symbol}` mutates state before and after `{effect}`, exposing a partial-state window if the effect fails.
 
-### ERR002 Unordered multi effect
+### ERR002 Unordered multi effect { #ERR002 }
 
-**Claim.** risk
+Claim
+:   risk
 
-**Detection/default.** ≥2 effects with no transaction or compensation
+Detection
+:   ≥2 effects with no transaction or compensation
 
-**Message template.** `{symbol}` performs `{effect_count}` external effects without an observed transaction, compensation, or idempotent boundary.
+Message
+:   `{symbol}` performs `{effect_count}` external effects without an observed transaction, compensation, or idempotent boundary.
 
-### ERR003 Exception leaves partial state
+### ERR003 Exception leaves partial state { #ERR003 }
 
-**Claim.** risk
+Claim
+:   risk
 
-**Detection/default.** Raise between two writes to the same owner
+Detection
+:   Raise between two writes to the same owner
 
-**Message template.** `{symbol}` can raise after `{completed_writes}` of `{total_writes}` writes, leaving `{owner}` partially updated.
+Message
+:   `{symbol}` can raise after `{completed_writes}` of `{total_writes}` writes, leaving `{owner}` partially updated.
 
-### ERR004 Broad exception swallowed
+### ERR004 Broad exception swallowed { #ERR004 }
 
-**Claim.** risk
+Claim
+:   risk
 
-**Detection/default.** `except Exception` with `pass`/`return None` body
+Detection
+:   `except Exception` with `pass`/`return None` body
 
-**Message template.** `{symbol}` catches `{exception}` and continues with `{fallback}`, discarding the original failure.
+Message
+:   `{symbol}` catches `{exception}` and continues with `{fallback}`, discarding the original failure.
 
-### ERR005 Absence collapsed into failure
+### ERR005 Absence collapsed into failure { #ERR005 }
 
-**Claim.** risk
+Claim
+:   risk
 
-**Detection/default.** Infrastructure error converted to `None` return
+Detection
+:   Infrastructure error converted to `None` return
 
-**Message template.** `{symbol}` converts `{exception}` into `None`, collapsing infrastructure failure into ordinary absence.
+Message
+:   `{symbol}` converts `{exception}` into `None`, collapsing infrastructure failure into ordinary absence.
 
-### ERR006 Retry without idempotence
+### ERR006 Retry without idempotence { #ERR006 }
 
-**Claim.** risk
+Claim
+:   risk
 
-**Detection/default.** Retry loop wrapping a mutating effect
+Detection
+:   Retry loop wrapping a mutating effect
 
-**Message template.** `{symbol}` retries mutating effect `{effect}` without an observed idempotency key, rollback, or compensation policy.
+Message
+:   `{symbol}` retries mutating effect `{effect}` without an observed idempotency key, rollback, or compensation policy.
 
-### ERR007 Error message only
+### ERR007 Error message only { #ERR007 }
 
-**Claim.** design
+Claim
+:   design
 
-**Detection/default.** Failure distinguished by message string, not type
+Detection
+:   Failure distinguished by message string, not type
 
-**Message template.** `{symbol}` distinguishes failure behavior by matching message text instead of an explicit exception or result contract.
+Message
+:   `{symbol}` distinguishes failure behavior by matching message text instead of an explicit exception or result contract.
 
-### ERR008 Side effect orchestration risk
+### ERR008 Side effect orchestration risk { #ERR008 }
 
-**Claim.** risk
+Claim
+:   risk
 
-**Detection/default.** eff + cf
+Detection
+:   eff + cf
 
-**Message template.** `{symbol}` coordinates `{effects}` across `{failure_regions}` failure regions without one visible recovery boundary.
+Message
+:   `{symbol}` coordinates `{effects}` across `{failure_regions}` failure regions without one visible recovery boundary.
 
-### ERR009 Ambiguous failure contract
+### ERR009 Ambiguous failure contract { #ERR009 }
 
-**Claim.** risk
+Claim
+:   risk
 
-**Detection/default.** cf + eff
+Detection
+:   cf + eff
 
-**Message template.** `{symbol}` exposes `{failure_modes}` failure modes through the same ambiguous return or exception contract.
+Message
+:   `{symbol}` exposes `{failure_modes}` failure modes through the same ambiguous return or exception contract.
 
-### ERR010 Silent infrastructure failure
+### ERR010 Silent infrastructure failure { #ERR010 }
 
-**Claim.** risk
+Claim
+:   risk
 
-**Detection/default.** cf + eff
+Detection
+:   cf + eff
 
-**Message template.** `{symbol}` suppresses `{exception}` from `{effect}`, making infrastructure failure indistinguishable from success.
+Message
+:   `{symbol}` suppresses `{exception}` from `{effect}`, making infrastructure failure indistinguishable from success.
 
-### ERR011 External call inside validation logic
+### ERR011 External call inside validation logic { #ERR011 }
 
-**Claim.** design
+Claim
+:   design
 
-**Detection/default.** Validation reaches an external effect boundary.
+Detection
+:   Validation reaches an external effect boundary.
 
-**Message template.** `{validator}` performs `{effect}` while deciding validity, so validation can fail for operational reasons unrelated to the input contract.
+Message
+:   `{validator}` performs `{effect}` while deciding validity, so validation can fail for operational reasons unrelated to the input contract.
 
-### ERR012 Multiple failure modes collapse into one sentinel
+### ERR012 Multiple failure modes collapse into one sentinel { #ERR012 }
 
-**Claim.** risk
+Claim
+:   risk
 
-**Detection/default.** Distinct exception or error paths return the same sentinel.
+Detection
+:   Distinct exception or error paths return the same sentinel.
 
-**Message template.** `{symbol}` collapses `{failure_count}` failure modes into `{sentinel}`, forcing callers to guess what happened.
+Message
+:   `{symbol}` collapses `{failure_count}` failure modes into `{sentinel}`, forcing callers to guess what happened.
 
-### ERR013 Cleanup can mask the original failure
+### ERR013 Cleanup can mask the original failure { #ERR013 }
 
-**Claim.** risk
+Claim
+:   risk
 
-**Detection/default.** Cleanup performed during an active exception can raise without preserving the original exception.
+Detection
+:   Cleanup performed during an active exception can raise without preserving the original exception.
 
-**Message template.** `{cleanup}` can raise while handling `{original_exception}`, replacing the failure that triggered cleanup.
+Message
+:   `{cleanup}` can raise while handling `{original_exception}`, replacing the failure that triggered cleanup.
 
-### ERR014 Retry has no bounded policy
+### ERR014 Retry has no bounded policy { #ERR014 }
 
-**Claim.** risk
+Claim
+:   risk
 
-**Detection/default.** A retry loop has no attempt, deadline, cancellation, or backoff bound.
+Detection
+:   A retry loop has no attempt, deadline, cancellation, or backoff bound.
 
-**Message template.** `{symbol}` retries `{effect}` without an attempt limit, deadline, or cancellation boundary.
+Message
+:   `{symbol}` retries `{effect}` without an attempt limit, deadline, or cancellation boundary.
 
-### ERR015 Error handling mutates durable state
+### ERR015 Error handling mutates durable state { #ERR015 }
 
-**Claim.** risk
+Claim
+:   risk
 
-**Detection/default.** An exception handler writes durable state before failure is resolved or re-raised.
+Detection
+:   An exception handler writes durable state before failure is resolved or re-raised.
 
-**Message template.** The `{exception}` handler writes `{state}` before recovery completes, making error handling part of the durable transition.
+Message
+:   The `{exception}` handler writes `{state}` before recovery completes, making error handling part of the durable transition.

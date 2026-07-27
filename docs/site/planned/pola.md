@@ -5,7 +5,10 @@ expectations. These rules identify design decisions that violate the principle
 of least astonishment, such as properties performing I/O, operators having
 hidden effects, or helper functions reaching external systems.
 
-None of the rules below are implemented yet. They are planned.
+!!! warning "Not implemented"
+
+    These rules are designed, not shipped. Nothing on this page runs in
+    version `0.1.0a1`, which implements [19 rules](../rules/index.md).
 
 Background reading: the
 [principle of least astonishment](https://en.wikipedia.org/wiki/Principle_of_least_astonishment)
@@ -22,42 +25,57 @@ and its
 
 ## Rule details
 
-### POLA001 Effectful property
+### POLA001 Effectful property { #POLA001 }
 
-**Claim.** risk
+Claim
+:   risk
 
-**Detection/default.** Property performs I/O, mutation, locking, subprocess work or substantial computation
+Detection
+:   Property performs I/O, mutation, locking, subprocess work or substantial computation
 
-**Message template.** Property `permissions` performs a database query despite being presented as ordinary attribute access.
+Message
+:   Property `permissions` performs a database query despite being presented as ordinary attribute access.
 
-### POLA003 Representation as identity
+### POLA003 Representation as identity { #POLA003 }
 
-**Claim.** risk
+Claim
+:   risk
 
-**Detection/default.** `str()` or `repr()` output becomes a persistent key, identifier, filename or protocol value
+Detection
+:   `str()` or `repr()` output becomes a persistent key, identifier, filename or protocol value
 
-**Message template.** `repr(entity)` is used as a persistent cache key even though representation output is not an explicit identity contract.
+Message
+:   `repr(entity)` is used as a persistent cache key even though representation output is not an explicit identity contract.
 
-### POLA004 Effectful operator overload
+### POLA004 Effectful operator overload { #POLA004 }
 
-**Claim.** risk
+Claim
+:   risk
 
-**Detection/default.** Operator method performs I/O, external mutation, subprocess work or notification
+Detection
+:   Operator method performs I/O, external mutation, subprocess work or notification
 
-**Message template.** `Deployment.__add__` performs network I/O even though `left + right` appears to be a local value operation.
+Message
+:   `Deployment.__add__` performs network I/O even though `left + right` appears to be a local value operation.
 
-### POLA005 None as command
+### POLA005 None as command { #POLA005 }
 
-**Claim.** design
+Claim
+:   design
 
-**Detection/default.** `None` selects clearing, resetting, deletion or another alternate operation
+Detection
+:   `None` selects clearing, resetting, deletion or another alternate operation
 
-**Message template.** Passing `None` to `update_name()` means "clear the name," hiding a command inside nullability.
+Message
+:   Passing `None` to `update_name()` means "clear the name," hiding a command inside nullability.
 
-### POLA006 Non-obvious arithmetic overload
+### POLA006 Non-obvious arithmetic overload { #POLA006 }
 
-**Claim.** design
+Claim
+:   design
 
-**Detection/default.** Arithmetic, matrix, shift or bitwise operator lacks immediately obvious domain meaning
+Detection
+:   Arithmetic, matrix, shift or bitwise operator lacks immediately obvious domain meaning
 
-**Message template.** `{expression}` has no meaning a reader can infer without opening `{method}`; does a reader immediately know what this operation does?
+Message
+:   `{expression}` has no meaning a reader can infer without opening `{method}`; does a reader immediately know what this operation does?
