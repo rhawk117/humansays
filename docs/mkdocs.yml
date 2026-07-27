@@ -46,6 +46,12 @@ theme:
 plugins:
   - search
 
+validation:
+  omitted_files: warn
+  unrecognized_links: warn
+  absolute_links: warn
+  anchors: warn
+
 markdown_extensions:
   - abbr
   - attr_list
