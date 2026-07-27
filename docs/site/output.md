@@ -2,16 +2,15 @@
 
 humansays produces two output formats, selected by `--format`/`report.format`:
 `text` (default) and `json`. Both are described here as read from
-`src/humansays/reporting/render.py:123-148`, `src/humansays/reporting/ansi.py`,
+`src/humansays/reporting/render.py`, `src/humansays/reporting/ansi.py`,
 and `src/humansays/reporting/grouping.py`. Version `0.1.0a1` (alpha).
 
 ## Text output
 
-Text output goes through `rich` when it is installed (the optional
-`terminal` extra) and falls back to plain ANSI otherwise. The two renderers
-show the same information; `rich` adds a formatted table, and the ANSI
-fallback prints one line per target. Neither requires `rich` to run —
-`rich` is never a required dependency.
+Text output is written with plain ANSI escapes and prints one line per target.
+There are no runtime dependencies and no extras. The whole report is built as
+one string and written in a single call, so it never interleaves with anything
+else on the stream.
 
 A text run prints, in order:
 

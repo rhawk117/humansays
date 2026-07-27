@@ -94,7 +94,7 @@ Must be at least `1`.
 |---|---|---|
 | `format` | `"text"` | `"text"` or `"json"`. |
 | `limit` | `200` | Maximum review targets shown; `0` shows all. |
-| `fail_on` | `"never"` | `"never"`, `"warning"`, or `"any"` — controls the nonzero exit code on findings. |
+| `fail_on` | `"never"` | `"never"`, `"warning"`, or `"any"`. Controls the nonzero exit code on findings. |
 | `min_score` | `0.0` | Minimum acceptable score (`0.0`-`100.0`) before the run exits nonzero. |
 
 Every CLI flag documented in `cli.md` maps onto exactly one of these keys and

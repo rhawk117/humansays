@@ -94,37 +94,28 @@ markdown_extensions:
 
 nav:
   - Overview: index.md
-  - Style guide:
-      - style-guide/README.md
-      - Python: style-guide/python.md
-      - Rust: style-guide/rust.md
+  - Configuration: configuration.md
+  - CLI: cli.md
+  - Output and scoring: output.md
   - Rules:
-      - Python:
-          - Overview: rules/python/index.md
-          - SRP: rules/python/srp.md
-          - KISS: rules/python/kiss.md
-          - CQS: rules/python/cqs.md
-          - POLA: rules/python/pola.md
-          - COUP: rules/python/coup.md
-          - CONTRACT: rules/python/contract.md
-          - STATE: rules/python/state.md
-          - LIFE: rules/python/life.md
-          - FAIL: rules/python/fail.md
-          - CONC: rules/python/conc.md
-          - IDIOM: rules/python/idiom.md
-          - NIT: rules/python/nit.md
-          - DRY: rules/python/dry.md
-          - Evidence registry: rules/python/evidence-registry.md
-          - Externalized and omitted: rules/python/externalized.md
-          - Prototype crosswalk: rules/python/prototype-crosswalk.md
-          - Accounting: rules/python/accounting.md
-      - Legacy catalog:
-          - rules/legacy/README.md
-          - Python: rules/legacy/python.md
-  - Reference:
-      - reference/index.md
-      - CLI: reference/cli.md
-      - Configuration: reference/configuration.md
-      - Output and scoring: reference/output.md
-      - Shipped rules: reference/shipped-rules.md
-      - Reconciliation: reference/reconciliation.md
+      - Overview: rules/python/index.md
+      - SRP: rules/python/srp.md
+      - KISS: rules/python/kiss.md
+      - CQS: rules/python/cqs.md
+      - POLA: rules/python/pola.md
+      - COUP: rules/python/coup.md
+      - CONTRACT: rules/python/contract.md
+      - STATE: rules/python/state.md
+      - LIFE: rules/python/life.md
+      - FAIL: rules/python/fail.md
+      - CONC: rules/python/conc.md
+      - IDIOM: rules/python/idiom.md
+      - NIT: rules/python/nit.md
+      - DRY: rules/python/dry.md
+      - Evidence registry: rules/python/evidence-registry.md
+      - Externalized and omitted: rules/python/externalized.md
+      - Prototype crosswalk: rules/python/prototype-crosswalk.md
+      - Accounting: rules/python/accounting.md
+  - Design philosophy:
+      - Python: style-guide/python.md
+  - Reconciliation: reference/reconciliation.md
