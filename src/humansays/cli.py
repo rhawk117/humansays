@@ -1,21 +1,23 @@
 import sys
+import traceback
 from collections.abc import Sequence
 from typing import TextIO
 
 from humansays import application
 from humansays.config.loading import ConfigError, load_settings
-from humansays.const import CONFIG_ERROR_EXIT, MISSING_SYMBOL_EXIT, NO_FILES_EXIT
+from humansays.const import (
+    CONFIG_ERROR_EXIT,
+    INTERNAL_ERROR_EXIT,
+    MISSING_SYMBOL_EXIT,
+    NO_FILES_EXIT,
+)
 from humansays.reporting.models import ReportRequest
 from humansays.reporting.render import write_report
 from humansays.scoring import score_for
 
 
-def main(argv: Sequence[str] | None = None, stream: TextIO | None = None) -> int:
-    try:
-        settings = load_settings(argv)
-    except ConfigError as err:
-        print(f'error: {err}', file=sys.stderr)
-        return CONFIG_ERROR_EXIT
+def _run(argv: Sequence[str] | None, stream: TextIO | None) -> int:
+    settings = load_settings(argv)
 
     specs = application.resolve_specs(settings.selection, stream or sys.stdin)
     paths = application.collect_files(specs, settings.selection.excludes)
@@ -33,12 +35,22 @@ def main(argv: Sequence[str] | None = None, stream: TextIO | None = None) -> int
 
     score = score_for(result)
     code = application.exit_code(result, score, settings)
-    write_report(
-        ReportRequest(
-            result,
-            score,
-            settings.report,
-            code,
-        )
-    )
+    write_report(ReportRequest(result, score, settings.report, code))
     return code
+
+
+def main(argv: Sequence[str] | None = None, stream: TextIO | None = None) -> int:
+    """Entry point. Every failure leaves here as an exit code, never a traceback.
+
+    ``SystemExit`` and ``KeyboardInterrupt`` derive from ``BaseException`` and
+    pass through untouched, so ``--help`` and Ctrl-C keep their own statuses.
+    """
+    try:
+        return _run(argv, stream)
+    except ConfigError as err:
+        print(f'error: {err}', file=sys.stderr)
+        return CONFIG_ERROR_EXIT
+    except Exception:  # noqa: BLE001
+        print('internal error: this is a humansays bug', file=sys.stderr)
+        traceback.print_exc(file=sys.stderr)
+        return INTERNAL_ERROR_EXIT

@@ -54,3 +54,28 @@ def test_pyproject_still_unwraps_the_tool_section(tmp_path: Path) -> None:
 
 def test_valid_flat_config_still_loads(tmp_path: Path) -> None:
     assert run(tmp_path, 'report = { limit = 5 }\n') == 0
+
+
+def test_unexpected_errors_exit_seventy(
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def explode(*args: object, **kwargs: object) -> None:
+        raise RuntimeError('boom')
+
+    monkeypatch.setattr('humansays.cli.application.collect_files', explode)
+    source = tmp_path / 'good.py'
+    source.write_text('def ok(a):\n    return a\n')
+
+    code = main([str(source)], io.StringIO(''))
+
+    assert code == 70
+    assert 'internal error' in capsys.readouterr().err
+
+
+def test_help_still_exits_zero() -> None:
+    with pytest.raises(SystemExit) as excinfo:
+        main(['--help'], io.StringIO(''))
+
+    assert excinfo.value.code == 0
