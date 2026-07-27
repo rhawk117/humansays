@@ -10,6 +10,8 @@ from humansays.const import (
     INTERNAL_ERROR_EXIT,
     MISSING_SYMBOL_EXIT,
     NO_FILES_EXIT,
+    NO_FILES_TEMPLATE,
+    NO_PATHS_MESSAGE,
 )
 from humansays.reporting.models import ReportRequest
 from humansays.reporting.render import write_report
@@ -19,11 +21,16 @@ from humansays.scoring import score_for
 def _run(argv: Sequence[str] | None, stream: TextIO | None) -> int:
     settings = load_settings(argv)
 
-    specs = application.resolve_specs(settings.selection, stream or sys.stdin)
+    source_stream = stream or sys.stdin
+    if not settings.selection.paths and source_stream.isatty():
+        print(NO_PATHS_MESSAGE, file=sys.stderr)
+        return NO_FILES_EXIT
+
+    specs = application.resolve_specs(settings.selection, source_stream)
     paths = application.collect_files(specs, settings.selection.excludes)
     if not paths:
         source = ', '.join(specs) or '<stdin>'
-        print(f'error: no Python files found in {source}', file=sys.stderr)
+        print(NO_FILES_TEMPLATE.format(source=source), file=sys.stderr)
         return NO_FILES_EXIT
 
     result = application.analyze_paths(paths, settings)

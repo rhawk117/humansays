@@ -57,9 +57,9 @@
     {
       "path": "src/humansays/cli.py",
       "symbol": "main",
-      "line": 42,
+      "line": 49,
       "rule_id": "HS005",
-      "evidence": "line 53: broad exception",
+      "evidence": "line 60: broad exception",
       "reason": "Top-level entry-point catch-all. [project.scripts] points at cli:main, so an escaping exception would exit 1 and become indistinguishable from a findings failure. Narrowing this defeats its purpose.",
       "expires_phase": "not-planned"
     }

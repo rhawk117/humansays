@@ -188,3 +188,41 @@ def test_text_still_goes_to_stderr_on_failure(
     captured = capsys.readouterr()
     assert captured.out == ''
     assert 'parse-error' in captured.err
+
+
+class FakeTTY(io.StringIO):
+    def isatty(self) -> bool:
+        return True
+
+
+def test_no_paths_on_a_tty_exits_three_with_guidance(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    code = main([], FakeTTY(''))
+    message = capsys.readouterr().err
+    assert code == 3
+    assert 'humansays .' in message
+    assert 'git ls-files' in message
+
+
+def test_piped_paths_still_work(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    source = tmp_path / 'good.py'
+    source.write_text(CLEAN)
+    assert main([], io.StringIO(f'{source}\n')) == 0
+
+
+def test_empty_pipe_still_exits_three(capsys: pytest.CaptureFixture[str]) -> None:
+    assert main([], io.StringIO('')) == 3
+
+
+def test_no_python_files_message_offers_a_path(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    (tmp_path / 'notes.txt').write_text('nothing here\n')
+    code = main([str(tmp_path)], io.StringIO(''))
+    message = capsys.readouterr().err
+    assert code == 3
+    assert 'no Python files found' in message
+    assert 'humansays .' in message
