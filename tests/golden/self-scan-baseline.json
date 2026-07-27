@@ -48,7 +48,7 @@
     {
       "path": "src/humansays/reporting/render.py",
       "symbol": "report_text",
-      "line": 42,
+      "line": 52,
       "rule_id": "HS002",
       "evidence": "is_tty",
       "reason": "is_tty is keyword-only (`*, is_tty: bool`). It is threaded from write_report so report_text stays pure and testable without a stream. Same argument-kind defect as use_color.",

@@ -108,6 +108,16 @@ CONFIG_ERROR_EXIT = 4
 UNANALYZED_EXIT = 5
 INTERNAL_ERROR_EXIT = 70
 
+EXIT_REASONS = MappingProxyType({
+    0: 'ok',
+    FINDINGS_EXIT: 'findings',
+    MISSING_SYMBOL_EXIT: 'symbol-not-found',
+    NO_FILES_EXIT: 'no-files',
+    CONFIG_ERROR_EXIT: 'config-error',
+    UNANALYZED_EXIT: 'unanalyzed',
+    INTERNAL_ERROR_EXIT: 'internal-error',
+})
+
 CLI_DESTINATIONS = MappingProxyType({
     'paths': ('selection', 'paths'),
     'exclude': ('selection', 'exclude'),

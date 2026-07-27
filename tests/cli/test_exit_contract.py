@@ -1,4 +1,5 @@
 import io
+import json
 from pathlib import Path
 
 import pytest
@@ -141,3 +142,49 @@ def test_clean_run_has_no_coverage_line(
     main([str(tmp_path)], io.StringIO(''))
     lines = capsys.readouterr().out.splitlines()
     assert not any(line.startswith('coverage ') for line in lines)
+
+
+def test_json_reaches_stdout_on_failure(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    (tmp_path / 'bad.py').write_text(BROKEN)
+    code = main(['--format', 'json', str(tmp_path)], io.StringIO(''))
+    captured = capsys.readouterr()
+    assert code == 5
+    payload = json.loads(captured.out)
+    assert payload['status']['exit_code'] == 5
+
+
+def test_json_status_on_a_clean_run(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    (tmp_path / 'good.py').write_text(CLEAN)
+    main(['--format', 'json', str(tmp_path)], io.StringIO(''))
+    status = json.loads(capsys.readouterr().out)['status']
+    assert status == {
+        'ok': True,
+        'exit_code': 0,
+        'reason': 'ok',
+        'unanalyzed': 0,
+    }
+
+
+def test_json_status_names_the_reason(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    (tmp_path / 'bad.py').write_text(BROKEN)
+    main(['--format', 'json', str(tmp_path)], io.StringIO(''))
+    status = json.loads(capsys.readouterr().out)['status']
+    assert status['reason'] == 'unanalyzed'
+    assert status['ok'] is False
+    assert status['unanalyzed'] == 1
+
+
+def test_text_still_goes_to_stderr_on_failure(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    (tmp_path / 'bad.py').write_text(BROKEN)
+    main([str(tmp_path)], io.StringIO(''))
+    captured = capsys.readouterr()
+    assert captured.out == ''
+    assert 'parse-error' in captured.err
