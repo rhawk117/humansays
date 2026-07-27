@@ -27,9 +27,11 @@ A text run prints, in order:
    severe first.
 5. If more targets exist than `--limit` allows, a line reporting how many
    were truncated, with a hint to pass `--limit 0`.
-6. One line per file that could not be parsed (`OSError`, `UnicodeError`,
+6. If any file could not be analyzed, a coverage line naming how many files
+   were analyzed out of the total, and that the score covers only those.
+7. One line per file that could not be parsed (`OSError`, `UnicodeError`,
    `SyntaxError`, or `ValueError` while reading or parsing it).
-7. `No suspicious structural indicators found.` if there were no targets and
+8. `No suspicious structural indicators found.` if there were no targets and
    no parse errors.
 
 Plain ANSI output honors the informal `NO_COLOR` and `FORCE_COLOR`
@@ -88,7 +90,13 @@ Abridged from a real run against `tests/fixture_module.py`:
       ],
       "symbol": "Store.dispatch"
     }
-  ]
+  ],
+  "status": {
+    "exit_code": 0,
+    "ok": true,
+    "reason": "ok",
+    "unanalyzed": 0
+  }
 }
 ```
 
@@ -100,6 +108,16 @@ its fields.
 `targets` is truncated to `--limit` entries the same way as text output;
 `summary.truncated` reports how many were left out. `errors` lists one
 string per file that failed to parse.
+
+`status` reports the run's verdict directly, so a consumer does not have to
+infer it from `errors` or `score`. JSON output always goes to standard
+output, including on a failed run, so `humansays --format json | jq` works
+regardless of the exit code. `reason` is one of `ok`, `findings`,
+`symbol-not-found`, `no-files`, `config-error`, `unanalyzed`,
+`internal-error` — only `ok`, `findings`, and `unanalyzed` can appear in a
+rendered report, since the others exit before a report is built.
+`unanalyzed` counts files that could not be parsed, read, or decoded; the
+score and grade cover only the files that were analyzed.
 
 ## Scoring model
 

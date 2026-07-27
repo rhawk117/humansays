@@ -13,8 +13,13 @@ first.
 - In `humansays.toml`, settings sit at the top level of the file.
 - In `pyproject.toml`, settings sit under `[tool.humansays]`.
 
+Using `[tool.humansays]` inside `humansays.toml` is an error, and humansays
+says so and exits `4` rather than failing obscurely.
+
 Any key not recognized by the settings model raises an error at load time
-naming the unknown keys, rather than being silently ignored.
+naming the unknown keys, rather than being silently ignored. A malformed or
+unreadable config file also exits `4`. See
+[Exit codes](cli.md#exit-codes).
 
 ## Full default configuration
 

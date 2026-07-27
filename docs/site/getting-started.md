@@ -125,10 +125,14 @@ $ echo $?
 1
 ```
 
-A failed run writes its whole report to standard error rather than standard
-output, so a pipeline reading stdout gets nothing on failure. The exit codes
-are `0` clean, `1` findings, `2` symbol not found, `3` no Python files found,
-and `4` config file not found.
+A failed run writes its **text** report to standard error rather than standard
+output, so a pipeline reading stdout gets nothing on failure. JSON output
+always goes to standard output, including on failure, so
+`humansays --format json | jq` works regardless of the exit code. The exit
+codes are `0` clean, `1` findings, `2` symbol not found, `3` no paths given or
+no Python files found, `4` configuration could not be loaded, `5` input could
+not be analyzed, and `70` internal error. See [CLI reference](cli.md#exit-codes)
+for the full table.
 
 Starting with `--fail-on never` on an existing codebase is the honest choice.
 Look at what it reports, decide which signals you agree with, tune the

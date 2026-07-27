@@ -101,12 +101,20 @@ inside a method rather than a plain function.
 
 ## Exit codes
 
-Read from `src/humansays/const.py` and `src/humansays/cli.py`:
+Read from `src/humansays/const.py` and `src/humansays/cli.py`. Enforced by
+`tests/cli/test_exit_contract.py`.
 
 | Code | Meaning |
 |---|---|
-| `0` | Scan completed and no failure condition was hit. |
-| `1` | The score fell below `--min-score`, or `--fail-on` matched a finding. |
-| `2` | `--symbol` was given but no scanned symbol matched it. |
-| `3` | No Python files were found among the given paths. |
-| `4` | `--config` named a file that does not exist. |
+| `0` | The command completed without crossing a configured failure threshold |
+| `1` | Findings crossed `--fail-on`, or the score fell below `--min-score` |
+| `2` | The requested `--symbol` was not found |
+| `3` | No paths were given, or no Python files were found |
+| `4` | The configuration could not be loaded |
+| `5` | One or more files could not be analyzed |
+| `70` | Internal error — this is a humansays bug |
+
+A file that cannot be parsed, read, or decoded is reported and makes the run
+exit `5`. Findings take precedence: a run with both findings and unanalyzed
+files exits `1`. The score and grade cover only the files that were analyzed,
+and the text report names the gap.

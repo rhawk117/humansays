@@ -196,8 +196,16 @@ Rule identifiers may change before `0.1.0`, so prerelease integrations should co
 | `0` | The command completed without crossing a configured failure threshold |
 | `1` | Findings crossed `--fail-on`, or the score fell below `--min-score` |
 | `2` | The requested `--symbol` was not found |
-| `3` | No Python files were found |
-| `4` | The requested configuration file was missing |
+| `3` | No paths were given, or no Python files were found |
+| `4` | The configuration could not be loaded |
+| `5` | One or more files could not be analyzed |
+| `70` | Internal error — this is a humansays bug |
+
+A file that cannot be parsed, read, or decoded is reported and makes the run
+exit `5`. Findings take precedence: a run with both findings and unanalyzed
+files exits `1`. The score and grade cover only the files that were analyzed,
+and the text report names the gap. Enforced by
+`tests/cli/test_exit_contract.py`.
 
 ## Scope and limitations
 
