@@ -1,6 +1,6 @@
 """Signal rules: turn extracted facts into findings.
 
-``cpython_ast`` owns the AST vocabulary and fact extraction; this module owns
+``python_ast`` owns the AST vocabulary and fact extraction; this module owns
 the judgement calls.
 
 Known contract debt: this module still fuses ast-extraction (walking
@@ -26,7 +26,16 @@ from humansays.const import (
 from humansays.enums import SignalName
 from humansays.findings.models import Finding, Location, Observation
 
-from .cpython_ast import (
+from .models import (
+    AnalysisIndex,
+    FunctionFacts,
+    FunctionNode,
+    MutationVocabulary,
+    ParsedModule,
+    Scope,
+    ScopeContext,
+)
+from .python_ast import (
     FUNCTION_NODES,
     FunctionVisitor,
     attribute_prefix_clusters,
@@ -36,15 +45,6 @@ from .cpython_ast import (
     declared_class_attributes,
     is_trivial_accessor,
     module_scale_findings,
-)
-from .models import (
-    AnalysisIndex,
-    FunctionFacts,
-    FunctionNode,
-    MutationVocabulary,
-    ParsedModule,
-    Scope,
-    ScopeContext,
 )
 from .syntax import (
     assigned_names,
