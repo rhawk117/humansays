@@ -31,28 +31,26 @@ def _scan_result() -> tuple[ScanResult, Score]:
     return result, score_for(result)
 
 
-def test_plain_text_snapshot_is_stable(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv('NO_COLOR', '1')
+@pytest.mark.usefixtures('no_color')
+def test_plain_text_snapshot_is_stable() -> None:
     result, score = _scan_result()
     request = ReportRequest(result, score, Report(limit=0), 0)
     assert render.report_text(request, is_tty=False) + '\n' == SNAPSHOT
 
 
+@pytest.mark.usefixtures('no_color')
 def test_write_report_sends_the_whole_report_to_stdout(
-    monkeypatch: pytest.MonkeyPatch,
     capsys: pytest.CaptureFixture[str],
 ) -> None:
-    monkeypatch.setenv('NO_COLOR', '1')
     result, score = _scan_result()
     render.write_report(ReportRequest(result, score, Report(limit=0), 0))
     assert capsys.readouterr().out == SNAPSHOT
 
 
+@pytest.mark.usefixtures('no_color')
 def test_the_report_goes_to_stderr_when_the_run_fails(
-    monkeypatch: pytest.MonkeyPatch,
     capsys: pytest.CaptureFixture[str],
 ) -> None:
-    monkeypatch.setenv('NO_COLOR', '1')
     result, score = _scan_result()
     render.write_report(ReportRequest(result, score, Report(limit=0), 1))
     captured = capsys.readouterr()

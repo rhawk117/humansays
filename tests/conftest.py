@@ -14,6 +14,7 @@ import pytest
 pytest_plugins = [
     'tests.fixtures.paths',
     'tests.fixtures.modules',
+    'tests.fixtures.environment',
 ]
 
 _TESTS_ROOT = Path(__file__).resolve().parent
