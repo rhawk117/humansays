@@ -45,6 +45,23 @@ theme:
 
 plugins:
   - search
+  - termynal:
+      prompt_literal_start:
+        - "$"
+        - ">>>"
+  # llmstxt post-processes rendered pages, so it must stay last.
+  - llmstxt:
+      markdown_description: >-
+        humansays is a Python linter that evaluates how difficult AI generated
+        code is to read, understand, test, maintain, and safely modify.
+      # `sections` is required, and naming a page that does not exist yet is a
+      # warning, which --strict turns into a failure. So this grows one entry
+      # at a time as pages land, rather than being written out in full here.
+      # The planned catalog is deliberately excluded: it is not what an agent
+      # should act on.
+      sections:
+        Usage:
+          - index.md
 
 validation:
   omitted_files: warn
