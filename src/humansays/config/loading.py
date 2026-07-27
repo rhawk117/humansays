@@ -93,8 +93,10 @@ def build_settings(mapping: Mapping[str, object]) -> ScannerSettings:
 
 
 def toml_values(path: Path) -> dict:
-    toml_content = path.read_text()
-    data = tomllib.loads(toml_content)
+    # Binary mode, because TOML is UTF-8 by specification and `read_text` would
+    # decode with the locale encoding instead.
+    with path.open('rb') as handle:
+        data = tomllib.load(handle)
     if path.name != 'pyproject.toml':
         return data
 
