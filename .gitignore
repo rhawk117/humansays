@@ -220,3 +220,7 @@ __marimo__/
 
 # Brainstorming specs and plans -- local working material, never committed.
 .agent-specs/superpowers/
+
+# Migration provenance and image originals: local working material, not shipped.
+.migration/
+.mascots/
