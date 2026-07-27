@@ -7,10 +7,13 @@ describes how work is executed in this repository. Standing constraints live
 in `CLAUDE.md` at the repository root and are loaded automatically; they
 apply to everything here.
 
-The current rule catalog and design document live on the documentation site,
-under Rules → Python. `NEW_RULES.md` at the repository root was the working
-draft during the `docs/realign-specs` migration and no longer exists once
-that migration lands. Treat the published site as the source of truth.
+The documentation site is the source of truth for both rule sets. The 19 rules
+that ship in `0.1.0a1` are under Rules, one page per group, each carrying the
+severity, confidence, weight and trigger read from `src/humansays/catalog.py`.
+The 158-rule planned catalog is under Planned rules and is not implemented.
+The criteria the shipped rules encode are under Design philosophy.
+`NEW_RULES.md` at the repository root was the working draft during the
+`docs/realign-specs` migration and no longer exists.
 
 ## Layout
 

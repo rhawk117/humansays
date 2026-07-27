@@ -2,7 +2,7 @@
 
 The retired phase tree defined a nine-phase sequence built around the
 rule model that predated the current catalog. That catalog now lives at
-`docs/site/rules/python/` as 158 rules across thirteen domains, and the project
+`docs/site/planned/` as 158 rules across thirteen domains, and the project
 plans only the next piece of work rather than a multi-phase sequence in advance.
 This file records, phase by phase, whether each phase's premise still holds
 against the current catalog. It is the permanent record. The phase directories
@@ -43,8 +43,9 @@ cannot mutate shared state, still needs canonical parser-independent
 serialization for a future reimplementation, and its config already carries
 path-scoped selection through `per-file-ignores`. Those pieces survive. One task
 does not: migrating rules to the old `bug|risk|design` severity columns of
-`docs/site/rules/python.md`. That page is gone, and the current model defines its
-own claim, concern, certainty, and default fields on the published pages. The
+the old `docs/site/rules/python.md`. That page is gone, and the current model
+defines its own claim, concern, certainty, and default fields on the published
+pages. The
 claim-migration task is misaligned; the rest of the phase is not.
 
 ## 03-measurement-harness: still worth doing

@@ -48,7 +48,7 @@ the Python mechanism behind several of the signature rules below.
 
 **Claim.** design
 
-**Detection/default.** Operation inputs only. 4 weak, 5–6 moderate, 7+ strong
+**Detection/default.** Operation inputs only. 4 weak, 5 or 6 moderate, 7+ strong
 
 **Message template.** `{symbol}` exposes `{actual}` operation inputs, increasing the contract a caller must understand at once.
 
