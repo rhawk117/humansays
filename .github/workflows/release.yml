@@ -172,4 +172,13 @@ jobs:
 
   deploy-site:
     needs: github-release
+    # A called workflow's jobs cannot exceed the caller's GITHUB_TOKEN
+    # permissions, and this workflow sets `contents: read` at workflow level.
+    # deploy-site's own job asks for pages: write and id-token: write, so
+    # without these the deploy step would fail on the release path. Read from
+    # GitHub's reusable-workflow documentation, not reproduced.
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     uses: ./.github/workflows/deploy-site.yml
