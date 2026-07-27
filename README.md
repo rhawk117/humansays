@@ -32,13 +32,8 @@ It gives a human reviewer, or a tool acting on behalf of one, a smaller set of p
 pip install humansays
 ```
 
-For Rich-powered terminal output:
-
-```bash
-pip install "humansays[terminal]"
-```
-
-The base package has no runtime dependencies. The `terminal` extra installs `rich`; without it, text output falls back to plain ANSI formatting.
+There are no runtime dependencies and no extras. Text output is written with
+plain ANSI escapes, which `NO_COLOR`, `FORCE_COLOR`, and `TERM=dumb` control.
 
 ## Quick start
 

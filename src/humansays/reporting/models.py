@@ -39,12 +39,6 @@ class ScanResult:
 
 @dataclass(frozen=True, slots=True)
 class ReportRequest:
-    """One run, ready to be written out.
-
-    The four values always travel together, so renderers take this rather
-    than passing them down one at a time.
-    """
-
     result: ScanResult
     score: Score
     settings: Report
@@ -52,5 +46,4 @@ class ReportRequest:
 
     @property
     def failed(self) -> bool:
-        """Whether the caller is treating this run as a failure."""
         return self.exit_code != 0

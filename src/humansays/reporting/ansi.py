@@ -1,12 +1,10 @@
-"""Plain-ANSI text rendering.
+"""Building the text report.
 
-Used instead of rich's console renderer when rich is not installed (the
-``terminal`` extra is optional) or when the environment asks for plain output.
-Honors the informal ``NO_COLOR``/``FORCE_COLOR`` convention and ``TERM=dumb``.
+Nothing here writes anything. ``report_lines`` returns the whole report and
+``render`` joins and flushes it in one call.
 """
 
 import os
-import sys
 from types import MappingProxyType
 
 from humansays.const import GRADE_STYLES, SEVERITY_STYLES
@@ -29,10 +27,10 @@ ANSI_CODES = MappingProxyType({
 
 
 def use_color(*, is_tty: bool) -> bool:
-    if os.environ.get('NO_COLOR') or os.environ.get('TERM') == 'dumb':
+    if os.getenv('NO_COLOR') or os.getenv('TERM') == 'dumb':
         return False
 
-    if os.environ.get('FORCE_COLOR'):
+    if os.getenv('FORCE_COLOR'):
         return True
 
     return is_tty
@@ -112,14 +110,3 @@ def report_lines(request: ReportRequest, *, color: bool) -> list[str]:
         lines.append('No suspicious structural indicators found.')
 
     return lines
-
-
-def render_text_plain(request: ReportRequest) -> None:
-    """Write the whole report in a single call.
-
-    A failed run goes to stderr, so it leaves stdout clean for whatever
-    reads the command's output.
-    """
-    stream = sys.stderr if request.failed else sys.stdout
-    color = use_color(is_tty=stream.isatty())
-    print('\n'.join(report_lines(request, color=color)), file=stream)
