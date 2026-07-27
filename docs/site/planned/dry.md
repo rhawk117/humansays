@@ -7,12 +7,12 @@ These rules are planned. None of them is available in a release yet.
 The refactoring these rules point toward is described in Martin Fowler's
 catalog entry [Extract Function](https://refactoring.com/catalog/extractFunction.html).
 
-| ID | Rule | Default | Concern |
-|---|---|---|---|
-| DRY001 | Uniform try wrapping | off | advisory |
-| DRY002 | Over parameterized helper | off | advisory |
-| DRY003 | Symmetric boilerplate | off | advisory |
-| DRY004 | Manual dataclass projection | off | advisory |
+| ID     | Rule                        | Default | Concern  |
+| ------ | --------------------------- | ------- | -------- |
+| DRY001 | Uniform try wrapping        | off     | advisory |
+| DRY002 | Over parameterized helper   | off     | advisory |
+| DRY003 | Symmetric boilerplate       | off     | advisory |
+| DRY004 | Manual dataclass projection | off     | advisory |
 
 ## Rule details
 

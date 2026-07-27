@@ -14,23 +14,23 @@ covers the language semantics, and
 that keeps an original failure visible when a second one is raised while
 handling it.
 
-| ID | Rule | Default | Concern |
-|---|---|---|---|
-| FAIL001 | Mutation between external effects | on | hazard |
-| FAIL002 | Unordered multi effect | on | hazard |
-| FAIL003 | Exception leaves partial state | on | hazard |
-| FAIL004 | Broad exception swallowed | on | hazard |
-| FAIL005 | Absence collapsed into failure | on | hazard |
-| FAIL006 | Retry without idempotence | on | hazard |
-| FAIL007 | Error message only | on | review |
-| FAIL008 | Side effect orchestration risk | on | hazard |
-| FAIL009 | Ambiguous failure contract | on | hazard |
-| FAIL010 | Silent infrastructure failure | on | hazard |
-| FAIL011 | External call inside validation logic | on | review |
-| FAIL012 | Multiple failure modes collapse into one sentinel | on | hazard |
-| FAIL013 | Cleanup can mask the original failure | on | hazard |
-| FAIL014 | Retry has no bounded policy | on | hazard |
-| FAIL015 | Error handling mutates durable state | on | hazard |
+| ID      | Rule                                              | Default | Concern |
+| ------- | ------------------------------------------------- | ------- | ------- |
+| FAIL001 | Mutation between external effects                 | on      | hazard  |
+| FAIL002 | Unordered multi effect                            | on      | hazard  |
+| FAIL003 | Exception leaves partial state                    | on      | hazard  |
+| FAIL004 | Broad exception swallowed                         | on      | hazard  |
+| FAIL005 | Absence collapsed into failure                    | on      | hazard  |
+| FAIL006 | Retry without idempotence                         | on      | hazard  |
+| FAIL007 | Error message only                                | on      | review  |
+| FAIL008 | Side effect orchestration risk                    | on      | hazard  |
+| FAIL009 | Ambiguous failure contract                        | on      | hazard  |
+| FAIL010 | Silent infrastructure failure                     | on      | hazard  |
+| FAIL011 | External call inside validation logic             | on      | review  |
+| FAIL012 | Multiple failure modes collapse into one sentinel | on      | hazard  |
+| FAIL013 | Cleanup can mask the original failure             | on      | hazard  |
+| FAIL014 | Retry has no bounded policy                       | on      | hazard  |
+| FAIL015 | Error handling mutates durable state              | on      | hazard  |
 
 ## Rule detail
 

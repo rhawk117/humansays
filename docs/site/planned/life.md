@@ -13,25 +13,25 @@ Python's mechanism for that, and the
 [contextlib documentation](https://docs.python.org/3/library/contextlib.html)
 covers the tools built on it.
 
-| ID | Rule | Default | Concern |
-|---|---|---|---|
-| LIFE001 | Import time side effect | on | hazard |
-| LIFE002 | Constructor does work | on | review |
-| LIFE003 | Post construction setup | on | review |
-| LIFE004 | Traceback retention | observe | hazard |
-| LIFE005 | Finalizer dependent release | observe | hazard |
-| LIFE006 | Unbounded cache | observe | hazard |
-| LIFE007 | Temporal coupling | on | review |
-| LIFE008 | Import time resource construction | on | hazard |
-| LIFE009 | Import time exit hook | on | hazard |
-| LIFE010 | Application finalizer | on | hazard |
-| LIFE011 | Overridable call during init | on | hazard |
-| LIFE012 | Callback during construction | on | hazard |
-| LIFE013 | Self escapes before invariant | on | hazard |
-| LIFE014 | Constructor is an operation | on | hazard |
-| LIFE015 | Construction bypasses invariant path | on | hazard |
-| LIFE016 | Dataclass has a behavior-heavy lifecycle | on | review |
-| LIFE017 | Manual resource management | on | hazard |
+| ID      | Rule                                     | Default | Concern |
+| ------- | ---------------------------------------- | ------- | ------- |
+| LIFE001 | Import time side effect                  | on      | hazard  |
+| LIFE002 | Constructor does work                    | on      | review  |
+| LIFE003 | Post construction setup                  | on      | review  |
+| LIFE004 | Traceback retention                      | observe | hazard  |
+| LIFE005 | Finalizer dependent release              | observe | hazard  |
+| LIFE006 | Unbounded cache                          | observe | hazard  |
+| LIFE007 | Temporal coupling                        | on      | review  |
+| LIFE008 | Import time resource construction        | on      | hazard  |
+| LIFE009 | Import time exit hook                    | on      | hazard  |
+| LIFE010 | Application finalizer                    | on      | hazard  |
+| LIFE011 | Overridable call during init             | on      | hazard  |
+| LIFE012 | Callback during construction             | on      | hazard  |
+| LIFE013 | Self escapes before invariant            | on      | hazard  |
+| LIFE014 | Constructor is an operation              | on      | hazard  |
+| LIFE015 | Construction bypasses invariant path     | on      | hazard  |
+| LIFE016 | Dataclass has a behavior-heavy lifecycle | on      | review  |
+| LIFE017 | Manual resource management               | on      | hazard  |
 
 ## Rule detail
 

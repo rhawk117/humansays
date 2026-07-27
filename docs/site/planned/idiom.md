@@ -8,24 +8,24 @@ The conventions behind this domain come from
 [PEP 20, the Zen of Python](https://peps.python.org/pep-0020/) and
 [PEP 8, the style guide for Python code](https://peps.python.org/pep-0008/).
 
-| ID | Rule | Default | Concern |
-|---|---|---|---|
-| IDIOM001 | Process hash as identity | on | hazard |
-| IDIOM002 | Context variable created in local scope | on | hazard |
-| IDIOM003 | Import path mutation | on | hazard |
-| IDIOM004 | Dynamic namespace access | on | hazard |
-| IDIOM005 | Module attribute hook | on | hazard |
-| IDIOM006 | Module object customization | on | hazard |
-| IDIOM007 | Mutable nonlocal closure | on | hazard |
-| IDIOM008 | Numeric truthiness collapses absence | hint | review |
-| IDIOM009 | Dynamic attribute mutation | on | hazard |
-| IDIOM010 | Frozen state bypass | on | hazard |
-| IDIOM011 | Concrete factory return | on | hazard |
-| IDIOM012 | Stdlib idiom reimplementation | on | review |
-| IDIOM013 | Protocol not runtime-checkable | on | hazard |
-| IDIOM014 | Custom metaclass | on | hazard |
-| IDIOM015 | Name mangled shadow | on | hazard |
-| IDIOM016 | Import inside function or method | hint | advisory |
+| ID       | Rule                                    | Default | Concern  |
+| -------- | --------------------------------------- | ------- | -------- |
+| IDIOM001 | Process hash as identity                | on      | hazard   |
+| IDIOM002 | Context variable created in local scope | on      | hazard   |
+| IDIOM003 | Import path mutation                    | on      | hazard   |
+| IDIOM004 | Dynamic namespace access                | on      | hazard   |
+| IDIOM005 | Module attribute hook                   | on      | hazard   |
+| IDIOM006 | Module object customization             | on      | hazard   |
+| IDIOM007 | Mutable nonlocal closure                | on      | hazard   |
+| IDIOM008 | Numeric truthiness collapses absence    | hint    | review   |
+| IDIOM009 | Dynamic attribute mutation              | on      | hazard   |
+| IDIOM010 | Frozen state bypass                     | on      | hazard   |
+| IDIOM011 | Concrete factory return                 | on      | hazard   |
+| IDIOM012 | Stdlib idiom reimplementation           | on      | review   |
+| IDIOM013 | Protocol not runtime-checkable          | on      | hazard   |
+| IDIOM014 | Custom metaclass                        | on      | hazard   |
+| IDIOM015 | Name mangled shadow                     | on      | hazard   |
+| IDIOM016 | Import inside function or method        | hint    | advisory |
 
 ## Rule details
 

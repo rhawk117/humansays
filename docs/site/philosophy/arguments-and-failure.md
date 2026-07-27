@@ -14,31 +14,31 @@ across every site that touches the function.
 
 Argument counts are review thresholds, not correctness rules.
 
-| Count | Review interpretation                                   |
-| ----: | ------------------------------------------------------- |
-|  0 to 3 | Usually clear                                           |
-|     4 | Inspect whether values form a concept                   |
-|  5 to 6 | Strong design smell                                     |
-|    7+ | Usually missing an object or combining responsibilities |
+|  Count | Review interpretation                                   |
+| -----: | ------------------------------------------------------- |
+| 0 to 3 | Usually clear                                           |
+|      4 | Inspect whether values form a concept                   |
+| 5 to 6 | Strong design smell                                     |
+|     7+ | Usually missing an object or combining responsibilities |
 
 ### Evaluate the argument kinds
 
 Distinguish:
 
-* Operation input
-* Optional configuration
-* Long-lived dependency
-* Repeated data group
-* Boolean mode switch
+- Operation input
+- Optional configuration
+- Long-lived dependency
+- Repeated data group
+- Boolean mode switch
 
 ### Criteria
 
-* Parameters that form a real concept become a value or request object.
-* Long-lived dependencies move to a constructor.
-* Optional settings are keyword-only.
-* Positional booleans are avoided.
-* Parameter objects are not meaningless bags created only to lower the count.
-* Several repeated dependencies do not automatically justify one broad service class.
+- Parameters that form a real concept become a value or request object.
+- Long-lived dependencies move to a constructor.
+- Optional settings are keyword-only.
+- Positional booleans are avoided.
+- Parameter objects are not meaningless bags created only to lower the count.
+- Several repeated dependencies do not automatically justify one broad service class.
 
 ```python
 @dataclass(frozen=True, slots=True)
@@ -71,19 +71,19 @@ def run_scan(
 
 For every branch and external call, determine:
 
-* What can fail?
-* What exception or result represents that failure?
-* Can state be partially mutated?
-* May the caller retry safely?
-* Is ordinary absence distinct from infrastructure failure?
+- What can fail?
+- What exception or result represents that failure?
+- Can state be partially mutated?
+- May the caller retry safely?
+- Is ordinary absence distinct from infrastructure failure?
 
 ### Good criteria
 
-* Expected absence is represented explicitly, such as `User | None`.
-* Domain failures use meaningful exceptions or result types.
-* Infrastructure errors are not silently converted into unrelated outcomes.
-* Broad `except Exception` blocks do not swallow programming errors.
-* Multi-step effects have explicit transaction, compensation, or idempotency behavior where required.
+- Expected absence is represented explicitly, such as `User | None`.
+- Domain failures use meaningful exceptions or result types.
+- Infrastructure errors are not silently converted into unrelated outcomes.
+- Broad `except Exception` blocks do not swallow programming errors.
+- Multi-step effects have explicit transaction, compensation, or idempotency behavior where required.
 
 ## Where these criteria come from
 
@@ -101,24 +101,24 @@ can only be supplied by name.
 Four shipped rules detect structures that these criteria describe. Each one
 raises a review lead, not a verdict.
 
-| Code | Signal | Criterion it touches | Page |
-|---|---|---|---|
-| HS001 | `many-arguments` | The count thresholds in section 9 | [Function shape](../rules/function-shape.md#hs001-many-arguments) |
-| HS002 | `boolean-modes` | "Positional booleans are avoided" | [Function shape](../rules/function-shape.md#hs002-boolean-modes) |
+| Code  | Signal                      | Criterion it touches                                                   | Page                                                                         |
+| ----- | --------------------------- | ---------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| HS001 | `many-arguments`            | The count thresholds in section 9                                      | [Function shape](../rules/function-shape.md#hs001-many-arguments)            |
+| HS002 | `boolean-modes`             | "Positional booleans are avoided"                                      | [Function shape](../rules/function-shape.md#hs002-boolean-modes)             |
 | HS014 | `validated-argument-bundle` | "Parameters that form a real concept become a value or request object" | [Function shape](../rules/function-shape.md#hs014-validated-argument-bundle) |
-| HS005 | `broad-exception` | "Broad `except Exception` blocks do not swallow programming errors" | [Failure and imports](../rules/failure-and-imports.md#hs005-broad-exception) |
+| HS005 | `broad-exception`           | "Broad `except Exception` blocks do not swallow programming errors"    | [Failure and imports](../rules/failure-and-imports.md#hs005-broad-exception) |
 
 The remaining criteria on this page have no shipped rule, and nothing in the
 tool checks them:
 
-* Long-lived dependencies moving to a constructor.
-* Optional settings being keyword-only.
-* Parameter objects not being meaningless bags.
-* Repeated dependencies not justifying one broad service class.
-* Expected absence being represented explicitly.
-* Domain failures using meaningful exceptions or result types.
-* Infrastructure errors not being converted into unrelated outcomes.
-* Multi-step effects having explicit transaction, compensation, or idempotency behavior.
+- Long-lived dependencies moving to a constructor.
+- Optional settings being keyword-only.
+- Parameter objects not being meaningless bags.
+- Repeated dependencies not justifying one broad service class.
+- Expected absence being represented explicitly.
+- Domain failures using meaningful exceptions or result types.
+- Infrastructure errors not being converted into unrelated outcomes.
+- Multi-step effects having explicit transaction, compensation, or idempotency behavior.
 
 These are review questions for a human. Several of them turn on intent that is
 not present in the syntax tree, so they are stated here as criteria rather than

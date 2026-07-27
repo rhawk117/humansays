@@ -13,17 +13,17 @@ and
 [Replace Nested Conditional with Guard Clauses](https://refactoring.com/catalog/replaceNestedConditionalWithGuardClauses.html)
 in Martin Fowler's refactoring catalog.
 
-| ID | Rule | Default | Concern |
-|---|---|---|---|
-| KISS001 | Effect in comprehension | on | review |
-| KISS002 | Helper chain | on | review |
-| KISS003 | Boolean mode switch | on | review |
-| KISS004 | Control flow pressure | on | review |
-| KISS005 | Long loop body | on | review |
-| KISS006 | Branch pyramid | on | review |
-| KISS007 | Compound domain condition | on | review |
-| KISS008 | Repeated type or value dispatch | on | review |
-| KISS009 | Exception handler fanout | on | review |
+| ID      | Rule                            | Default | Concern |
+| ------- | ------------------------------- | ------- | ------- |
+| KISS001 | Effect in comprehension         | on      | review  |
+| KISS002 | Helper chain                    | on      | review  |
+| KISS003 | Boolean mode switch             | on      | review  |
+| KISS004 | Control flow pressure           | on      | review  |
+| KISS005 | Long loop body                  | on      | review  |
+| KISS006 | Branch pyramid                  | on      | review  |
+| KISS007 | Compound domain condition       | on      | review  |
+| KISS008 | Repeated type or value dispatch | on      | review  |
+| KISS009 | Exception handler fanout        | on      | review  |
 
 ## Rule details
 

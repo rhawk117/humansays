@@ -12,17 +12,17 @@ Background reading: the
 and its
 [original discussion on the WikiWikiWeb](https://wiki.c2.com/?PrincipleOfLeastAstonishment).
 
-| ID | Rule | Default | Concern |
-|---|---|---|---|
-| POLA001 | Effectful property | on | hazard |
-| POLA002 | Caller object mutation | on | hazard |
-| POLA003 | Representation as identity | on | hazard |
-| POLA004 | Effectful operator overload | on | hazard |
-| POLA005 | None as command | on | review |
-| POLA006 | Non-obvious arithmetic overload | on | review |
-| POLA007 | Destructive mutation hidden from caller | on | hazard |
-| POLA008 | Persistence hidden in helper | on | hazard |
-| POLA009 | Helper name hides external effects | on | review |
+| ID      | Rule                                    | Default | Concern |
+| ------- | --------------------------------------- | ------- | ------- |
+| POLA001 | Effectful property                      | on      | hazard  |
+| POLA002 | Caller object mutation                  | on      | hazard  |
+| POLA003 | Representation as identity              | on      | hazard  |
+| POLA004 | Effectful operator overload             | on      | hazard  |
+| POLA005 | None as command                         | on      | review  |
+| POLA006 | Non-obvious arithmetic overload         | on      | review  |
+| POLA007 | Destructive mutation hidden from caller | on      | hazard  |
+| POLA008 | Persistence hidden in helper            | on      | hazard  |
+| POLA009 | Helper name hides external effects      | on      | review  |
 
 ## Rule details
 

@@ -18,12 +18,12 @@ namespace and never overrides the config file or the built-in default.
 Zero or more files or directories to scan (`nargs='*'`).
 
 - A directory is scanned recursively for `*.py` files, skipping hidden
-  directories and anything matching an exclude pattern.
+    directories and anything matching an exclude pattern.
 - A single `-`, or no paths at all, reads a NUL- or newline-separated list of
-  paths from standard input. Passing `-` alongside other paths reads stdin
-  for that one entry and still scans the rest as given.
+    paths from standard input. Passing `-` alongside other paths reads stdin
+    for that one entry and still scans the rest as given.
 
-```
+```shell
 humansays src/ tests/
 git ls-files -z '*.py' | humansays -
 ```
@@ -84,17 +84,17 @@ regardless of `--fail-on`. Type: float, range 0.0-100.0. Default (from
 Each of these overrides one field of `[tool.humansays.thresholds]` (see
 `configuration.md` for the full threshold model and defaults):
 
-| Flag | Type | Overrides | Default |
-|---|---|---|---|
-| `--max-arguments` | int | `thresholds.functions.max_arguments` | 3 |
-| `--max-nesting` | int | `thresholds.functions.max_nesting` | 3 |
-| `--class-nesting-bonus` | int | `thresholds.functions.class_nesting_bonus` | 1 |
-| `--max-branches` | int | `thresholds.functions.max_branches` | 5 |
-| `--max-function-lines` | int | `thresholds.functions.max_lines` | 50 |
-| `--max-code-lines` | int | `thresholds.functions.max_code_lines` | 65 |
-| `--max-class-attributes` | int | `thresholds.classes.max_attributes` | 6 |
-| `--max-base-classes` | int | `thresholds.classes.max_base_classes` | 1 |
-| `--max-file-lines` | int | `thresholds.modules.max_lines` | 500 |
+| Flag                     | Type | Overrides                                  | Default |
+| ------------------------ | ---- | ------------------------------------------ | ------- |
+| `--max-arguments`        | int  | `thresholds.functions.max_arguments`       | 3       |
+| `--max-nesting`          | int  | `thresholds.functions.max_nesting`         | 3       |
+| `--class-nesting-bonus`  | int  | `thresholds.functions.class_nesting_bonus` | 1       |
+| `--max-branches`         | int  | `thresholds.functions.max_branches`        | 5       |
+| `--max-function-lines`   | int  | `thresholds.functions.max_lines`           | 50      |
+| `--max-code-lines`       | int  | `thresholds.functions.max_code_lines`      | 65      |
+| `--max-class-attributes` | int  | `thresholds.classes.max_attributes`        | 6       |
+| `--max-base-classes`     | int  | `thresholds.classes.max_base_classes`      | 1       |
+| `--max-file-lines`       | int  | `thresholds.modules.max_lines`             | 500     |
 
 `class_nesting_bonus` is added to `max_nesting` when evaluating nesting depth
 inside a method rather than a plain function.
@@ -104,15 +104,15 @@ inside a method rather than a plain function.
 Read from `src/humansays/const.py` and `src/humansays/cli.py`. Enforced by
 `tests/cli/test_exit_contract.py`.
 
-| Code | Meaning |
-|---|---|
-| `0` | The command completed without crossing a configured failure threshold |
-| `1` | Findings crossed `--fail-on`, or the score fell below `--min-score` |
-| `2` | The requested `--symbol` was not found |
-| `3` | No paths were given, or no Python files were found |
-| `4` | The configuration could not be loaded |
-| `5` | One or more files could not be analyzed |
-| `70` | Internal error — this is a humansays bug |
+| Code | Meaning                                                               |
+| ---- | --------------------------------------------------------------------- |
+| `0`  | The command completed without crossing a configured failure threshold |
+| `1`  | Findings crossed `--fail-on`, or the score fell below `--min-score`   |
+| `2`  | The requested `--symbol` was not found                                |
+| `3`  | No paths were given, or no Python files were found                    |
+| `4`  | The configuration could not be loaded                                 |
+| `5`  | One or more files could not be analyzed                               |
+| `70` | Internal error — this is a humansays bug                              |
 
 A file that cannot be parsed, read, or decoded is reported and makes the run
 exit `5`. Findings take precedence: a run with both findings and unanalyzed

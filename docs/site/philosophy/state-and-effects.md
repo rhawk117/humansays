@@ -36,11 +36,11 @@ For every mutable value, determine:
 
 ### Good criteria
 
-* Mutable state has one clear owner.
-* Mutation occurs through meaningful methods on that owner.
-* Internal mutable collections are not returned directly.
-* An object’s lifetime matches the lifetime required by its state.
-* `ClassVar` is not used merely to disguise global mutable state.
+- Mutable state has one clear owner.
+- Mutation occurs through meaningful methods on that owner.
+- Internal mutable collections are not returned directly.
+- An object’s lifetime matches the lifetime required by its state.
+- `ClassVar` is not used merely to disguise global mutable state.
 
 ```python
 class CheckRegistry:
@@ -59,33 +59,33 @@ class CheckRegistry:
 
 ### Warning signs
 
-* A method mutates several passed objects.
-* Callers receive and modify an owner’s internal dictionary or list.
-* Mutable `ClassVar` collections are shared unintentionally.
-* State survives longer than the operation that needs it.
-* Tests must reset global state between cases.
+- A method mutates several passed objects.
+- Callers receive and modify an owner’s internal dictionary or list.
+- Mutable `ClassVar` collections are shared unintentionally.
+- State survives longer than the operation that needs it.
+- Tests must reset global state between cases.
 
 ## 5. Trace Side Effects
 
 Mark every interaction with:
 
-* Database
-* Network
-* Filesystem
-* Subprocess
-* Cache
-* Message broker
-* Clock
-* Random source
-* Logging or audit sink
+- Database
+- Network
+- Filesystem
+- Subprocess
+- Cache
+- Message broker
+- Clock
+- Random source
+- Logging or audit sink
 
 ### Criteria
 
-* Side effects are visible through named collaborators or boundary functions.
-* Business decisions are separated from technical I/O where practical.
-* A workflow makes effect ordering understandable.
-* Partial-failure behavior is considered when multiple effects occur.
-* Domain objects do not contain vendor-specific networking or persistence logic.
+- Side effects are visible through named collaborators or boundary functions.
+- Business decisions are separated from technical I/O where practical.
+- A workflow makes effect ordering understandable.
+- Partial-failure behavior is considered when multiple effects occur.
+- Domain objects do not contain vendor-specific networking or persistence logic.
 
 A readable flow normally resembles:
 
@@ -99,11 +99,11 @@ Objects that own state should also own the rules governing that state.
 
 ### Good criteria
 
-* Construction produces a valid, usable object.
-* Invalid values are rejected during construction.
-* Entities expose domain transitions rather than generic setters.
-* Callers cannot bypass important transition rules.
-* Failed operations preserve valid state.
+- Construction produces a valid, usable object.
+- Invalid values are rejected during construction.
+- Entities expose domain transitions rather than generic setters.
+- Callers cannot bypass important transition rules.
+- Failed operations preserve valid state.
 
 Prefer:
 
@@ -163,34 +163,34 @@ scanned.
 Section 4, state ownership:
 
 - [`HS004 shared-mutable-state`](../rules/state-and-boundaries.md#hs004-shared-mutable-state)
-  fires on a mutable value assigned in a module body or a class body. This is the
-  "state survives longer than the operation that needs it" warning sign, and it
-  is the only rule that reaches the `ClassVar` criterion, since a mutable
-  collection assigned in a class body is flagged whether or not it carries a
-  `ClassVar` annotation.
+    fires on a mutable value assigned in a module body or a class body. This is the
+    "state survives longer than the operation that needs it" warning sign, and it
+    is the only rule that reaches the `ClassVar` criterion, since a mutable
+    collection assigned in a class body is flagged whether or not it carries a
+    `ClassVar` annotation.
 - [`HS006 multiple-mutation-owners`](../rules/state-and-boundaries.md#hs006-multiple-mutation-owners)
-  fires when one function body writes to three or more distinct owners, where an
-  owner is `self`, a parameter, or a module-level name. This is the "a method
-  mutates several passed objects" warning sign, and it is also where the
-  partial-failure criterion in section 5 becomes visible.
+    fires when one function body writes to three or more distinct owners, where an
+    owner is `self`, a parameter, or a module-level name. This is the "a method
+    mutates several passed objects" warning sign, and it is also where the
+    partial-failure criterion in section 5 becomes visible.
 
 Section 5, side effects:
 
 - [`HS007 mixed-boundaries`](../rules/state-and-boundaries.md#hs007-mixed-boundaries)
-  fires when one function body names three or more of four categories of
-  standard-library boundary module: `database`, `filesystem`, `network`,
-  `process`. The match is on resolved import aliases, so it reports that three
-  kinds of outside world are *named* in one body. A resolved reference to
-  `subprocess.run` is evidence that the function may start a process; the scanner
-  never runs the code, so it cannot say whether the call is taken, guarded, or
-  unreachable. Only standard-library modules are listed, so a database reached
-  through a third-party driver contributes nothing.
+    fires when one function body names three or more of four categories of
+    standard-library boundary module: `database`, `filesystem`, `network`,
+    `process`. The match is on resolved import aliases, so it reports that three
+    kinds of outside world are *named* in one body. A resolved reference to
+    `subprocess.run` is evidence that the function may start a process; the scanner
+    never runs the code, so it cannot say whether the call is taken, guarded, or
+    unreachable. Only standard-library modules are listed, so a database reached
+    through a third-party driver contributes nothing.
 - [`HS021 lazy-import`](../rules/failure-and-imports.md#hs021-lazy-import)
-  fires on any import statement inside a function body. A deferred import moves
-  the cost and the failure mode of loading a module from load time to call time,
-  which makes it an effect of calling the function rather than of importing the
-  module. The rule cannot tell a deliberate cycle break or optional dependency
-  from an import added in place, which is why it is an advisory.
+    fires on any import statement inside a function body. A deferred import moves
+    the cost and the failure mode of loading a module from load time to call time,
+    which makes it an effect of calling the function rather than of importing the
+    module. The rule cannot tell a deliberate cycle break or optional dependency
+    from an import added in place, which is why it is an advisory.
 
 Section 6, invariants, has no rule of its own. Nothing in the shipped set detects
 temporal coupling, generic setters standing in for domain transitions, or state

@@ -10,18 +10,18 @@ None of the rules below are implemented yet. They are planned.
 
 Background reading: Martin Fowler's
 [Reducing Coupling](https://martinfowler.com/ieeeSoftware/coupling.pdf) and the
-[cohesion](https://en.wikipedia.org/wiki/Cohesion_(computer_science)) overview.
+[cohesion](<https://en.wikipedia.org/wiki/Cohesion_(computer_science)>) overview.
 
-| ID | Rule | Default | Concern |
-|---|---|---|---|
-| COUP001 | Undeclared dependency | on | hazard |
-| COUP002 | Env read in logic | on | hazard |
-| COUP003 | Clock read inline | on | hazard |
-| COUP004 | Randomness inline | on | hazard |
-| COUP005 | Settings singleton access | on | review |
-| COUP006 | Hidden dependency surface | on | hazard |
-| COUP007 | Untestable without environment | on | hazard |
-| COUP008 | Single attribute dependency | on | review |
+| ID      | Rule                           | Default | Concern |
+| ------- | ------------------------------ | ------- | ------- |
+| COUP001 | Undeclared dependency          | on      | hazard  |
+| COUP002 | Env read in logic              | on      | hazard  |
+| COUP003 | Clock read inline              | on      | hazard  |
+| COUP004 | Randomness inline              | on      | hazard  |
+| COUP005 | Settings singleton access      | on      | review  |
+| COUP006 | Hidden dependency surface      | on      | hazard  |
+| COUP007 | Untestable without environment | on      | hazard  |
+| COUP008 | Single attribute dependency    | on      | review  |
 
 ## Rule details
 

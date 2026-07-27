@@ -55,6 +55,14 @@ lint = [
     "bandit>=1.9.4",
     "deptry>=0.25.1",
     "import-linter>=2.13",
+    "mdformat>=0.7.22",
+    "mdformat-gfm>=1.0.0",
+    # mdformat-mkdocs 5.x renders mkdocs admonitions and content tabs itself, so
+    # mdformat-admon is not added alongside it: both register a renderer for
+    # "admonition" and "admonition_title", and mdformat resolves that conflict
+    # arbitrarily while printing a warning on every run.
+    "mdformat-mkdocs>=5.2.1",
+    "pymarkdownlnt>=0.9.39",
     "ruff>=0.16.0",
     "ty>=0.0.63",
     "vulture>=2.16",
@@ -86,6 +94,25 @@ extend_exclude = ["(^|/)(build|dist|generated)(/|$)"]
 
 [tool.deptry.package_module_name_map]
 # "python-dateutil" = "dateutil"
+
+# Markdown linting covers docs/site/, the published mkdocs site. docs/evidence/
+# is excluded: mkdocs never builds it, and it is an append-only archive of
+# measured results that is re-run rather than re-edited.
+#
+# Every rule disabled below states why. A disabled rule with no reason is a
+# defect. The list was derived from an actual scan of docs/site/, not predicted.
+[tool.pymarkdown]
+plugins.md013.enabled = false   # line-length: table rows and reference URLs cannot wrap
+plugins.md038.enabled = false   # spaces-in-code-span: the output docs quote separator
+                                # strings such as `, ` where the space is the content
+plugins.md046.enabled = false   # code-block-style: pymarkdown does not parse mkdocs
+                                # admonitions, so it reads every 4-space-indented
+                                # admonition body as an indented code block. All four
+                                # hits were admonition prose, none a code block.
+plugins.md024.siblings_only = true  # duplicate-heading: sub-headings such as
+                                    # "Good criteria" recur under different parents
+                                    # by design, and every rule entry will repeat
+                                    # the same sub-headings after the catalog rewrite
 
 [tool.vulture]
 paths = ["src", "tests"]

@@ -13,6 +13,7 @@ actionable and easy to reason about feedback on design problems that
 traditional linters, type checkers, and tests cannot detect.
 
 !!! warning "Early development"
+
     This is `0.1.0a1`. The rule identifiers, the configuration schema, and
     the JSON output shape will change before `0.1.0`. Do not pin automation
     to `HS###` codes yet.

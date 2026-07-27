@@ -7,32 +7,32 @@ These rules are planned. None of them is available in a release yet.
 The naming and layout conventions this domain leans on are set out in
 [PEP 8, the style guide for Python code](https://peps.python.org/pep-0008/).
 
-| ID | Rule | Default | Concern |
-|---|---|---|---|
-| NIT001 | Frozen candidate | hint | advisory |
-| NIT002 | Zero state namespace | hint | advisory |
-| NIT003 | Stateless single method | hint | advisory |
-| NIT004 | Explicit deletion | hint | review |
-| NIT005 | Exception as control flow | hint | advisory |
-| NIT006 | Handler over broad observed | hint | advisory |
-| NIT007 | Sectioning comment | hint | advisory |
-| NIT008 | Restating comment | hint | advisory |
-| NIT009 | Comment density high | hint | advisory |
-| NIT010 | Docstring restates signature | hint | advisory |
-| NIT011 | Todo marker | hint | advisory |
-| NIT012 | Placeholder implementation | hint | advisory |
-| NIT013 | Ceremonial abstraction | hint | advisory |
-| NIT014 | Compensating commentary | hint | advisory |
-| NIT015 | Application contract typed as object | hint | advisory |
-| NIT016 | Direct environ index | hint | advisory |
-| NIT017 | Cached singleton factory | hint | advisory |
-| NIT018 | Missing dataclass slots | hint | advisory |
-| NIT019 | Nested context managers | hint | advisory |
-| NIT020 | Abc as interface | hint | advisory |
-| NIT021 | Name mangled member | hint | advisory |
-| NIT022 | Stateless method declared on a class | hint | advisory |
-| NIT023 | Named behavior expressed as lambda | hint | advisory |
-| NIT024 | Inheritance used only for configuration | hint | advisory |
+| ID     | Rule                                    | Default | Concern  |
+| ------ | --------------------------------------- | ------- | -------- |
+| NIT001 | Frozen candidate                        | hint    | advisory |
+| NIT002 | Zero state namespace                    | hint    | advisory |
+| NIT003 | Stateless single method                 | hint    | advisory |
+| NIT004 | Explicit deletion                       | hint    | review   |
+| NIT005 | Exception as control flow               | hint    | advisory |
+| NIT006 | Handler over broad observed             | hint    | advisory |
+| NIT007 | Sectioning comment                      | hint    | advisory |
+| NIT008 | Restating comment                       | hint    | advisory |
+| NIT009 | Comment density high                    | hint    | advisory |
+| NIT010 | Docstring restates signature            | hint    | advisory |
+| NIT011 | Todo marker                             | hint    | advisory |
+| NIT012 | Placeholder implementation              | hint    | advisory |
+| NIT013 | Ceremonial abstraction                  | hint    | advisory |
+| NIT014 | Compensating commentary                 | hint    | advisory |
+| NIT015 | Application contract typed as object    | hint    | advisory |
+| NIT016 | Direct environ index                    | hint    | advisory |
+| NIT017 | Cached singleton factory                | hint    | advisory |
+| NIT018 | Missing dataclass slots                 | hint    | advisory |
+| NIT019 | Nested context managers                 | hint    | advisory |
+| NIT020 | Abc as interface                        | hint    | advisory |
+| NIT021 | Name mangled member                     | hint    | advisory |
+| NIT022 | Stateless method declared on a class    | hint    | advisory |
+| NIT023 | Named behavior expressed as lambda      | hint    | advisory |
+| NIT024 | Inheritance used only for configuration | hint    | advisory |
 
 ## Rule details
 

@@ -13,28 +13,28 @@ describes the mechanics, and
 [Encapsulate Collection](https://refactoring.com/catalog/encapsulateCollection.html)
 covers the aliasing case that several rules below concern themselves with.
 
-| ID | Rule | Default | Concern |
-|---|---|---|---|
-| STATE001 | Excessive representable state space | on | hazard |
-| STATE002 | Module global read | on | hazard |
-| STATE003 | Module global write | on | hazard |
-| STATE004 | Mutable class attribute | on | hazard |
-| STATE005 | Leaked internal mutable | on | hazard |
-| STATE006 | Shared mutable binding | on | hazard |
-| STATE007 | Field write outside owner | on | hazard |
-| STATE008 | Aliased collection store | on | hazard |
-| STATE009 | Partial init | on | review |
-| STATE010 | Invariant bypass | on | hazard |
-| STATE011 | Missing state owner | on | review |
-| STATE012 | Unprotected invariant | on | hazard |
-| STATE013 | Global declaration | on | hazard |
-| STATE014 | Boolean state-space explosion | on | hazard |
-| STATE015 | Nullable state-space explosion | on | hazard |
-| STATE016 | Mutually dependent nullability | on | hazard |
-| STATE017 | Duplicated state representation | on | hazard |
-| STATE018 | Optional argument state product | on | hazard |
-| STATE019 | State transition without explicit model | on | hazard |
-| STATE020 | Invariant spread across methods | on | hazard |
+| ID       | Rule                                    | Default | Concern |
+| -------- | --------------------------------------- | ------- | ------- |
+| STATE001 | Excessive representable state space     | on      | hazard  |
+| STATE002 | Module global read                      | on      | hazard  |
+| STATE003 | Module global write                     | on      | hazard  |
+| STATE004 | Mutable class attribute                 | on      | hazard  |
+| STATE005 | Leaked internal mutable                 | on      | hazard  |
+| STATE006 | Shared mutable binding                  | on      | hazard  |
+| STATE007 | Field write outside owner               | on      | hazard  |
+| STATE008 | Aliased collection store                | on      | hazard  |
+| STATE009 | Partial init                            | on      | review  |
+| STATE010 | Invariant bypass                        | on      | hazard  |
+| STATE011 | Missing state owner                     | on      | review  |
+| STATE012 | Unprotected invariant                   | on      | hazard  |
+| STATE013 | Global declaration                      | on      | hazard  |
+| STATE014 | Boolean state-space explosion           | on      | hazard  |
+| STATE015 | Nullable state-space explosion          | on      | hazard  |
+| STATE016 | Mutually dependent nullability          | on      | hazard  |
+| STATE017 | Duplicated state representation         | on      | hazard  |
+| STATE018 | Optional argument state product         | on      | hazard  |
+| STATE019 | State transition without explicit model | on      | hazard  |
+| STATE020 | Invariant spread across methods         | on      | hazard  |
 
 ## Rule detail
 

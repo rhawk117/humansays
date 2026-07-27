@@ -35,20 +35,20 @@ result = use_case.execute(command)
 
 ### Good criteria
 
-* Tests construct inputs and dependencies directly.
-* Tests do not require application startup for domain behavior.
-* Each test receives isolated mutable state.
-* Pure decisions can be tested without I/O.
-* External boundaries can be replaced with small in-memory or fake implementations.
-* Protocols are introduced at real boundaries, not for every class.
+- Tests construct inputs and dependencies directly.
+- Tests do not require application startup for domain behavior.
+- Each test receives isolated mutable state.
+- Pure decisions can be tested without I/O.
+- External boundaries can be replaced with small in-memory or fake implementations.
+- Protocols are introduced at real boundaries, not for every class.
 
 ### Warning signs
 
-* Extensive monkeypatching of module globals.
-* Environment variables required for unit tests.
-* Tests must clear caches or registries between cases.
-* A simple rule requires a real network, database, or filesystem.
-* Tests assert implementation call sequences instead of outcomes.
+- Extensive monkeypatching of module globals.
+- Environment variables required for unit tests.
+- Tests must clear caches or registries between cases.
+- A simple rule requires a real network, database, or filesystem.
+- Tests assert implementation call sequences instead of outcomes.
 
 ## 14. Review Thresholds
 
@@ -69,24 +69,24 @@ Where the shipped defaults differ from the numbers quoted above, the shipped
 default is what actually fires. Every key below is documented in
 [Configuration](../configuration.md).
 
-* **Roughly 30 to 50 lines.** `thresholds.functions.max_lines` defaults to `50`,
-  so HS009 reports at 51 physical lines and never earlier. A second key,
-  `thresholds.functions.max_code_lines`, defaults to `65` and drives HS022 over
-  the same span with blanks, comments, and the docstring removed.
-* **More than 3 indentation levels.** `thresholds.functions.max_nesting`
-  defaults to `3`, which matches for a module-level function.
-  `thresholds.functions.class_nesting_bonus` defaults to `1`, so a method
-  reports only above depth 4.
-* **More than 4 parameters.** `thresholds.functions.max_arguments` defaults to
-  `3`, so HS001 reports at four operation parameters, one earlier than the
-  signal above suggests.
-* **More than 5 constructor dependencies.** No shipped key counts constructor
-  dependencies. The nearest is `thresholds.classes.max_attributes`, default `6`,
-  which counts the whole class state surface and reports at seven attributes.
-* **More than 7 to 10 public methods.** No shipped key counts public methods.
-* Two shipped defaults have no row in the table above:
-  `thresholds.functions.max_branches`, default `5`, and
-  `thresholds.modules.max_lines`, default `500`.
+- **Roughly 30 to 50 lines.** `thresholds.functions.max_lines` defaults to `50`,
+    so HS009 reports at 51 physical lines and never earlier. A second key,
+    `thresholds.functions.max_code_lines`, defaults to `65` and drives HS022 over
+    the same span with blanks, comments, and the docstring removed.
+- **More than 3 indentation levels.** `thresholds.functions.max_nesting`
+    defaults to `3`, which matches for a module-level function.
+    `thresholds.functions.class_nesting_bonus` defaults to `1`, so a method
+    reports only above depth 4.
+- **More than 4 parameters.** `thresholds.functions.max_arguments` defaults to
+    `3`, so HS001 reports at four operation parameters, one earlier than the
+    signal above suggests.
+- **More than 5 constructor dependencies.** No shipped key counts constructor
+    dependencies. The nearest is `thresholds.classes.max_attributes`, default `6`,
+    which counts the whole class state surface and reports at seven attributes.
+- **More than 7 to 10 public methods.** No shipped key counts public methods.
+- Two shipped defaults have no row in the table above:
+    `thresholds.functions.max_branches`, default `5`, and
+    `thresholds.modules.max_lines`, default `500`.
 
 ## 15. Review Scorecard
 
@@ -107,11 +107,11 @@ Score each category from 0 to 2.
 
 Interpretation:
 
-| Score | Interpretation                                             |
-| ----: | ---------------------------------------------------------- |
-| 17 to 20 | Strong design                                           |
-| 13 to 16 | Generally sound; inspect weak areas                     |
-|  9 to 12 | Significant design debt                                 |
+|    Score | Interpretation                                             |
+| -------: | ---------------------------------------------------------- |
+| 17 to 20 | Strong design                                              |
+| 13 to 16 | Generally sound; inspect weak areas                        |
+|  9 to 12 | Significant design debt                                    |
 |   0 to 8 | Responsibility and state ownership likely require redesign |
 
 The score identifies reasoning difficulty. It must not be used as an automatic refactoring trigger.
@@ -120,41 +120,41 @@ The score identifies reasoning difficulty. It must not be used as an automatic r
 
 ### Responsibility
 
-* [ ] Each changed function or class has one dominant responsibility.
-* [ ] Names communicate domain intent.
-* [ ] Related code remains together.
-* [ ] Extracted code introduces a real abstraction rather than narration.
+- [ ] Each changed function or class has one dominant responsibility.
+- [ ] Names communicate domain intent.
+- [ ] Related code remains together.
+- [ ] Extracted code introduces a real abstraction rather than narration.
 
 ### Inputs and state
 
-* [ ] Meaningful dependencies are explicit.
-* [ ] Mutable state has one clear owner.
-* [ ] Object lifetimes match state lifetimes.
-* [ ] Mutable internals are not exposed.
-* [ ] Mutable `ClassVar` or module state is deliberately justified.
+- [ ] Meaningful dependencies are explicit.
+- [ ] Mutable state has one clear owner.
+- [ ] Object lifetimes match state lifetimes.
+- [ ] Mutable internals are not exposed.
+- [ ] Mutable `ClassVar` or module state is deliberately justified.
 
 ### Behavior
 
-* [ ] Business rules are owned by the appropriate entity or policy.
-* [ ] Workflows coordinate rather than implement every dependency detail.
-* [ ] External I/O is isolated behind clear boundaries.
-* [ ] Commands and queries are not misleadingly combined.
+- [ ] Business rules are owned by the appropriate entity or policy.
+- [ ] Workflows coordinate rather than implement every dependency detail.
+- [ ] External I/O is isolated behind clear boundaries.
+- [ ] Commands and queries are not misleadingly combined.
 
 ### Construction and arguments
 
-* [ ] Constructors produce valid objects.
-* [ ] Functions with more than four parameters were reviewed for missing concepts.
-* [ ] Constructors with more than five dependencies were reviewed for excessive responsibility.
-* [ ] Parameter objects represent meaningful concepts.
-* [ ] Optional and boolean parameters are keyword-only where useful.
+- [ ] Constructors produce valid objects.
+- [ ] Functions with more than four parameters were reviewed for missing concepts.
+- [ ] Constructors with more than five dependencies were reviewed for excessive responsibility.
+- [ ] Parameter objects represent meaningful concepts.
+- [ ] Optional and boolean parameters are keyword-only where useful.
 
 ### Failures and tests
 
-* [ ] Failure behavior is explicit.
-* [ ] Partial mutation and retry behavior were considered.
-* [ ] Tests construct dependencies instead of repairing global state.
-* [ ] Important decisions can be tested without external infrastructure.
-* [ ] Tests assert behavior and outcomes rather than incidental implementation details.
+- [ ] Failure behavior is explicit.
+- [ ] Partial mutation and retry behavior were considered.
+- [ ] Tests construct dependencies instead of repairing global state.
+- [ ] Important decisions can be tested without external infrastructure.
+- [ ] Tests assert behavior and outcomes rather than incidental implementation details.
 
 ## Final Decision Rule
 
@@ -176,24 +176,24 @@ exists. What they mark is source structure that removes one.
 
 For the section 13 warning signs:
 
-| Code | Signal | What it observes | Page |
-|---|---|---|---|
-| HS004 | `shared-mutable-state` | A mutable object bound at module or class scope, the state a test has to clear between cases | [State and boundaries](../rules/state-and-boundaries.md#hs004-shared-mutable-state) |
-| HS007 | `mixed-boundaries` | One function reaches three of the four standard-library boundary categories, so exercising it needs the real filesystem, network, database, or subprocess | [State and boundaries](../rules/state-and-boundaries.md#hs007-mixed-boundaries) |
-| HS015 | `static-method` | A method that reaches neither instance nor class state, reachable in a test only through the class | [Class design](../rules/class-design.md#hs015-static-method) |
-| HS016 | `lambda-expression` | An expression that cannot be imported, so it cannot be called from a test on its own | [Function shape](../rules/function-shape.md#hs016-lambda-expression) |
+| Code  | Signal                 | What it observes                                                                                                                                          | Page                                                                                |
+| ----- | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| HS004 | `shared-mutable-state` | A mutable object bound at module or class scope, the state a test has to clear between cases                                                              | [State and boundaries](../rules/state-and-boundaries.md#hs004-shared-mutable-state) |
+| HS007 | `mixed-boundaries`     | One function reaches three of the four standard-library boundary categories, so exercising it needs the real filesystem, network, database, or subprocess | [State and boundaries](../rules/state-and-boundaries.md#hs007-mixed-boundaries)     |
+| HS015 | `static-method`        | A method that reaches neither instance nor class state, reachable in a test only through the class                                                        | [Class design](../rules/class-design.md#hs015-static-method)                        |
+| HS016 | `lambda-expression`    | An expression that cannot be imported, so it cannot be called from a test on its own                                                                      | [Function shape](../rules/function-shape.md#hs016-lambda-expression)                |
 
 For the section 14 thresholds:
 
-| Code | Signal | Threshold row | Page |
-|---|---|---|---|
-| HS009 | `long-function` | Function exceeds roughly 30 to 50 lines | [Function shape](../rules/function-shape.md#hs009-long-function) |
-| HS022 | `dense-function` | The same row, counted with blanks, comments, and the docstring removed | [Function shape](../rules/function-shape.md#hs022-dense-function) |
-| HS003 | `deep-nesting` | More than 3 indentation levels | [Function shape](../rules/function-shape.md#hs003-deep-nesting) |
-| HS001 | `many-arguments` | More than 4 parameters | [Function shape](../rules/function-shape.md#hs001-many-arguments) |
-| HS014 | `validated-argument-bundle` | Same arguments repeatedly travel together, detected as a wide signature whose parameters are validated in the body | [Function shape](../rules/function-shape.md#hs014-validated-argument-bundle) |
-| HS012 | `many-class-attributes` | The nearest thing to more than 5 constructor dependencies, counting the class state surface rather than constructor parameters | [Class design](../rules/class-design.md#hs012-many-class-attributes) |
-| HS006 | `multiple-mutation-owners` | A method mutates multiple owners | [State and boundaries](../rules/state-and-boundaries.md#hs006-multiple-mutation-owners) |
+| Code  | Signal                      | Threshold row                                                                                                                  | Page                                                                                    |
+| ----- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------- |
+| HS009 | `long-function`             | Function exceeds roughly 30 to 50 lines                                                                                        | [Function shape](../rules/function-shape.md#hs009-long-function)                        |
+| HS022 | `dense-function`            | The same row, counted with blanks, comments, and the docstring removed                                                         | [Function shape](../rules/function-shape.md#hs022-dense-function)                       |
+| HS003 | `deep-nesting`              | More than 3 indentation levels                                                                                                 | [Function shape](../rules/function-shape.md#hs003-deep-nesting)                         |
+| HS001 | `many-arguments`            | More than 4 parameters                                                                                                         | [Function shape](../rules/function-shape.md#hs001-many-arguments)                       |
+| HS014 | `validated-argument-bundle` | Same arguments repeatedly travel together, detected as a wide signature whose parameters are validated in the body             | [Function shape](../rules/function-shape.md#hs014-validated-argument-bundle)            |
+| HS012 | `many-class-attributes`     | The nearest thing to more than 5 constructor dependencies, counting the class state surface rather than constructor parameters | [Class design](../rules/class-design.md#hs012-many-class-attributes)                    |
+| HS006 | `multiple-mutation-owners`  | A method mutates multiple owners                                                                                               | [State and boundaries](../rules/state-and-boundaries.md#hs006-multiple-mutation-owners) |
 
 Three rows of the section 14 table have no shipped rule at all. Nothing counts
 public methods, so "more than 7 to 10 public methods" is unenforced; HS008

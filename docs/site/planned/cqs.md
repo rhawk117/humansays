@@ -11,11 +11,11 @@ and the
 [command-query separation](https://en.wikipedia.org/wiki/Command%E2%80%93query_separation)
 overview.
 
-| ID | Rule | Default | Concern |
-|---|---|---|---|
-| CQS001 | Query mutates owned state | on | hazard |
-| CQS002 | Query performs I/O | on | review |
-| CQS003 | Mutation disguised as calculation | on | hazard |
+| ID     | Rule                              | Default | Concern |
+| ------ | --------------------------------- | ------- | ------- |
+| CQS001 | Query mutates owned state         | on      | hazard  |
+| CQS002 | Query performs I/O                | on      | review  |
+| CQS003 | Mutation disguised as calculation | on      | hazard  |
 
 ## Rule details
 

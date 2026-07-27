@@ -9,20 +9,20 @@ Background reading on the hazards these rules are meant to describe:
 [Developing with asyncio](https://docs.python.org/3/library/asyncio-dev.html)
 in the Python standard library documentation.
 
-| ID | Rule | Default | Concern |
-|---|---|---|---|
-| CONC001 | Shared state across await | on | hazard |
-| CONC002 | Lock held across await | on | hazard |
-| CONC003 | Blocking call in async | on | hazard |
-| CONC004 | Concurrency primitive mismatch | on | hazard |
-| CONC005 | Detached task has no owner | on | hazard |
-| CONC006 | Inconsistent lock order | on | hazard |
-| CONC007 | Race or deadlock observed | observe | hazard |
-| CONC008 | Async shared scope mutation | on | hazard |
-| CONC009 | Async state has no task owner | on | hazard |
-| CONC010 | Async lifecycle is not awaited or closed | on | hazard |
-| CONC011 | External await has no timeout boundary | on | review |
-| CONC012 | Cancellation path can leave partial state | on | hazard |
+| ID      | Rule                                      | Default | Concern |
+| ------- | ----------------------------------------- | ------- | ------- |
+| CONC001 | Shared state across await                 | on      | hazard  |
+| CONC002 | Lock held across await                    | on      | hazard  |
+| CONC003 | Blocking call in async                    | on      | hazard  |
+| CONC004 | Concurrency primitive mismatch            | on      | hazard  |
+| CONC005 | Detached task has no owner                | on      | hazard  |
+| CONC006 | Inconsistent lock order                   | on      | hazard  |
+| CONC007 | Race or deadlock observed                 | observe | hazard  |
+| CONC008 | Async shared scope mutation               | on      | hazard  |
+| CONC009 | Async state has no task owner             | on      | hazard  |
+| CONC010 | Async lifecycle is not awaited or closed  | on      | hazard  |
+| CONC011 | External await has no timeout boundary    | on      | review  |
+| CONC012 | Cancellation path can leave partial state | on      | hazard  |
 
 ## Rule details
 

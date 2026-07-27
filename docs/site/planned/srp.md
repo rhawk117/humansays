@@ -11,19 +11,19 @@ Background reading:
 and [Extract Class](https://refactoring.com/catalog/extractClass.html) in
 Martin Fowler's refactoring catalog.
 
-| ID | Rule | Default | Concern |
-|---|---|---|---|
-| SRP001 | Role conflict | on | review |
-| SRP002 | Effect in domain type | on | review |
-| SRP003 | Mixed responsibilities | on | review |
-| SRP004 | Mixed abstraction levels | on | review |
-| SRP005 | Low field cohesion | on | review |
-| SRP006 | God constructor | on | review |
-| SRP007 | Unclassifiable unit | on | review |
-| SRP008 | Incohesive class | on | review |
-| SRP009 | Logging mixed with domain mutation | on | review |
-| SRP010 | Configuration object drives unrelated workflows | on | review |
-| SRP011 | Data object used as behavior switchboard | on | review |
+| ID     | Rule                                            | Default | Concern |
+| ------ | ----------------------------------------------- | ------- | ------- |
+| SRP001 | Role conflict                                   | on      | review  |
+| SRP002 | Effect in domain type                           | on      | review  |
+| SRP003 | Mixed responsibilities                          | on      | review  |
+| SRP004 | Mixed abstraction levels                        | on      | review  |
+| SRP005 | Low field cohesion                              | on      | review  |
+| SRP006 | God constructor                                 | on      | review  |
+| SRP007 | Unclassifiable unit                             | on      | review  |
+| SRP008 | Incohesive class                                | on      | review  |
+| SRP009 | Logging mixed with domain mutation              | on      | review  |
+| SRP010 | Configuration object drives unrelated workflows | on      | review  |
+| SRP011 | Data object used as behavior switchboard        | on      | review  |
 
 ## Rule details
 

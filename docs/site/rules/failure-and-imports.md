@@ -9,12 +9,12 @@ review.
 
 ## HS005 broad-exception
 
-| Field | Value |
-| --- | --- |
-| Severity | WARNING |
-| Confidence | 0.96 |
-| Weight | 3.0 |
-| Tuned by | Not configurable (`BROAD_EXCEPTION_NAMES` in `src/humansays/const.py`) |
+| Field           | Value                                                                    |
+| --------------- | ------------------------------------------------------------------------ |
+| Severity        | WARNING                                                                  |
+| Confidence      | 0.96                                                                     |
+| Weight          | 3.0                                                                      |
+| Tuned by        | Not configurable (`BROAD_EXCEPTION_NAMES` in `src/humansays/const.py`)   |
 | Review question | Which exceptions are expected, and should unexpected failures propagate? |
 
 **When it fires.** The body visitor inspects every `ast.ExceptHandler` it
@@ -93,12 +93,12 @@ def load_settings(path):
 
 ## HS021 lazy-import
 
-| Field | Value |
-| --- | --- |
-| Severity | ADVISORY |
-| Confidence | 0.85 |
-| Weight | 1.0 |
-| Tuned by | Not configurable (no threshold or constant) |
+| Field           | Value                                                                                           |
+| --------------- | ----------------------------------------------------------------------------------------------- |
+| Severity        | ADVISORY                                                                                        |
+| Confidence      | 0.85                                                                                            |
+| Weight          | 1.0                                                                                             |
+| Tuned by        | Not configurable (no threshold or constant)                                                     |
 | Review question | Is this hiding a cycle, an optional dependency, or a startup cost that belongs at module scope? |
 
 **When it fires.** Any `import` or `from ... import` statement reached while

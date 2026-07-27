@@ -15,24 +15,24 @@ else on the stream.
 A text run prints, in order:
 
 1. A header line: `Python investigation targets <label>`, where `<label>` is
-   the scanned paths joined by `, `, or `<stdin>` if paths came from standard
-   input.
+    the scanned paths joined by `, `, or `<stdin>` if paths came from standard
+    input.
 2. A summary line: file count, total line count, review target count, and
-   parse error count.
+    parse error count.
 3. A score line: the score value, its letter grade, the total penalty, the
-   line count it was divided over, and the density per 100 lines.
+    line count it was divided over, and the density per 100 lines.
 4. One row per review target (a symbol in a file that accumulated one or
-   more findings): its location as `path:start_line-end_line`, the symbol
-   name, and the distinct signal indicators that fired against it, most
-   severe first.
+    more findings): its location as `path:start_line-end_line`, the symbol
+    name, and the distinct signal indicators that fired against it, most
+    severe first.
 5. If more targets exist than `--limit` allows, a line reporting how many
-   were truncated, with a hint to pass `--limit 0`.
+    were truncated, with a hint to pass `--limit 0`.
 6. If any file could not be analyzed, a coverage line naming how many files
-   were analyzed out of the total, and that the score covers only those.
+    were analyzed out of the total, and that the score covers only those.
 7. One line per file that could not be parsed (`OSError`, `UnicodeError`,
-   `SyntaxError`, or `ValueError` while reading or parsing it).
+    `SyntaxError`, or `ValueError` while reading or parsing it).
 8. `No suspicious structural indicators found.` if there were no targets and
-   no parse errors.
+    no parse errors.
 
 Plain ANSI output honors the informal `NO_COLOR` and `FORCE_COLOR`
 environment variables and disables color when `TERM=dumb` or output is not a
@@ -127,7 +127,7 @@ Each finding contributes a penalty of `weight * confidence`, where `weight`
 and `confidence` come from the rule that fired (see [Rules](rules/index.md)). The
 scan's total penalty is the sum of every finding's penalty.
 
-```
+```text
 density = total_penalty * 100 / max(1, total_lines)
 score   = round(100 / (1 + density / 7.5), 1)
 ```
@@ -144,10 +144,10 @@ or scan with no weighted findings scores `100.0`.
 Read from `GRADE_BANDS` in `src/humansays/const.py`. A score maps to a grade
 by the first band whose floor it meets or exceeds:
 
-| Score | Grade |
-|---|---|
-| >= 90.0 | A |
-| >= 75.0 | B |
-| >= 60.0 | C |
-| >= 40.0 | D |
-| < 40.0 | F |
+| Score   | Grade |
+| ------- | ----- |
+| >= 90.0 | A     |
+| >= 75.0 | B     |
+| >= 60.0 | C     |
+| >= 40.0 | D     |
+| < 40.0  | F     |
