@@ -10,6 +10,8 @@ site_dir: ../site
 
 theme:
   name: material
+  logo: assets/docs-icon.png
+  favicon: assets/favicon.ico
   icon:
     repo: octicons/mark-github-24
   palette:

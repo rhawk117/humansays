@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/rhawk117/humansays/main/docs/site/assets/humansays-mascot.png" width="280" alt="humansays">
+</p>
+
 # humansays
 
 [![CI](https://github.com/rhawk117/humansays/actions/workflows/integration.yml/badge.svg)](https://github.com/rhawk117/humansays/actions/workflows/integration.yml)
@@ -5,7 +9,9 @@
 [![Python](https://img.shields.io/pypi/pyversions/humansays.svg)](https://pypi.org/project/humansays/)
 [![License](https://img.shields.io/pypi/l/humansays.svg)](https://github.com/rhawk117/humansays/blob/main/LICENSE)
 
-A structural review tool for Python code that looks valid but still feels wrong.
+A python linter which evaluates how difficult AI generated code is to read, understand, test, maintain, and safely modify. It gives coding agents actionable and easy to reason about feedback on design problems that traditional linters, type checkers, and tests cannot detect.
+
+Full documentation: <https://rhawk117.github.io/humansays/>
 
 `humansays` parses Python with the standard-library AST and points reviewers toward code that deserves a second look. It reports structural signals such as long parameter lists, deep nesting, mutable module state, lazy imports, oversized functions and classes, and methods that use neither `self` nor the class.
 
@@ -112,6 +118,8 @@ A finding means "inspect this," not "rewrite this." Large functions and mutable 
 2. `[tool.humansays]` in `pyproject.toml`
 
 The first discovered configuration source is used. Command-line arguments override file settings.
+
+The block below is an example of **loosened** thresholds, not the defaults. Every key and its real default is documented at [Configuration](https://rhawk117.github.io/humansays/configuration/).
 
 ```toml
 [tool.humansays.report]

@@ -1,5 +1,7 @@
 # humansays
 
+![humansays](assets/humansays-mascot.png){ width="320" }
+
 A python linter which evaluates how difficult AI generated code is to read,
 understand, test, maintain, and safely modify. It gives coding agents
 actionable and easy to reason about feedback on design problems that
