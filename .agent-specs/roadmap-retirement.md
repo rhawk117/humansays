@@ -2,7 +2,7 @@
 
 The retired phase tree defined a nine-phase sequence built around the
 rule model that predated the current catalog. That catalog now lives at
-`docs/site/planned/` as 158 rules across thirteen domains, and the project
+`docs/site/planned/` as 175 rules across fifteen domains, and the project
 plans only the next piece of work rather than a multi-phase sequence in advance.
 This file records, phase by phase, whether each phase's premise still holds
 against the current catalog. It is the permanent record. The phase directories
@@ -97,7 +97,7 @@ Stated goal: expand the catalog from the three pilot rules toward the remaining
 signals, in a fixed order, gated by study results.
 
 The premise is that a small pilot catalog grows outward under study-driven gates.
-The current catalog already contains 158 rules across thirteen domains, built
+The current catalog already contains 175 rules across fifteen domains, built
 without this sequence. Expanding from three pilot rules in the order this phase
 specifies describes work that is already done differently. The eligibility bar it
 defined, that a rule cites a criteria section, ships with matched fixtures, and

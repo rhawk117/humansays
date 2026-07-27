@@ -121,10 +121,5 @@ Every message template is one sentence and must substitute measured values when 
 - [SMELL](smell.md)
 - [DRY](dry.md)
 
-Rules that changed identifier are listed in [Migration](migration.md).
-
-## Provenance
-
-The migration provenance tables are not published. They live in the
-repository's `.migration/` directory as `evidence-registry.md`,
-`externalized.md`, `prototype-crosswalk.md`, and `accounting.md`.
+Rules that changed identifier are listed in [Migration](migration.md), which is
+the complete public record of the regroup.
