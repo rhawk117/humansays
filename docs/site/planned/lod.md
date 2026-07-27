@@ -27,7 +27,7 @@ Fowler's refactoring catalog.
 
 **Detection/default.** External code writes another object's non-private attribute
 
-**Message template.** `{symbol}` writes `{target}.{field}` from outside the owning object.
+**Message template.** `{symbol}` writes `{target}.{field}` from outside the owning object. Should the owner make the change?
 
 ### LOD002 Single attribute dependency
 
@@ -35,7 +35,7 @@ Fowler's refactoring catalog.
 
 **Detection/default.** Function accepts an object but only reads one attribute from it
 
-**Message template.** `send_notice()` accepts `User` but depends only on `user.email`, unnecessarily coupling the function to the entire class.
+**Message template.** `send_notice()` accepts `User` and reads only `user.email`. Should it take the value instead?
 
 ### LOD003 Chain reached past an unconstructed value
 

@@ -55,7 +55,7 @@ overview.
 
 **Detection/default.** Mutates a parameter the caller owns
 
-**Message template.** `{symbol}` mutates caller-owned `{parameter}` without making destructive behavior explicit.
+**Message template.** `{symbol}` mutates caller-owned `{parameter}`. Should the mutation be visible from the signature?
 
 ### CQS005 Destructive mutation hidden from caller
 
@@ -63,7 +63,7 @@ overview.
 
 **Detection/default.** own + (nam or shp)
 
-**Message template.** normalize() deletes and rewrites entries in its input mapping although its name and return contract do not communicate destructive mutation.
+**Message template.** `normalize()` deletes and rewrites entries in its input mapping. Should a caller be able to see that from the name?
 
 ### CQS006 Persistence hidden in helper
 
@@ -71,7 +71,7 @@ overview.
 
 **Detection/default.** A generic helper name reaches a database write or commit boundary.
 
-**Message template.** Helper `{helper}` performs `{persistence_effect}` although its name does not communicate durable mutation.
+**Message template.** Helper `{helper}` performs `{persistence_effect}`. Should the name communicate durable mutation?
 
 ### CQS007 Helper name hides external effects
 
@@ -79,4 +79,4 @@ overview.
 
 **Detection/default.** A generic or pure-looking helper reaches network, filesystem, database, notification, or subprocess effects.
 
-**Message template.** Helper `{helper}` performs `{effects}`, behavior a caller cannot infer from its name.
+**Message template.** Helper `{helper}` performs `{effects}`. Should a caller be able to infer that from the name?

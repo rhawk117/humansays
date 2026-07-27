@@ -147,7 +147,7 @@ failure mode this domain exists to avoid.
 
 **Detection/default.** `hash()` output crosses a process boundary or enters persistent storage
 
-**Message template.** `hash(value)` is persisted even though Python hashes may change between processes.
+**Message template.** `hash(value)` is persisted, and Python hashes may change between processes. Should the identity be stable across runs?
 
 ### SBD013 Import path mutation
 
@@ -155,7 +155,7 @@ failure mode this domain exists to avoid.
 
 **Detection/default.** Mutation of `sys.path`, `sys.meta_path`, `sys.path_hooks` or related import machinery
 
-**Message template.** `sys.path.insert()` changes process-global import resolution instead of using the package structure.
+**Message template.** `sys.path.insert()` changes process-global import resolution. Should the package structure carry this?
 
 ### SBD014 Dynamic namespace access
 
@@ -163,7 +163,7 @@ failure mode this domain exists to avoid.
 
 **Detection/default.** Calls to `locals()` or `globals()`
 
-**Message template.** `locals()` converts implementation-local names into an implicit runtime data contract.
+**Message template.** `locals()` exposes implementation-local names as a runtime data contract. Should the names be passed explicitly?
 
 ### SBD015 Module object customization
 
@@ -171,7 +171,7 @@ failure mode this domain exists to avoid.
 
 **Detection/default.** Replacement or class mutation of the current module through `sys.modules`
 
-**Message template.** This module replaces or mutates its own module object, making runtime behavior differ from its source namespace.
+**Message template.** This module replaces or mutates its own module object, so runtime behavior differs from its source namespace. Should the indirection be explicit?
 
 ### SBD016 Dynamic attribute mutation
 
@@ -179,4 +179,4 @@ failure mode this domain exists to avoid.
 
 **Detection/default.** Dynamic `setattr`, `delattr` or `__dict__.update()` changes object state
 
-**Message template.** `setattr(target, name, value)` mutates an attribute whose existence and type are unavailable to static review.
+**Message template.** `setattr(target, name, value)` mutates an attribute whose existence and type are unavailable to static review. Should the attribute be declared?

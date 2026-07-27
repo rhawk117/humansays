@@ -56,7 +56,7 @@ Fowler's refactoring catalog, and Fowler's
 
 **Detection/default.** Decides, performs I/O, and formats output in one body
 
-**Message template.** `{symbol}` decides policy, performs `{effects}`, and formats output in one body.
+**Message template.** `{symbol}` decides policy, performs `{effects}`, and formats output in one body. Should these live apart?
 
 ### SOLID002 Effect in domain type
 
@@ -64,7 +64,7 @@ Fowler's refactoring catalog, and Fowler's
 
 **Detection/default.** I/O inside a value object, DTO or entity
 
-**Message template.** `{type}` performs `{effect}` even though it is used as a domain value or data carrier.
+**Message template.** `{type}` is used as a domain value and performs `{effect}`. Should the effect move to a caller?
 
 ### SOLID003 Mixed responsibilities
 
@@ -72,7 +72,7 @@ Fowler's refactoring catalog, and Fowler's
 
 **Detection/default.** own + eff + (shp or cf)
 
-**Message template.** `{symbol}` combines `{responsibilities}` across independent ownership, effect, and control-flow evidence.
+**Message template.** `{symbol}` combines `{responsibilities}`, on independent ownership, effect, and control-flow evidence. Should they be separated?
 
 ### SOLID004 Mixed abstraction levels
 
@@ -80,7 +80,7 @@ Fowler's refactoring catalog, and Fowler's
 
 **Detection/default.** Raw I/O construction alongside domain decisions
 
-**Message template.** `{symbol}` combines domain decisions with low-level `{effect}` construction in the same abstraction layer.
+**Message template.** `{symbol}` makes domain decisions and constructs low-level `{effect}` in the same body. Should the layers be separated?
 
 ### SOLID005 Low field cohesion
 
@@ -88,7 +88,7 @@ Fowler's refactoring catalog, and Fowler's
 
 **Detection/default.** Method/field graph splits into ≥2 components
 
-**Message template.** `{class}` splits into `{component_count}` disconnected method/field components.
+**Message template.** `{class}` splits into `{component_count}` disconnected method/field components. Should they be separate types?
 
 ### SOLID006 God constructor
 
@@ -96,7 +96,7 @@ Fowler's refactoring catalog, and Fowler's
 
 **Detection/default.** Constructor assigns > 8 fields
 
-**Message template.** `{class}.__init__` establishes `{actual}` fields, indicating construction and responsibility pressure.
+**Message template.** `{class}.__init__` establishes `{actual}` fields. Should construction be this broad?
 
 ### SOLID007 Unclassifiable unit
 
@@ -104,7 +104,7 @@ Fowler's refactoring catalog, and Fowler's
 
 **Detection/default.** nam + shp + eff
 
-**Message template.** `{symbol}` has no dominant role across its name, data flow, effects, and return behavior.
+**Message template.** `{symbol}` has no dominant role across its name, data flow, effects, and return behavior. What is it for?
 
 ### SOLID008 Incohesive class
 
@@ -112,7 +112,7 @@ Fowler's refactoring catalog, and Fowler's
 
 **Detection/default.** own + shp
 
-**Message template.** `{class}` contains `{component_count}` independent method/field components with little shared state.
+**Message template.** `{class}` contains `{component_count}` independent method/field components with little shared state. Should they be separate types?
 
 ### SOLID009 Logging mixed with domain mutation
 
@@ -120,7 +120,7 @@ Fowler's refactoring catalog, and Fowler's
 
 **Detection/default.** A function mutates domain state and also owns log/report formatting policy.
 
-**Message template.** `{symbol}` mutates `{state}` and builds `{reporting}` output in the same responsibility boundary.
+**Message template.** `{symbol}` mutates `{state}` and builds `{reporting}` output in one body. Should reporting move out?
 
 ### SOLID010 Configuration object drives unrelated workflows
 
@@ -128,7 +128,7 @@ Fowler's refactoring catalog, and Fowler's
 
 **Detection/default.** A configuration object is read by disjoint method/effect clusters that select separate workflows.
 
-**Message template.** `{type}` supplies `{workflow_count}` unrelated workflow clusters, so configuration has become a responsibility switchboard.
+**Message template.** `{type}` supplies `{workflow_count}` unrelated workflow clusters. Should each workflow declare what it needs?
 
 ### SOLID011 Data object used as behavior switchboard
 
@@ -136,7 +136,7 @@ Fowler's refactoring catalog, and Fowler's
 
 **Detection/default.** Many branches dispatch behavior from one data object's tag/type fields.
 
-**Message template.** `{symbol}` selects `{branch_count}` behaviors from `{object}.{field}`, making a data carrier own workflow selection indirectly.
+**Message template.** `{symbol}` selects `{branch_count}` behaviors from `{object}.{field}`. Should the behavior sit with the data?
 
 ### SOLID012 Boolean mode switch
 
@@ -144,7 +144,7 @@ Fowler's refactoring catalog, and Fowler's
 
 **Detection/default.** Boolean selecting between two behaviors in the body
 
-**Message template.** Boolean `{parameter}` selects between `{mode_count}` workflows inside `{symbol}`.
+**Message template.** Boolean `{parameter}` selects between `{mode_count}` workflows inside `{symbol}`. Should they be separate entry points?
 
 ### SOLID013 Repeated type or value dispatch
 
@@ -152,7 +152,7 @@ Fowler's refactoring catalog, and Fowler's
 
 **Detection/default.** Conditional chain selects behavior from one type, tag, enum or literal discriminator
 
-**Message template.** Eight branches differ only by the selected callable, so this conditional is functioning as a dispatch dictionary.
+**Message template.** Eight branches differ only by the callable they select. Should the discriminator map to behavior directly?
 
 ### SOLID014 Function signature encodes multiple workflows
 
@@ -160,7 +160,7 @@ Fowler's refactoring catalog, and Fowler's
 
 **Detection/default.** Disjoint parameter subsets are used on mutually exclusive paths.
 
-**Message template.** `{symbol}` has `{workflow_count}` mutually exclusive parameter subsets, so one signature represents multiple workflows.
+**Message template.** `{symbol}` has `{workflow_count}` mutually exclusive parameter subsets. Should each workflow have its own signature?
 
 ### SOLID015 Concrete factory return
 
@@ -168,7 +168,7 @@ Fowler's refactoring catalog, and Fowler's
 
 **Detection/default.** Non-final classmethod constructs `cls(...)` but returns the containing class type
 
-**Message template.** `Request.from_bytes()` constructs `cls` but returns `Request`, discarding the subclass-preserving contract of `Self`.
+**Message template.** `Request.from_bytes()` constructs `cls` but returns `Request`. Should the return type be `Self`?
 
 ### SOLID016 Name mangled shadow
 
@@ -176,7 +176,7 @@ Fowler's refactoring catalog, and Fowler's
 
 **Detection/default.** Base and subclass declare the same source-level mangled name
 
-**Message template.** `Child.__load` does not override `Base.__load` because the two methods are mangled into different names.
+**Message template.** `Child.__load` and `Base.__load` mangle to different names, so neither overrides the other. Was an override intended?
 
 ### SOLID017 Undeclared dependency
 
@@ -184,7 +184,7 @@ Fowler's refactoring catalog, and Fowler's
 
 **Detection/default.** Body reaches a name absent from signature and instance state
 
-**Message template.** `{symbol}` depends on `{dependency}` without receiving it through its signature or owned instance state.
+**Message template.** `{symbol}` depends on `{dependency}`, which arrives through neither its signature nor its instance state. Should the dependency be declared?
 
 ### SOLID018 Env read in logic
 
@@ -192,7 +192,7 @@ Fowler's refactoring catalog, and Fowler's
 
 **Detection/default.** `os.environ`/`getenv` below module level
 
-**Message template.** `{symbol}` reads `{variable}` from the environment inside application logic, hiding a replaceable input.
+**Message template.** `{symbol}` reads `{variable}` from the environment inside application logic. Should the value be passed in?
 
 ### SOLID019 Clock read inline
 
@@ -200,7 +200,7 @@ Fowler's refactoring catalog, and Fowler's
 
 **Detection/default.** `datetime.now`, `time.time` in a decision path
 
-**Message template.** `{symbol}` reads the clock inside a decision path, so identical explicit inputs can produce different decisions.
+**Message template.** `{symbol}` reads the clock inside a decision path, so identical explicit inputs can produce different decisions. Should the time be supplied?
 
 ### SOLID020 Randomness inline
 
@@ -208,7 +208,7 @@ Fowler's refactoring catalog, and Fowler's
 
 **Detection/default.** `random.*`, `uuid4`, `secrets.*` in a decision path
 
-**Message template.** `{symbol}` reads randomness inside a decision path without an injection point.
+**Message template.** `{symbol}` reads randomness inside a decision path with no injection point. Should the source be supplied?
 
 ### SOLID021 Settings singleton access
 
@@ -216,7 +216,7 @@ Fowler's refactoring catalog, and Fowler's
 
 **Detection/default.** Import-time-constructed config accessed deep in logic
 
-**Message template.** `{symbol}` reaches the process-wide settings singleton `{name}` instead of declaring configuration as a dependency.
+**Message template.** `{symbol}` reaches the process-wide settings singleton `{name}`. Should configuration be a declared dependency?
 
 ### SOLID022 Hidden dependency surface
 
@@ -224,7 +224,7 @@ Fowler's refactoring catalog, and Fowler's
 
 **Detection/default.** eff + own
 
-**Message template.** `{symbol}` depends on `{dependencies}` through ambient state and effect access rather than its declared contract.
+**Message template.** `{symbol}` depends on `{dependencies}` through ambient state and effect access rather than its declared contract. Should the contract say so?
 
 ### SOLID023 Untestable without environment
 
@@ -232,7 +232,7 @@ Fowler's refactoring catalog, and Fowler's
 
 **Detection/default.** eff + own + cg
 
-**Message template.** `{unit}` cannot be constructed or exercised without `{environment}`, according to independent test, ownership, and effect evidence.
+**Message template.** `{unit}` cannot be constructed or exercised without `{environment}`, on independent test, ownership, and effect evidence. Should it be reachable in isolation?
 
 ### SOLID024 Scattered variant dispatch
 

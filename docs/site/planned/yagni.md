@@ -33,7 +33,7 @@ Background reading:
 
 **Detection/default.** No state, ≤2 stateless methods
 
-**Message template.** `{class}` has no state and only `{method_count}` stateless methods, so the class may be a namespace rather than an object.
+**Message template.** `{class}` has no state and `{method_count}` stateless methods. Should these be module-level functions?
 
 ### YAGNI002 Stateless single method
 
@@ -41,7 +41,7 @@ Background reading:
 
 **Detection/default.** Class wrapping exactly one stateless method
 
-**Message template.** `{class}` wraps one stateless method and adds no state, lifecycle, or polymorphic contract.
+**Message template.** `{class}` wraps one stateless method and adds no state, lifecycle, or polymorphic contract. Should the method stand alone?
 
 ### YAGNI003 Ceremonial abstraction
 
@@ -49,7 +49,7 @@ Background reading:
 
 **Detection/default.** cg + shp
 
-**Message template.** `{abstraction}` adds indirection without observed state, variation, lifecycle, or reused behavior.
+**Message template.** `{abstraction}` adds indirection with no observed state, variation, lifecycle, or reused behavior. Is the indirection carrying anything?
 
 ### YAGNI004 Abc as interface
 
@@ -57,7 +57,7 @@ Background reading:
 
 **Detection/default.** ABC has no state, concrete behavior, construction invariant, registration behavior or lifecycle hooks
 
-**Message template.** `Repository` is an ABC containing only abstract methods, so structural typing could express the contract without inheritance.
+**Message template.** `Repository` is an ABC containing only abstract methods. Should the contract be structural?
 
 ### YAGNI005 Stateless method declared on a class
 
@@ -65,7 +65,7 @@ Background reading:
 
 **Detection/default.** A static method does not use class identity and has no observed class-specific contract.
 
-**Message template.** `{class}.{method}` uses neither instance nor class state; review whether module scope communicates ownership more clearly.
+**Message template.** `{class}.{method}` uses neither instance nor class state. Should it live at module scope?
 
 ### YAGNI006 Inheritance used only for configuration
 
@@ -73,7 +73,7 @@ Background reading:
 
 **Detection/default.** Subclasses vary only class constants or declarative fields and add no behavior.
 
-**Message template.** `{subclass_count}` subclasses of `{base}` vary configuration values without adding behavior, making inheritance a configuration mechanism.
+**Message template.** `{subclass_count}` subclasses of `{base}` vary configuration values and add no behavior. Should the configuration be data?
 
 ### YAGNI007 Over parameterized helper
 
@@ -81,4 +81,4 @@ Background reading:
 
 **Detection/default.** Helper taking parameters never varied across call sites
 
-**Message template.** Helper `{helper}` accepts `{parameters}` even though every call site supplies the same values.
+**Message template.** Helper `{helper}` accepts `{parameters}`, and every call site supplies the same values. Should the parameters be dropped?
