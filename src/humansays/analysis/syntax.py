@@ -8,10 +8,9 @@ executable lines inside one. Nothing here holds state or emits a finding.
 import ast
 from collections.abc import Iterable
 
+from humansays.analysis.models import FunctionNode, ParsedModule
 from humansays.const import BOOL_NAMES, BOUNDARY_MODULES, UNPARSE_LIMIT
 from humansays.findings.models import Location
-
-from .models import FunctionNode, ParsedModule
 
 MUTABLE_LITERALS = (
     ast.Dict,

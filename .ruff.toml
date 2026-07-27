@@ -102,6 +102,11 @@ ignore = [
 # as unittest-style (not rewritten to plain assert) per the migration plan.
 "tests/parity/*.py" = ["PT009", "SIM115"]
 
+[lint.flake8-tidy-imports]
+# Imports inside the package are written as `humansays.*`, never `from .x`.
+# TID252 is the enforcer; `scripts/format.sh` rewrites any relative import.
+ban-relative-imports = "all"
+
 [lint.mccabe]
 max-complexity = 10
 

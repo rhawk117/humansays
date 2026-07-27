@@ -12,10 +12,9 @@ import sys
 from humansays.config.models import Report
 from humansays.enums import OutputFormat
 from humansays.findings.models import Score
-
-from . import ansi
-from .grouping import review_targets, shown_targets
-from .models import ReportRequest, ScanResult
+from humansays.reporting import ansi
+from humansays.reporting.grouping import review_targets, shown_targets
+from humansays.reporting.models import ReportRequest, ScanResult
 
 __all__ = ('json_payload', 'write_report')
 
@@ -44,7 +43,7 @@ def report_text(request: ReportRequest, *, is_tty: bool) -> str:
     """The whole report as one string, ready to be written."""
     if request.settings.format is OutputFormat.JSON:
         payload = json_payload(request.result, request.score, request.settings)
-        return json.dumps(payload, indent=2)
+        return json.dumps(payload, indent=2, sort_keys=True)
 
     color = ansi.use_color(is_tty=is_tty)
     return '\n'.join(ansi.report_lines(request, color=color))

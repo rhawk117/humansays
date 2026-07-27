@@ -9,9 +9,8 @@ from types import MappingProxyType
 
 from humansays.const import GRADE_STYLES, SEVERITY_STYLES
 from humansays.findings.models import Score
-
-from .grouping import Target, review_targets, shown_targets
-from .models import ReportRequest
+from humansays.reporting.grouping import Target, review_targets, shown_targets
+from humansays.reporting.models import ReportRequest
 
 RESET = '\x1b[0m'
 ANSI_CODES = MappingProxyType({

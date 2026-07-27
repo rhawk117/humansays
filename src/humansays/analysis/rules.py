@@ -14,18 +14,7 @@ rules currently read off the tree.
 import ast
 from operator import attrgetter
 
-from humansays.catalog import build_finding
-from humansays.config.models import Thresholds
-from humansays.const import (
-    BOUNDARY_MINIMUM,
-    COHESION_FIELD_MINIMUM,
-    COHESION_METHOD_MINIMUM,
-    MUTATION_OWNER_MINIMUM,
-)
-from humansays.enums import SignalName
-from humansays.findings.models import Finding, Location, Observation
-
-from .models import (
+from humansays.analysis.models import (
     AnalysisIndex,
     FunctionFacts,
     FunctionNode,
@@ -35,7 +24,7 @@ from .models import (
     Scope,
     ScopeContext,
 )
-from .python_ast import (
+from humansays.analysis.python_ast import (
     FUNCTION_NODES,
     attribute_prefix_clusters,
     base_class_names,
@@ -48,7 +37,17 @@ from .python_ast import (
     module_scale_findings,
     mutable_bindings,
 )
-from .syntax import location_of, node_span
+from humansays.analysis.syntax import location_of, node_span
+from humansays.catalog import build_finding
+from humansays.config.models import Thresholds
+from humansays.const import (
+    BOUNDARY_MINIMUM,
+    COHESION_FIELD_MINIMUM,
+    COHESION_METHOD_MINIMUM,
+    MUTATION_OWNER_MINIMUM,
+)
+from humansays.enums import SignalName
+from humansays.findings.models import Finding, Location, Observation
 
 
 class RulesetEvaluator:

@@ -7,8 +7,8 @@ immediate ``KeyError`` rather than a silently missing finding.
 
 from types import MappingProxyType
 
-from .enums import Severity, SignalName
-from .findings.models import Finding, Location, Observation, RuleSpec
+from humansays.enums import Severity, SignalName
+from humansays.findings.models import Finding, Location, Observation, RuleSpec
 
 WARNING_WEIGHT = 3.0
 ADVISORY_WEIGHT = 1.0

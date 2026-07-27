@@ -9,7 +9,7 @@ import inspect
 from collections import defaultdict
 from collections.abc import Iterable
 
-from .const import (
+from humansays.const import (
     MUTABLE_COLLECTION_TYPES,
     MUTABLE_METHOD_PAIRS,
     NON_MUTATING_METHOD_DIFFERENCES,

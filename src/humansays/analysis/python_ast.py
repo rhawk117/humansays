@@ -14,19 +14,8 @@ import ast
 from collections.abc import Iterable
 from dataclasses import dataclass
 
-from humansays.catalog import build_finding
-from humansays.config.models import ModuleThresholds
-from humansays.const import (
-    CLASS_VAR_NAMES,
-    CLUSTER_MINIMUM,
-    NON_STRUCTURAL_PREFIXES,
-)
-from humansays.enums import SignalName
-from humansays.factories import string_set_map
-from humansays.findings.models import Finding, Location, Observation
-
-from .body_visitor import FunctionVisitor
-from .models import (
+from humansays.analysis.body_visitor import FunctionVisitor
+from humansays.analysis.models import (
     FunctionFacts,
     FunctionNode,
     FunctionTarget,
@@ -34,7 +23,7 @@ from .models import (
     ScopeContext,
     Signature,
 )
-from .syntax import (
+from humansays.analysis.syntax import (
     annotation_is_bool,
     assigned_names,
     code_line_count,
@@ -46,6 +35,16 @@ from .syntax import (
     root_name,
     snippet,
 )
+from humansays.catalog import build_finding
+from humansays.config.models import ModuleThresholds
+from humansays.const import (
+    CLASS_VAR_NAMES,
+    CLUSTER_MINIMUM,
+    NON_STRUCTURAL_PREFIXES,
+)
+from humansays.enums import SignalName
+from humansays.factories import string_set_map
+from humansays.findings.models import Finding, Location, Observation
 
 FUNCTION_NODES = (ast.FunctionDef, ast.AsyncFunctionDef)
 STATIC_DECORATOR = 'staticmethod'

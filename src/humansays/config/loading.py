@@ -21,7 +21,7 @@ from humansays.enums import FailOn, OutputFormat
 if TYPE_CHECKING:
     from _typeshed import DataclassInstance
 
-from .models import (
+from humansays.config.models import (
     ClassThresholds,
     FunctionThresholds,
     ModuleThresholds,

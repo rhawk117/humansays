@@ -3,7 +3,7 @@
     {
       "path": "src/humansays/reporting/ansi.py",
       "symbol": "use_color",
-      "line": 29,
+      "line": 28,
       "rule_id": "HS002",
       "evidence": "is_tty",
       "reason": "is_tty is keyword-only (`*, is_tty: bool`), required to implement the NO_COLOR/FORCE_COLOR/TERM=dumb color policy. HS002's declared_arguments() merges posonly/positional/kwonly indiscriminately, so it cannot tell a keyword-only flag from a positional mode switch -- false positive from that argument-kind defect, not a fixable structural issue.",
@@ -12,7 +12,7 @@
     {
       "path": "src/humansays/reporting/ansi.py",
       "symbol": "_style",
-      "line": 39,
+      "line": 38,
       "rule_id": "HS002",
       "evidence": "color",
       "reason": "color is keyword-only (`*, color: bool`), required to implement the NO_COLOR/FORCE_COLOR/TERM=dumb color policy. Same argument-kind defect as use_color.",
@@ -21,7 +21,7 @@
     {
       "path": "src/humansays/reporting/ansi.py",
       "symbol": "indicator_text",
-      "line": 47,
+      "line": 46,
       "rule_id": "HS002",
       "evidence": "color",
       "reason": "color is keyword-only (`*, color: bool`), required to implement the NO_COLOR/FORCE_COLOR/TERM=dumb color policy. Same argument-kind defect as use_color.",
@@ -30,7 +30,7 @@
     {
       "path": "src/humansays/reporting/ansi.py",
       "symbol": "score_text",
-      "line": 62,
+      "line": 61,
       "rule_id": "HS002",
       "evidence": "color",
       "reason": "color is keyword-only (`*, color: bool`), required to implement the NO_COLOR/FORCE_COLOR/TERM=dumb color policy. Same argument-kind defect as use_color.",
@@ -39,7 +39,7 @@
     {
       "path": "src/humansays/reporting/ansi.py",
       "symbol": "report_lines",
-      "line": 76,
+      "line": 75,
       "rule_id": "HS002",
       "evidence": "color",
       "reason": "color is keyword-only (`*, color: bool`), required to implement the NO_COLOR/FORCE_COLOR/TERM=dumb color policy. Same argument-kind defect as use_color.",
@@ -48,7 +48,7 @@
     {
       "path": "src/humansays/reporting/render.py",
       "symbol": "report_text",
-      "line": 43,
+      "line": 42,
       "rule_id": "HS002",
       "evidence": "is_tty",
       "reason": "is_tty is keyword-only (`*, is_tty: bool`). It is threaded from write_report so report_text stays pure and testable without a stream. Same argument-kind defect as use_color.",

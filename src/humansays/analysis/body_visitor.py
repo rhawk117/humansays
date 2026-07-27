@@ -8,13 +8,8 @@ it imports late, and which standard-library boundaries it touches.
 import ast
 from collections.abc import Iterable
 
-from humansays.const import BROAD_EXCEPTION_NAMES
-from humansays.enums import SignalName
-from humansays.factories import string_set_map
-from humansays.findings.models import Incident
-
-from .models import BodyFacts, ScopeContext, SelfUsage
-from .syntax import (
+from humansays.analysis.models import BodyFacts, ScopeContext, SelfUsage
+from humansays.analysis.syntax import (
     classify_boundary,
     contains_raise,
     dotted_name,
@@ -22,6 +17,10 @@ from .syntax import (
     resolve_alias,
     root_name,
 )
+from humansays.const import BROAD_EXCEPTION_NAMES
+from humansays.enums import SignalName
+from humansays.factories import string_set_map
+from humansays.findings.models import Incident
 
 
 class FunctionVisitor(ast.NodeVisitor):

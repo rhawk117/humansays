@@ -13,12 +13,12 @@ from collections.abc import Iterable
 from pathlib import Path
 from typing import TextIO
 
-from .analysis import RulesetEvaluator, parse_module
-from .config.models import ScannerSettings, Selection
-from .const import FINDINGS_EXIT, STDIN_SPEC
-from .enums import FailOn, Severity
-from .findings.models import Score
-from .reporting.models import FileReport, ScanResult
+from humansays.analysis import RulesetEvaluator, parse_module
+from humansays.config.models import ScannerSettings, Selection
+from humansays.const import FINDINGS_EXIT, STDIN_SPEC
+from humansays.enums import FailOn, Severity
+from humansays.findings.models import Score
+from humansays.reporting.models import FileReport, ScanResult
 
 
 def read_stream_paths(stream: TextIO) -> list[str]:
