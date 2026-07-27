@@ -96,6 +96,10 @@ nav:
           - IDIOM: rules/python/idiom.md
           - NIT: rules/python/nit.md
           - DRY: rules/python/dry.md
+          - Evidence registry: rules/python/evidence-registry.md
+          - Externalized and omitted: rules/python/externalized.md
+          - Prototype crosswalk: rules/python/prototype-crosswalk.md
+          - Accounting: rules/python/accounting.md
       - Legacy catalog:
           - rules/legacy/README.md
           - Python: rules/legacy/python.md
