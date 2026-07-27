@@ -2,13 +2,13 @@
 
 This document maps each of the 19 shipped rule codes in
 `src/humansays/catalog.py` to its fate in the new 158-rule catalog published
-under `docs/site/rules/python/`. The mapping follows a two-hop join: a shipped
+under `docs/site/planned/`. The mapping follows a two-hop join: a shipped
 `HS0NN` code matches a prototype `PY0NN` check by name and behavior, §8 of
 `NEW_RULES.md` crosswalks that prototype to one or more `HS-DOMAIN-NN`
 provenance slugs, and §9 of `NEW_RULES.md` resolves each slug to a final
 `DOMAIN###` rule or an internal evidence ID.
 
-Two disposition facts from `docs/site/rules/python/index.md` govern the last
+Two disposition facts from `docs/site/planned/index.md` govern the last
 column. A `hint` is "emitted by the review profile; intentionally unweighted"
 and does not count toward a score. `evidence` is "hidden unless cited by a
 finding or requested with `--show-evidence`" and also does not count toward a
@@ -43,9 +43,9 @@ each shipped `warning` carried weight 3.0 and each `advisory` carried weight
 Note on the three `hint` rows: §8 crosswalks PY015, PY016, and PY021 to "NIT
 rule" or "IDIOM rule; reviewer hint only" without a `DOMAIN###` ID, and those
 three IDs do not appear in the §9 ledger. The specific IDs come from the domain
-pages themselves. `docs/site/rules/python/nit.md` lists NIT022 ("Stateless
+pages themselves. `docs/site/planned/nit.md` lists NIT022 ("Stateless
 method declared on a class", "Prototype PY015") and NIT023 ("Named behavior
-expressed as lambda", "Prototype PY016"). `docs/site/rules/python/idiom.md`
+expressed as lambda", "Prototype PY016"). `docs/site/planned/idiom.md`
 lists IDIOM016 ("Import inside function or method", "Prototype PY021"). All
 three carry `default = hint`.
 

@@ -1,6 +1,12 @@
-# Python rule catalog
+# Planned rule catalog
 
-This catalog lists every rule humansays can select, one page per domain: SRP, KISS, CQS, POLA, COUP, CONTRACT, STATE, LIFE, FAIL, CONC, IDIOM, NIT, and DRY. Four more pages cover where the rules came from and how they're tracked: the evidence registry, the list of externalized and omitted rules, the crosswalk against the original prototype, and the accounting that ties it all together. This page explains the shared model before you go read any of the domain pages.
+!!! info "Not implemented"
+    This catalog describes 158 rules that are planned, not shipped. Version
+    `0.1.0a1` implements [19 rules](../rules/index.md). Nothing on these pages
+    runs today. See [Reconciliation](reconciliation.md) for how the shipped
+    rules map onto this catalog.
+
+This catalog describes the designed rule set, one page per domain: SRP, KISS, CQS, POLA, COUP, CONTRACT, STATE, LIFE, FAIL, CONC, IDIOM, NIT, and DRY. This page explains the shared model before you go read any of the domain pages.
 
 Each rule carries an ID, a domain, and a few pieces of metadata that decide whether it fires and whether it counts toward a score.
 
@@ -106,7 +112,6 @@ Every message template is one sentence and must substitute measured values when 
 
 ## Provenance
 
-- [Evidence registry](evidence-registry.md)
-- [Externalized and omitted](externalized.md)
-- [Prototype crosswalk](prototype-crosswalk.md)
-- [Accounting](accounting.md)
+The migration provenance tables are not published. They live in the
+repository's `.migration/` directory as `evidence-registry.md`,
+`externalized.md`, `prototype-crosswalk.md`, and `accounting.md`.

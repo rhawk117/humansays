@@ -114,25 +114,6 @@ nav:
       - Class design: rules/class-design.md
       - State and boundaries: rules/state-and-boundaries.md
       - Failure and imports: rules/failure-and-imports.md
-  - Planned rules:
-      - Overview: rules/python/index.md
-      - SRP: rules/python/srp.md
-      - KISS: rules/python/kiss.md
-      - CQS: rules/python/cqs.md
-      - POLA: rules/python/pola.md
-      - COUP: rules/python/coup.md
-      - CONTRACT: rules/python/contract.md
-      - STATE: rules/python/state.md
-      - LIFE: rules/python/life.md
-      - FAIL: rules/python/fail.md
-      - CONC: rules/python/conc.md
-      - IDIOM: rules/python/idiom.md
-      - NIT: rules/python/nit.md
-      - DRY: rules/python/dry.md
-      - Evidence registry: rules/python/evidence-registry.md
-      - Externalized and omitted: rules/python/externalized.md
-      - Prototype crosswalk: rules/python/prototype-crosswalk.md
-      - Accounting: rules/python/accounting.md
   - Design philosophy:
       - Overview: philosophy/index.md
       - Contracts and inputs: philosophy/contracts.md
@@ -140,4 +121,19 @@ nav:
       - Keeping and extracting: philosophy/structure.md
       - Arguments and failure: philosophy/arguments-and-failure.md
       - Testability and thresholds: philosophy/testability.md
-  - Reconciliation: reference/reconciliation.md
+  - Planned rules:
+      - Overview: planned/index.md
+      - SRP: planned/srp.md
+      - KISS: planned/kiss.md
+      - CQS: planned/cqs.md
+      - POLA: planned/pola.md
+      - COUP: planned/coup.md
+      - CONTRACT: planned/contract.md
+      - STATE: planned/state.md
+      - LIFE: planned/life.md
+      - FAIL: planned/fail.md
+      - CONC: planned/conc.md
+      - IDIOM: planned/idiom.md
+      - NIT: planned/nit.md
+      - DRY: planned/dry.md
+      - Reconciliation: planned/reconciliation.md
