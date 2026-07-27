@@ -13,7 +13,7 @@ from collections.abc import Iterable
 from pathlib import Path
 from typing import TextIO
 
-from .analysis import Analyzer, parse_module
+from .analysis import RulesetEvaluator, parse_module
 from .config.models import ScannerSettings, Selection
 from .const import FINDINGS_EXIT, STDIN_SPEC
 from .enums import FailOn, Severity
@@ -93,8 +93,8 @@ def matches_symbol(symbol: str, wanted: str) -> bool:
 
 def analyze_file(path: Path, settings: ScannerSettings) -> FileReport:
     parsed = parse_module(path)
-    analyzer = Analyzer(parsed, settings.thresholds)
-    findings = analyzer.run()
+    evaluator = RulesetEvaluator(parsed, settings.thresholds)
+    findings = evaluator.run()
     wanted = settings.selection.symbol
     if wanted:
         findings = [
@@ -106,9 +106,9 @@ def analyze_file(path: Path, settings: ScannerSettings) -> FileReport:
     return FileReport(
         path=path,
         lines=len(parsed.lines),
-        classes=len(analyzer.index.classes),
-        functions=len(analyzer.index.functions),
-        symbols=set(analyzer.index.symbols),
+        classes=len(evaluator.index.classes),
+        functions=len(evaluator.index.functions),
+        symbols=set(evaluator.index.symbols),
         findings=findings,
     )
 

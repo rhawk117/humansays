@@ -33,5 +33,12 @@ def main(argv: Sequence[str] | None = None, stream: TextIO | None = None) -> int
 
     score = score_for(result)
     code = application.exit_code(result, score, settings)
-    write_report(ReportRequest(result, score, settings.report, code))
+    write_report(
+        ReportRequest(
+            result,
+            score,
+            settings.report,
+            code,
+        )
+    )
     return code

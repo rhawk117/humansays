@@ -35,6 +35,15 @@ class ParsedModule:
 
 
 @dataclass(frozen=True, slots=True)
+class FunctionTarget:
+    """One function to extract facts from, and the names it is known by."""
+
+    node: FunctionNode
+    qualified_name: str
+    class_name: str | None = None
+
+
+@dataclass(frozen=True, slots=True)
 class Scope:
     node: ast.AST
     symbol: str

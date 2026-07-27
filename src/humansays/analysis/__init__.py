@@ -2,9 +2,9 @@ import ast
 from pathlib import Path
 
 from .models import ParsedModule
-from .rules import Analyzer
+from .rules import RulesetEvaluator
 
-__all__ = ('Analyzer', 'parse_module')
+__all__ = ('RulesetEvaluator', 'parse_module')
 
 
 def parse_module(path: Path) -> ParsedModule:

@@ -1,15 +1,14 @@
 """Signal rules: turn extracted facts into findings.
 
-``python_ast`` owns the AST vocabulary and fact extraction; this module owns
-the judgement calls.
+``python_ast`` reads the tree and returns facts; this module owns the
+judgement calls, meaning which threshold a fact has to cross and what the
+resulting finding says.
 
-Known contract debt: this module still fuses ast-extraction (walking
-``FunctionVisitor`` results, module scopes) with rule evaluation (weight,
-severity, review question judgement calls). Splitting fact-extraction from
-signal-evaluation into a dedicated ``humansays.signals`` layer is out of scope
-for this migration -- see the plan's "Known contract debt" section -- so it
-stays under ``analysis`` for now even though the evaluation half of it does not
-strictly need ``ast``.
+Remaining contract debt: the evaluator still drives the traversal itself,
+dispatching on node type in ``run`` and ``_evaluate_class``, and still holds
+scopes keyed by ast nodes. A ``humansays.signals`` layer that evaluates purely
+over facts needs the fact model to carry the class and module shape that four
+rules currently read off the tree.
 """
 
 import ast
@@ -30,6 +29,7 @@ from .models import (
     AnalysisIndex,
     FunctionFacts,
     FunctionNode,
+    FunctionTarget,
     MutationVocabulary,
     ParsedModule,
     Scope,
@@ -37,30 +37,21 @@ from .models import (
 )
 from .python_ast import (
     FUNCTION_NODES,
-    FunctionVisitor,
     attribute_prefix_clusters,
-    build_signature,
+    base_class_names,
+    build_function_facts,
+    class_state_attributes,
     collect_aliases,
     collect_module_globals,
-    declared_class_attributes,
-    is_trivial_accessor,
+    is_static_method,
+    lambda_sites,
     module_scale_findings,
+    mutable_bindings,
 )
-from .syntax import (
-    assigned_names,
-    code_line_count,
-    decorator_names,
-    dotted_name,
-    is_mutable_expression,
-    location_of,
-    node_span,
-    snippet,
-)
-
-STATIC_DECORATOR = 'staticmethod'
+from .syntax import location_of, node_span
 
 
-class Analyzer:
+class RulesetEvaluator:
     def __init__(
         self,
         module: ParsedModule,
@@ -86,10 +77,10 @@ class Analyzer:
         self._mutable_bindings(self.module.tree.body, '<module>', 'module')
         for node in self.module.tree.body:
             if isinstance(node, FUNCTION_NODES):
-                self._analyze_function(node, node.name)
+                self._evaluate_function(node, node.name)
 
             elif isinstance(node, ast.ClassDef):
-                self._analyze_class(node)
+                self._evaluate_class(node)
 
         self._lambda_signals()
         return sorted(self.findings, key=attrgetter('sort_key'))
@@ -102,7 +93,7 @@ class Analyzer:
     ) -> None:
         self.findings.append(build_finding(signal, location, observation))
 
-    def _analyze_class(self, node: ast.ClassDef) -> None:
+    def _evaluate_class(self, node: ast.ClassDef) -> None:
         self.index.add_scope(Scope(node, node.name, *node_span(node)))
         self._mutable_bindings(node.body, node.name, 'class')
         self._base_classes(node)
@@ -112,39 +103,21 @@ class Analyzer:
                 continue
 
             name = f'{node.name}.{child.name}'
-            methods.append(self._analyze_function(child, name, node.name))
+            methods.append(self._evaluate_function(child, name, node.name))
             self._static_method(child, name)
 
         self.index.classes[node.name] = methods
         self._class_state_surface(node, methods)
         self._class_cohesion(node, methods)
 
-    def _analyze_function(
+    def _evaluate_function(
         self,
         node: FunctionNode,
         qualified_name: str,
         class_name: str | None = None,
     ) -> FunctionFacts:
-        signature = build_signature(node)
-        visitor = FunctionVisitor(signature.parameters, self.context)
-        for statement in node.body:
-            visitor.visit(statement)
-
-        visitor.body.code_lines = code_line_count(self.module, node)
-
-        signature_type = type(signature)
-        facts = FunctionFacts(
-            location=location_of(qualified_name, node),
-            class_name=class_name,
-            signature=signature_type(
-                parameters=signature.parameters,
-                boolean_parameters=signature.boolean_parameters,
-                validated_parameters=dict(visitor.validated),
-            ),
-            body=visitor.body,
-            self_usage=visitor.usage,
-            trivial_accessor=is_trivial_accessor(node),
-        )
+        target = FunctionTarget(node, qualified_name, class_name)
+        facts = build_function_facts(self.module, target, self.context)
 
         self.index.functions.append(facts)
         self.index.add_scope(
@@ -164,7 +137,7 @@ class Analyzer:
 
     def _static_method(self, node: FunctionNode, qualified_name: str) -> None:
         """HS015: a staticmethod is a module function wearing a class as a namespace."""
-        if STATIC_DECORATOR not in decorator_names(node):
+        if not is_static_method(node):
             return
 
         observation = Observation(
@@ -177,24 +150,21 @@ class Analyzer:
 
     def _lambda_signals(self) -> None:
         """HS016: lambdas are anonymous, unimportable, and awkward to test."""
-        for node in ast.walk(self.module.tree):
-            if not isinstance(node, ast.Lambda):
-                continue
-
-            scope = self.index.scope_for_line(node.lineno)
+        for site in lambda_sites(self.module.tree):
+            scope = self.index.scope_for_line(site.line)
             observation = Observation(
                 'Lambda expression stands in for a named function.',
-                (f'line {node.lineno}: {snippet(node)}',),
+                (f'line {site.line}: {site.source}',),
             )
             self._record(
                 SignalName.HS016,
-                location_of(scope.symbol, node),
+                Location(scope.symbol, site.line, site.line),
                 observation,
             )
 
     def _base_classes(self, node: ast.ClassDef) -> None:
         """HS018: multiple parents make the method resolution order the real design."""
-        bases = tuple(dotted_name(base) or snippet(base) for base in node.bases)
+        bases = base_class_names(node)
         if len(bases) <= self.thresholds.classes.max_base_classes:
             return
 
@@ -361,34 +331,28 @@ class Analyzer:
         symbol: str,
         scope: str,
     ) -> None:
-        constructors = self.context.vocabulary.constructors
-        for statement in body:
-            if not isinstance(statement, (ast.Assign, ast.AnnAssign)):
-                continue
-            for name, value in assigned_names(statement):
-                if not is_mutable_expression(value, self.context.aliases, constructors):
-                    continue
-                line, end_line = node_span(statement)
-                self._record(
-                    SignalName.HS004,
-                    Location(symbol, line, end_line),
-                    Observation(
-                        f'Mutable {scope}-scope state `{name}` is shared beyond '
-                        'one instance or operation.',
-                        (f'{name} initialized as {type(value).__name__}',),
-                    ),
-                )
+        bindings = mutable_bindings(
+            body,
+            self.context.aliases,
+            self.context.vocabulary.constructors,
+        )
+        for binding in bindings:
+            self._record(
+                SignalName.HS004,
+                Location(symbol, binding.line, binding.end_line),
+                Observation(
+                    f'Mutable {scope}-scope state `{binding.name}` is shared beyond '
+                    'one instance or operation.',
+                    (f'{binding.name} initialized as {binding.constructor}',),
+                ),
+            )
 
     def _class_state_surface(
         self,
         node: ast.ClassDef,
         methods: list[FunctionFacts],
     ) -> None:
-        attributes = declared_class_attributes(node) | {
-            attribute
-            for method in methods
-            for attribute in method.self_usage.fields_written
-        }
+        attributes = class_state_attributes(node, methods)
         if len(attributes) <= self.thresholds.classes.max_attributes:
             return
         location = location_of(node.name, node)
