@@ -68,6 +68,10 @@ plugins:
           - configuration.md
           - cli.md
           - output.md
+        Rules:
+          - rules/*.md
+        Design philosophy:
+          - philosophy/*.md
 
 validation:
   omitted_files: warn
@@ -130,5 +134,10 @@ nav:
       - Prototype crosswalk: rules/python/prototype-crosswalk.md
       - Accounting: rules/python/accounting.md
   - Design philosophy:
-      - Python: style-guide/python.md
+      - Overview: philosophy/index.md
+      - Contracts and inputs: philosophy/contracts.md
+      - State and effects: philosophy/state-and-effects.md
+      - Keeping and extracting: philosophy/structure.md
+      - Arguments and failure: philosophy/arguments-and-failure.md
+      - Testability and thresholds: philosophy/testability.md
   - Reconciliation: reference/reconciliation.md
