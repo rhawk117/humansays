@@ -14,7 +14,7 @@ def main(argv: Sequence[str] | None = None, stream: TextIO | None = None) -> int
     try:
         settings = load_settings(argv)
     except ConfigError as err:
-        print(f'error: config file not found: {err.path}', file=sys.stderr)
+        print(f'error: {err}', file=sys.stderr)
         return CONFIG_ERROR_EXIT
 
     specs = application.resolve_specs(settings.selection, stream or sys.stdin)
