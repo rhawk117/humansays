@@ -15,7 +15,7 @@ Each rule carries an ID, a domain, and a few pieces of metadata that decide whet
 
 A rule has independent identity, domain, claim, concern, certainty, emission, and scoring metadata:
 
-- **ID** is a stable domain-prefixed selector such as `STATE001`; severity never appears in the ID.
+- **ID** is a stable domain-prefixed selector such as `ENCAP001`; severity never appears in the ID.
 - **Domain** controls shared analysis configuration and its score contribution.
 - **Claim** is `defect`, `risk`, or `design` and describes what the rule asserts.
 - **Concern** is `hazard`, `review`, or `advisory` and controls reporting/failure policy independently of domain.
@@ -56,7 +56,7 @@ A rule has independent identity, domain, claim, concern, certainty, emission, an
 [tool.humansays]
 profile = "default"
 extend-select = ["NIT", "IDIOM008"]
-ignore = ["NIT002"]
+ignore = ["SMELL011"]
 
 [tool.humansays.concerns]
 report = ["hazard", "review"]

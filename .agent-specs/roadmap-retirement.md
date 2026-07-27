@@ -73,7 +73,7 @@ fire when all supporting signals trace to one dimension, supporting signals
 reported as evidence rather than as standalone findings (the current `evidence`
 default), and profiles defined as an expected emittable-rule-ID set with a
 snapshot test before the selection flags are written. The three named findings
-themselves exist in the current catalog as `STATE011`, `KISS004`, and `NIT014`.
+themselves exist in the current catalog as `ENCAP011`, `KISS004`, and `SMELL014`.
 
 ## 05-measurement-study: still worth doing
 
@@ -111,8 +111,8 @@ vocabulary, import-edge classification, bytecode summarization, and a first-part
 call graph, stopping when measurement allows.
 
 Effect classification is infrastructure the current catalog depends on directly.
-Rules such as `SRP001`, `KISS001`, the `POLA` effectful-property and operator
-rules, and the `fail.effect_*` evidence facts all require knowing what a call
+Rules such as `SOLID001`, `KISS001`, the `POLA` effectful-property and operator
+rules, and the `err.effect_*` evidence facts all require knowing what a call
 does. The layered approach and its two hard constraints, never importing
 third-party code to analyze it and never running the summarizer on the scan path,
 match the standing project rules. The correctness gate, which checks recall
@@ -125,7 +125,7 @@ Stated goal: add runtime evidence through a calibration artifact and an
 observation mode, without breaking determinism or the scan budget.
 
 The current catalog ships `observe`-default rules (`CONC007`, `LIFE004`,
-`LIFE005`, `LIFE006`, `NIT006`), so the observation machinery is required to make
+`LIFE005`, `LIFE006`, `SMELL006`), so the observation machinery is required to make
 them real. The separation the phase enforces, that observed evidence never enters
 an aggregate, is the standing project rule on nondeterministic evidence.
 Content-addressed calibration artifacts, complete environment fingerprints,
