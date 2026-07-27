@@ -48,11 +48,20 @@
     {
       "path": "src/humansays/reporting/render.py",
       "symbol": "report_text",
-      "line": 42,
+      "line": 52,
       "rule_id": "HS002",
       "evidence": "is_tty",
       "reason": "is_tty is keyword-only (`*, is_tty: bool`). It is threaded from write_report so report_text stays pure and testable without a stream. Same argument-kind defect as use_color.",
       "expires_phase": "phase-2-argument-kind-fix"
+    },
+    {
+      "path": "src/humansays/cli.py",
+      "symbol": "main",
+      "line": 49,
+      "rule_id": "HS005",
+      "evidence": "line 60: broad exception",
+      "reason": "Top-level entry-point catch-all. [project.scripts] points at cli:main, so an escaping exception would exit 1 and become indistinguishable from a findings failure. Narrowing this defeats its purpose.",
+      "expires_phase": "not-planned"
     }
   ]
 }

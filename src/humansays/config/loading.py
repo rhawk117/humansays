@@ -44,9 +44,7 @@ SETTINGS_SPEC = MappingProxyType({
 
 
 class ConfigError(Exception):
-    def __init__(self, path: str) -> None:
-        super().__init__(f'config file not found: {path}')
-        self.path = path
+    """Configuration could not be loaded or is not usable."""
 
 
 def _build(
@@ -92,16 +90,32 @@ def build_settings(mapping: Mapping[str, object]) -> ScannerSettings:
     return built
 
 
+def _uses_pyproject_prefix(data: Mapping[str, object]) -> bool:
+    tool = data.get('tool')
+    return isinstance(tool, Mapping) and 'humansays' in tool
+
+
 def toml_values(path: Path) -> dict:
     # Binary mode, because TOML is UTF-8 by specification and `read_text` would
     # decode with the locale encoding instead.
-    with path.open('rb') as handle:
-        data = tomllib.load(handle)
-    if path.name != 'pyproject.toml':
+    try:
+        with path.open('rb') as handle:
+            data = tomllib.load(handle)
+    except tomllib.TOMLDecodeError as error:
+        raise ConfigError(f'{path}: invalid TOML: {error}') from error
+    except OSError as error:
+        raise ConfigError(f'{path}: cannot be read: {error}') from error
+
+    if path.name == 'pyproject.toml':
+        for key in PYPROJECT_SECTION:
+            data = data.get(key, {})
         return data
 
-    for key in PYPROJECT_SECTION:
-        data = data.get(key, {})
+    if _uses_pyproject_prefix(data):
+        raise ConfigError(
+            f'{path}: settings belong at the top level of this file; '
+            'the [tool.humansays] prefix is only for pyproject.toml'
+        )
 
     return data
 
@@ -109,7 +123,7 @@ def toml_values(path: Path) -> dict:
 def _discover_explicit_config(explicit: str) -> Path:
     candidate = Path(explicit)
     if not candidate.is_file():
-        raise ConfigError(explicit)
+        raise ConfigError(f'config file not found: {explicit}')
 
     return candidate
 
@@ -184,7 +198,16 @@ def apply_overrides(settings: ScannerSettings, overrides: dict) -> ScannerSettin
 def load_settings(argv: Sequence[str] | None = None) -> ScannerSettings:
     namespace = build_parser().parse_args(argv)
     overrides = vars(namespace)
-    resolved_overrides = overrides.pop('config', None)
-    config = discover_config(resolved_overrides)
+    explicit = overrides.pop('config', None)
+    config = discover_config(explicit)
     values = toml_values(config) if config else {}
-    return apply_overrides(build_settings(values), overrides)
+
+    try:
+        base = build_settings(values)
+    except (TypeError, ValueError) as error:
+        raise ConfigError(f'{config}: {error}') from error
+
+    try:
+        return apply_overrides(base, overrides)
+    except (TypeError, ValueError) as error:
+        raise ConfigError(f'invalid option: {error}') from error

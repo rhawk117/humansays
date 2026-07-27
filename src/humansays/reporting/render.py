@@ -10,6 +10,7 @@ import json
 import sys
 
 from humansays.config.models import Report
+from humansays.const import EXIT_REASONS
 from humansays.enums import OutputFormat
 from humansays.findings.models import Score
 from humansays.reporting import ansi
@@ -39,10 +40,20 @@ def json_payload(result: ScanResult, score: Score, settings: Report) -> dict:
     }
 
 
+def _status(request: ReportRequest) -> dict:
+    return {
+        'ok': request.exit_code == 0,
+        'exit_code': request.exit_code,
+        'reason': EXIT_REASONS.get(request.exit_code, 'unknown'),
+        'unanalyzed': len(request.result.errors),
+    }
+
+
 def report_text(request: ReportRequest, *, is_tty: bool) -> str:
     """The whole report as one string, ready to be written."""
     if request.settings.format is OutputFormat.JSON:
         payload = json_payload(request.result, request.score, request.settings)
+        payload['status'] = _status(request)
         return json.dumps(payload, indent=2, sort_keys=True)
 
     color = ansi.use_color(is_tty=is_tty)
@@ -52,8 +63,14 @@ def report_text(request: ReportRequest, *, is_tty: bool) -> str:
 def write_report(request: ReportRequest) -> None:
     """Flush the report in a single write.
 
-    A failed run goes to stderr, so it leaves stdout clean for whatever reads
-    the command's output.
+    A failed *text* run goes to stderr, so it leaves stdout clean for whatever
+    reads the command's output. JSON always goes to stdout: a machine consumer
+    wants the report most on the run that failed, and piping it to stderr made
+    ``humansays --format json | jq`` silently empty in exactly that case.
     """
-    stream = sys.stderr if request.failed else sys.stdout
+    if request.settings.format is OutputFormat.JSON:
+        stream = sys.stdout
+    else:
+        stream = sys.stderr if request.failed else sys.stdout
+
     print(report_text(request, is_tty=stream.isatty()), file=stream)

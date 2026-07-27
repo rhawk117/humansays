@@ -15,7 +15,7 @@ from typing import TextIO
 
 from humansays.analysis import RulesetEvaluator, parse_module
 from humansays.config.models import ScannerSettings, Selection
-from humansays.const import FINDINGS_EXIT, STDIN_SPEC
+from humansays.const import FINDINGS_EXIT, STDIN_SPEC, UNANALYZED_EXIT
 from humansays.enums import FailOn, Severity
 from humansays.findings.models import Score
 from humansays.reporting.models import FileReport, ScanResult
@@ -154,13 +154,23 @@ def severity_exit(result: ScanResult, fail_on: FailOn) -> int:
 
 
 def exit_code(result: ScanResult, score: Score, settings: ScannerSettings) -> int:
+    """Findings outrank unanalyzed input, so a caller already keying on 1 is safe.
+
+    ``UNANALYZED_EXIT`` therefore surfaces only on a run that would otherwise be
+    clean -- which is exactly the run that used to report a false success.
+    """
     if score.value < settings.report.min_score:
         return FINDINGS_EXIT
 
-    if settings.report.fail_on is FailOn.NEVER:
-        return 0
+    if settings.report.fail_on is not FailOn.NEVER:
+        severity = severity_exit(result, settings.report.fail_on)
+        if severity:
+            return severity
 
-    return severity_exit(result, settings.report.fail_on)
+    if result.errors:
+        return UNANALYZED_EXIT
+
+    return 0
 
 
 __all__ = (
