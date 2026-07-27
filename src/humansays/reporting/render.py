@@ -6,6 +6,7 @@ otherwise it falls back to plain ANSI. JSON stays plain so it survives a pipe.
 
 import dataclasses
 import json
+import sys
 from types import SimpleNamespace
 from typing import TYPE_CHECKING
 
@@ -16,13 +17,13 @@ from humansays.findings.models import Score
 
 from . import ansi
 from .grouping import Target, review_targets, shown_targets
-from .models import ScanResult
+from .models import ReportRequest, ScanResult
 
 if TYPE_CHECKING:
     from rich.table import Table
     from rich.text import Text
 
-__all__ = ('emit', 'json_payload')
+__all__ = ('json_payload', 'write_report')
 
 
 def _load_rich() -> SimpleNamespace | None:
@@ -33,9 +34,9 @@ def _load_rich() -> SimpleNamespace | None:
     lazy import in this module, not one per rendering helper.
     """
     try:
-        from rich.console import Console
-        from rich.table import Table
-        from rich.text import Text
+        from rich.console import Console  # noqa: PLC0415
+        from rich.table import Table  # noqa: PLC0415
+        from rich.text import Text  # noqa: PLC0415
     except ImportError:
         return None
     return SimpleNamespace(Console=Console, Table=Table, Text=Text)
@@ -69,15 +70,17 @@ def _rich_targets_table(shown: list[Target], rich: SimpleNamespace) -> 'Table | 
     return table
 
 
-def _render_rich(result: ScanResult, score: Score, settings: Report) -> None:
+def _render_rich(request: ReportRequest) -> None:
     rich = _load_rich()
     if rich is None:
         raise RuntimeError(
-            '_render_rich is only called after emit() confirms rich is installed'
+            '_render_rich is only called after write_report() confirms rich is installed'
         )
-    console = rich.Console()
+    result = request.result
+    limit = request.settings.limit
+    console = rich.Console(stderr=request.failed)
     targets = review_targets(result.reports)
-    shown = shown_targets(targets, settings.limit)
+    shown = shown_targets(targets, limit)
 
     console.print(
         f'[bold]Python investigation targets[/bold] [dim]{result.label}[/dim]',
@@ -88,14 +91,14 @@ def _render_rich(result: ScanResult, score: Score, settings: Report) -> None:
         f'targets={len(targets)} errors={len(result.errors)}[/dim]',
         highlight=False,
     )
-    console.print(_rich_score_line(score, rich))
+    console.print(_rich_score_line(request.score, rich))
 
     table = _rich_targets_table(shown, rich)
     if table is not None:
         console.print(table)
 
-    if settings.limit and len(targets) > settings.limit:
-        remaining = len(targets) - settings.limit
+    if limit and len(targets) > limit:
+        remaining = len(targets) - limit
         console.print(
             f'[dim]truncated={remaining}; use --limit 0 for all targets[/dim]',
             highlight=False,
@@ -110,13 +113,14 @@ def _rich_indicator_text(target: Target, rich: SimpleNamespace) -> 'Text':
     text = rich.Text()
     seen: set[str] = set()
     for signal in target['signals']:
-        indicator = str(signal['indicator'])
+        indicator = str(signal['rule']['signal'])
         if indicator in seen:
             continue
         seen.add(indicator)
         if text:
             text.append(' ')
-        text.append(indicator, style=SEVERITY_STYLES.get(signal['severity'], ''))
+        style = SEVERITY_STYLES.get(signal['rule']['severity'], '')
+        text.append(indicator, style=style)
     return text
 
 
@@ -140,11 +144,16 @@ def json_payload(result: ScanResult, score: Score, settings: Report) -> dict:
     }
 
 
-def emit(result: ScanResult, score: Score, settings: Report) -> None:
-    if settings.format is OutputFormat.JSON:
-        print(json.dumps(json_payload(result, score, settings), indent=2))
+def write_report(request: ReportRequest) -> None:
+    """Render the report, sending it to stderr when the run failed."""
+    if request.settings.format is OutputFormat.JSON:
+        stream = sys.stderr if request.failed else sys.stdout
+        payload = json_payload(request.result, request.score, request.settings)
+        print(json.dumps(payload, indent=2), file=stream)
         return
+
     if _load_rich() is None:
-        ansi.render_text_plain(result, score, settings)
+        ansi.render_text_plain(request)
         return
-    _render_rich(result, score, settings)
+
+    _render_rich(request)

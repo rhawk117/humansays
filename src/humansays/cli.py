@@ -5,7 +5,8 @@ from typing import TextIO
 from humansays import application
 from humansays.config.loading import ConfigError, load_settings
 from humansays.const import CONFIG_ERROR_EXIT, MISSING_SYMBOL_EXIT, NO_FILES_EXIT
-from humansays.reporting.render import emit
+from humansays.reporting.models import ReportRequest
+from humansays.reporting.render import write_report
 from humansays.scoring import score_for
 
 
@@ -25,10 +26,12 @@ def main(argv: Sequence[str] | None = None, stream: TextIO | None = None) -> int
 
     result = application.analyze_paths(paths, settings)
     wanted = settings.selection.symbol
+
     if wanted and not application.symbol_is_present(result, wanted):
         print(f'error: symbol {wanted!r} not found', file=sys.stderr)
         return MISSING_SYMBOL_EXIT
 
     score = score_for(result)
-    emit(result, score, settings.report)
-    return application.exit_code(result, score, settings)
+    code = application.exit_code(result, score, settings)
+    write_report(ReportRequest(result, score, settings.report, code))
+    return code

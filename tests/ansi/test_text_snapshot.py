@@ -9,7 +9,7 @@ from humansays.analysis.rules import Analyzer
 from humansays.config.models import Report, Thresholds
 from humansays.findings.models import Score
 from humansays.reporting import ansi, render
-from humansays.reporting.models import FileReport, ScanResult
+from humansays.reporting.models import FileReport, ReportRequest, ScanResult
 from humansays.scoring import score_for
 
 SNAPSHOT = """\
@@ -37,16 +37,28 @@ def test_plain_text_snapshot_is_stable(
 ) -> None:
     monkeypatch.setenv('NO_COLOR', '1')
     result, score = _scan_result()
-    ansi.render_text_plain(result, score, Report(limit=0))
+    ansi.render_text_plain(ReportRequest(result, score, Report(limit=0), 0))
     assert capsys.readouterr().out == SNAPSHOT
 
 
-def test_emit_falls_back_to_ansi_when_rich_is_absent(
+def test_plain_text_goes_to_stderr_when_the_run_fails(
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    monkeypatch.setenv('NO_COLOR', '1')
+    result, score = _scan_result()
+    ansi.render_text_plain(ReportRequest(result, score, Report(limit=0), 1))
+    captured = capsys.readouterr()
+    assert captured.err == SNAPSHOT
+    assert captured.out == ''
+
+
+def test_write_report_falls_back_to_ansi_when_rich_is_absent(
     monkeypatch: pytest.MonkeyPatch,
     capsys: pytest.CaptureFixture[str],
 ) -> None:
     monkeypatch.setenv('NO_COLOR', '1')
     monkeypatch.setattr(render, '_load_rich', lambda: None)
     result, score = _scan_result()
-    render.emit(result, score, Report(limit=0))
+    render.write_report(ReportRequest(result, score, Report(limit=0), 0))
     assert capsys.readouterr().out == SNAPSHOT
