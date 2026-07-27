@@ -103,12 +103,12 @@ Every message template is one sentence and must substitute measured values when 
 - [POLA](pola.md)
 - [COUP](coup.md)
 - [CONTRACT](contract.md)
-- [STATE](state.md)
+- [ENCAP](encap.md)
 - [LIFE](life.md)
-- [FAIL](fail.md)
+- [ERR](err.md)
 - [CONC](conc.md)
 - [IDIOM](idiom.md)
-- [NIT](nit.md)
+- [SMELL](smell.md)
 - [DRY](dry.md)
 
 ## Provenance

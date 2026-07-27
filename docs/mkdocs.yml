@@ -129,11 +129,11 @@ nav:
       - POLA: planned/pola.md
       - COUP: planned/coup.md
       - CONTRACT: planned/contract.md
-      - STATE: planned/state.md
+      - ENCAP: planned/encap.md
       - LIFE: planned/life.md
-      - FAIL: planned/fail.md
+      - ERR: planned/err.md
       - CONC: planned/conc.md
       - IDIOM: planned/idiom.md
-      - NIT: planned/nit.md
+      - SMELL: planned/smell.md
       - DRY: planned/dry.md
       - Reconciliation: planned/reconciliation.md

@@ -1,9 +1,9 @@
-# STATE rules
+# ENCAP rules
 
-STATE rules are planned. None of them is implemented today, and nothing on this
+ENCAP rules are planned. None of them is implemented today, and nothing on this
 page is available to run.
 
-The STATE domain covers rules for managing state ownership, enforcing invariants, and ensuring representable state spaces remain manageable. These rules prevent shared mutable state, incomplete initialization, and state-space explosion from unconstrained field combinations.
+The ENCAP domain covers rules for managing state ownership, enforcing invariants, and ensuring representable state spaces remain manageable. These rules prevent shared mutable state, incomplete initialization, and state-space explosion from unconstrained field combinations.
 
 The principle underneath the domain is encapsulation: mutable data should have
 one owner, and reads and writes should pass through that owner rather than
@@ -15,30 +15,30 @@ covers the aliasing case that several rules below concern themselves with.
 
 | ID       | Rule                                    | Default | Concern |
 | -------- | --------------------------------------- | ------- | ------- |
-| STATE001 | Excessive representable state space     | on      | hazard  |
-| STATE002 | Module global read                      | on      | hazard  |
-| STATE003 | Module global write                     | on      | hazard  |
-| STATE004 | Mutable class attribute                 | on      | hazard  |
-| STATE005 | Leaked internal mutable                 | on      | hazard  |
-| STATE006 | Shared mutable binding                  | on      | hazard  |
+| ENCAP001 | Excessive representable state space     | on      | hazard  |
+| ENCAP002 | Module global read                      | on      | hazard  |
+| ENCAP003 | Module global write                     | on      | hazard  |
+| ENCAP004 | Mutable class attribute                 | on      | hazard  |
+| ENCAP005 | Leaked internal mutable                 | on      | hazard  |
+| ENCAP006 | Shared mutable binding                  | on      | hazard  |
 | STATE007 | Field write outside owner               | on      | hazard  |
-| STATE008 | Aliased collection store                | on      | hazard  |
-| STATE009 | Partial init                            | on      | review  |
-| STATE010 | Invariant bypass                        | on      | hazard  |
-| STATE011 | Missing state owner                     | on      | review  |
-| STATE012 | Unprotected invariant                   | on      | hazard  |
-| STATE013 | Global declaration                      | on      | hazard  |
-| STATE014 | Boolean state-space explosion           | on      | hazard  |
-| STATE015 | Nullable state-space explosion          | on      | hazard  |
-| STATE016 | Mutually dependent nullability          | on      | hazard  |
-| STATE017 | Duplicated state representation         | on      | hazard  |
-| STATE018 | Optional argument state product         | on      | hazard  |
-| STATE019 | State transition without explicit model | on      | hazard  |
-| STATE020 | Invariant spread across methods         | on      | hazard  |
+| ENCAP008 | Aliased collection store                | on      | hazard  |
+| ENCAP009 | Partial init                            | on      | review  |
+| ENCAP010 | Invariant bypass                        | on      | hazard  |
+| ENCAP011 | Missing state owner                     | on      | review  |
+| ENCAP012 | Unprotected invariant                   | on      | hazard  |
+| ENCAP013 | Global declaration                      | on      | hazard  |
+| ENCAP014 | Boolean state-space explosion           | on      | hazard  |
+| ENCAP015 | Nullable state-space explosion          | on      | hazard  |
+| ENCAP016 | Mutually dependent nullability          | on      | hazard  |
+| ENCAP017 | Duplicated state representation         | on      | hazard  |
+| ENCAP018 | Optional argument state product         | on      | hazard  |
+| ENCAP019 | State transition without explicit model | on      | hazard  |
+| ENCAP020 | Invariant spread across methods         | on      | hazard  |
 
 ## Rule detail
 
-### STATE001 Excessive representable state space
+### ENCAP001 Excessive representable state space
 
 **Claim.** risk
 
@@ -46,7 +46,7 @@ covers the aliasing case that several rules below concern themselves with.
 
 **Message template.** `{type}` permits `{representable_states}` structural states although its guards and transitions recognize only `{meaningful_states}` meaningful combinations.
 
-### STATE002 Module global read
+### ENCAP002 Module global read
 
 **Claim.** risk
 
@@ -54,7 +54,7 @@ covers the aliasing case that several rules below concern themselves with.
 
 **Message template.** `{symbol}` reads mutable module binding `{name}`, making its behavior depend on ambient process state.
 
-### STATE003 Module global write
+### ENCAP003 Module global write
 
 **Claim.** risk
 
@@ -62,7 +62,7 @@ covers the aliasing case that several rules below concern themselves with.
 
 **Message template.** `{symbol}` writes module binding `{name}`, giving the function process-wide mutation authority.
 
-### STATE004 Mutable class attribute
+### ENCAP004 Mutable class attribute
 
 **Claim.** risk
 
@@ -70,7 +70,7 @@ covers the aliasing case that several rules below concern themselves with.
 
 **Message template.** `{class}.{field}` is one mutable object shared by every instance of the class.
 
-### STATE005 Leaked internal mutable
+### ENCAP005 Leaked internal mutable
 
 **Claim.** risk
 
@@ -78,7 +78,7 @@ covers the aliasing case that several rules below concern themselves with.
 
 **Message template.** `{symbol}` returns internal mutable `{field}` directly, allowing callers to mutate owned state without the object's contract.
 
-### STATE006 Shared mutable binding
+### ENCAP006 Shared mutable binding
 
 **Claim.** risk
 
@@ -94,7 +94,7 @@ covers the aliasing case that several rules below concern themselves with.
 
 **Message template.** `{symbol}` writes `{target}.{field}` from outside the owning object.
 
-### STATE008 Aliased collection store
+### ENCAP008 Aliased collection store
 
 **Claim.** risk
 
@@ -102,7 +102,7 @@ covers the aliasing case that several rules below concern themselves with.
 
 **Message template.** `{class}` stores caller-owned collection `{parameter}` directly, so later caller mutation can change internal state.
 
-### STATE009 Partial init
+### ENCAP009 Partial init
 
 **Claim.** design
 
@@ -110,7 +110,7 @@ covers the aliasing case that several rules below concern themselves with.
 
 **Message template.** `{class}.{field}` begins as `None` and is established later, so instances exist in a partially initialized state.
 
-### STATE010 Invariant bypass
+### ENCAP010 Invariant bypass
 
 **Claim.** risk
 
@@ -118,7 +118,7 @@ covers the aliasing case that several rules below concern themselves with.
 
 **Message template.** `{class}.{public_field}` can bypass validation enforced by `{private_field}`.
 
-### STATE011 Missing state owner
+### ENCAP011 Missing state owner
 
 **Claim.** design
 
@@ -126,7 +126,7 @@ covers the aliasing case that several rules below concern themselves with.
 
 **Message template.** `{state}` is mutated from `{owners}` without one explicit lifecycle owner.
 
-### STATE012 Unprotected invariant
+### ENCAP012 Unprotected invariant
 
 **Claim.** risk
 
@@ -134,7 +134,7 @@ covers the aliasing case that several rules below concern themselves with.
 
 **Message template.** `{invariant}` can be bypassed through `{paths}`, so valid state is not protected by one construction or transition boundary.
 
-### STATE013 Global declaration
+### ENCAP013 Global declaration
 
 **Claim.** risk
 
@@ -142,7 +142,7 @@ covers the aliasing case that several rules below concern themselves with.
 
 **Message template.** `global client` gives this function write access to process-wide state with no explicit owner.
 
-### STATE014 Boolean state-space explosion
+### ENCAP014 Boolean state-space explosion
 
 **Claim.** risk
 
@@ -150,7 +150,7 @@ covers the aliasing case that several rules below concern themselves with.
 
 **Message template.** `{class}` has `{dimension_count}` related Boolean fields, allowing `{representable_states}` possible states although only `{meaningful_states}` appear meaningful.
 
-### STATE015 Nullable state-space explosion
+### ENCAP015 Nullable state-space explosion
 
 **Claim.** risk
 
@@ -158,7 +158,7 @@ covers the aliasing case that several rules below concern themselves with.
 
 **Message template.** `{class}` has `{dimension_count}` related nullable fields, allowing `{representable_states}` presence states before lifecycle constraints are applied.
 
-### STATE016 Mutually dependent nullability
+### ENCAP016 Mutually dependent nullability
 
 **Claim.** risk
 
@@ -166,7 +166,7 @@ covers the aliasing case that several rules below concern themselves with.
 
 **Message template.** `{fields}` permit `{representable_states}` presence combinations although the observed guards accept only `{valid_states}`.
 
-### STATE017 Duplicated state representation
+### ENCAP017 Duplicated state representation
 
 **Claim.** risk
 
@@ -174,7 +174,7 @@ covers the aliasing case that several rules below concern themselves with.
 
 **Message template.** `{class}` duplicates lifecycle state across `{fields}`, permitting `{representable_states}` combinations that can disagree.
 
-### STATE018 Optional argument state product
+### ENCAP018 Optional argument state product
 
 **Claim.** risk
 
@@ -182,7 +182,7 @@ covers the aliasing case that several rules below concern themselves with.
 
 **Message template.** `{symbol}` permits `{representable_states}` optional-argument combinations although only `{valid_states}` appear valid.
 
-### STATE019 State transition without explicit model
+### ENCAP019 State transition without explicit model
 
 **Claim.** risk
 
@@ -190,7 +190,7 @@ covers the aliasing case that several rules below concern themselves with.
 
 **Message template.** `{class}.{field}` changes through `{transition_count}` ad hoc assignments and repeated guards instead of one explicit transition model.
 
-### STATE020 Invariant spread across methods
+### ENCAP020 Invariant spread across methods
 
 **Claim.** risk
 
