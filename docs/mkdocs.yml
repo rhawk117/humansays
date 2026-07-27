@@ -110,5 +110,6 @@ nav:
       - Configuration: reference/configuration.md
       - Output and scoring: reference/output.md
       - Shipped rules: reference/shipped-rules.md
+      - Reconciliation: reference/reconciliation.md
   - Roadmap:
       - Future additions: roadmap/future-additions.md
