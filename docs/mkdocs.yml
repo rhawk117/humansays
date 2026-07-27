@@ -82,6 +82,20 @@ nav:
       - Python: style-guide/python.md
       - Rust: style-guide/rust.md
   - Rules:
+      - Python:
+          - SRP: rules/python/srp.md
+          - KISS: rules/python/kiss.md
+          - CQS: rules/python/cqs.md
+          - POLA: rules/python/pola.md
+          - COUP: rules/python/coup.md
+          - CONTRACT: rules/python/contract.md
+          - STATE: rules/python/state.md
+          - LIFE: rules/python/life.md
+          - FAIL: rules/python/fail.md
+          - CONC: rules/python/conc.md
+          - IDIOM: rules/python/idiom.md
+          - NIT: rules/python/nit.md
+          - DRY: rules/python/dry.md
       - Legacy catalog:
           - rules/legacy/README.md
           - Python: rules/legacy/python.md
