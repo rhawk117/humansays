@@ -121,3 +121,23 @@ def test_findings_win_over_unanalyzed(tmp_path: Path) -> None:
 def test_clean_scan_still_exits_zero(tmp_path: Path) -> None:
     (tmp_path / 'good.py').write_text(CLEAN)
     assert main([str(tmp_path)], io.StringIO('')) == 0
+
+
+def test_coverage_gap_is_named_in_text_output(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    (tmp_path / 'bad.py').write_text(BROKEN)
+    (tmp_path / 'good.py').write_text(CLEAN)
+    main([str(tmp_path)], io.StringIO(''))
+    report = capsys.readouterr().err
+    assert 'coverage 1 of 2 files analyzed' in report
+    assert '1 not analyzed' in report
+
+
+def test_clean_run_has_no_coverage_line(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    (tmp_path / 'good.py').write_text(CLEAN)
+    main([str(tmp_path)], io.StringIO(''))
+    lines = capsys.readouterr().out.splitlines()
+    assert not any(line.startswith('coverage ') for line in lines)

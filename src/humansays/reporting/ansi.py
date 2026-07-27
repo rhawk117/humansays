@@ -100,6 +100,19 @@ def report_lines(request: ReportRequest, *, color: bool) -> list[str]:
         message = f'truncated={remaining}; use --limit 0 for all targets'
         lines.append(_style(message, 'dim', color=color))
 
+    if result.errors:
+        analyzed = len(result.reports)
+        total = analyzed + len(result.errors)
+        lines.append(
+            _style(
+                f'coverage {analyzed} of {total} files analyzed; '
+                f'{len(result.errors)} not analyzed - the score covers the '
+                f'analyzed files only',
+                'bold yellow',
+                color=color,
+            )
+        )
+
     lines.extend(
         _style('parse-error', 'bold red', color=color) + f' {error}'
         for error in result.errors
