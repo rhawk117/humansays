@@ -18,23 +18,7 @@ run_lint() {
 }
 
 run_test() {
-    local failed=0
-
-    log_step "py-compile"
-    if ! uv run python -m compileall -q src tests; then
-        log_error "Compile check failed"
-        failed=1
-    fi
-    log_step_end
-
-    log_step "pytest"
-    if ! uv run python -m pytest; then
-        log_error "Tests failed"
-        failed=1
-    fi
-    log_step_end
-
-    return "$failed"
+    bash "$SCRIPT_DIR/test.sh" all
 }
 
 run_docs() {
