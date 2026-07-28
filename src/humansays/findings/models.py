@@ -7,15 +7,24 @@ construction time with a real error message, same as the pydantic models this
 replaces.
 """
 
-from dataclasses import dataclass
+from dataclasses import dataclass, fields
+from typing import TYPE_CHECKING
 
 from humansays.enums import Grade, Severity, SignalName
+
+if TYPE_CHECKING:
+    from _typeshed import DataclassInstance
 
 
 def check_bounds(pairs: tuple[tuple[float, float, float | None, str], ...]) -> None:
     for value, low, high, name in pairs:
         if value < low or (high is not None and value > high):
             raise ValueError(f'{name} out of range [{low},{high}]: {value}')
+
+
+def field_values(instance: 'DataclassInstance') -> dict:
+    """A dataclass's fields, one level deep."""
+    return {field.name: getattr(instance, field.name) for field in fields(instance)}
 
 
 @dataclass(frozen=True, slots=True)

@@ -1,16 +1,16 @@
 """Building the text report.
 
-Nothing here writes anything. ``report_lines`` returns the whole report and
-``render`` joins and flushes it in one call.
+Nothing here writes anything. ``report_lines`` returns the whole report; the
+console joins it and emits it in one call.
 """
 
-import os
+import platform
 from types import MappingProxyType
 
-from humansays.const import GRADE_STYLES, SEVERITY_STYLES
+from humansays.const import GRADE_STYLES, SEVERITY_STYLES, UNPARSED_HINT_TEMPLATE
 from humansays.findings.models import Score
 from humansays.reporting.grouping import Target, review_targets, shown_targets
-from humansays.reporting.models import ReportRequest
+from humansays.reporting.models import ReportRequest, ScanResult
 
 RESET = '\x1b[0m'
 ANSI_CODES = MappingProxyType({
@@ -23,16 +23,6 @@ ANSI_CODES = MappingProxyType({
     'dim': '\x1b[2m',
     '': '',
 })
-
-
-def use_color(*, is_tty: bool) -> bool:
-    if os.getenv('NO_COLOR') or os.getenv('TERM') == 'dumb':
-        return False
-
-    if os.getenv('FORCE_COLOR'):
-        return True
-
-    return is_tty
 
 
 def _style(text: str, style: str, *, color: bool) -> str:
@@ -72,6 +62,33 @@ def score_text(score: Score, *, color: bool) -> str:
     return f'{label}{value} {grade}  {tail}'
 
 
+def unanalyzed_lines(result: ScanResult, *, color: bool) -> list[str]:
+    if not result.errors:
+        return []
+
+    analyzed = len(result.reports)
+    total = analyzed + len(result.errors)
+    lines = [
+        _style(
+            f'coverage {analyzed} of {total} files analyzed; '
+            f'{len(result.errors)} not analyzed - the score covers the '
+            f'analyzed files only',
+            'bold yellow',
+            color=color,
+        )
+    ]
+    lines.extend(
+        _style('parse-error', 'bold red', color=color) + f' {error}'
+        for error in result.errors
+    )
+
+    if result.unparsed:
+        hint = UNPARSED_HINT_TEMPLATE.format(version=platform.python_version())
+        lines.append(_style(hint, 'dim', color=color))
+
+    return lines
+
+
 def report_lines(request: ReportRequest, *, color: bool) -> list[str]:
     result = request.result
     limit = request.settings.limit
@@ -100,23 +117,7 @@ def report_lines(request: ReportRequest, *, color: bool) -> list[str]:
         message = f'truncated={remaining}; use --limit 0 for all targets'
         lines.append(_style(message, 'dim', color=color))
 
-    if result.errors:
-        analyzed = len(result.reports)
-        total = analyzed + len(result.errors)
-        lines.append(
-            _style(
-                f'coverage {analyzed} of {total} files analyzed; '
-                f'{len(result.errors)} not analyzed - the score covers the '
-                f'analyzed files only',
-                'bold yellow',
-                color=color,
-            )
-        )
-
-    lines.extend(
-        _style('parse-error', 'bold red', color=color) + f' {error}'
-        for error in result.errors
-    )
+    lines.extend(unanalyzed_lines(result, color=color))
 
     if not targets and not result.errors:
         lines.append('No suspicious structural indicators found.')

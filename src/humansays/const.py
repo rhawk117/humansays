@@ -115,6 +115,12 @@ NO_PATHS_MESSAGE = (
 )
 NO_FILES_TEMPLATE = 'error: no Python files found in {source}\n\n' + _SCAN_HINT
 
+UNPARSED_HINT_TEMPLATE = (
+    'note: humansays is running on Python {version}. If the files above use '
+    'newer syntax, reinstall it against a newer interpreter:\n'
+    '    uv tool install --python <newer> humansays'
+)
+
 EXIT_REASONS = MappingProxyType({
     0: 'ok',
     FINDINGS_EXIT: 'findings',
