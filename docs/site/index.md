@@ -41,14 +41,13 @@ Point it at a file or a directory.
 ```console
 $ humansays src/humansays/reporting/
 Python investigation targets src/humansays/reporting/
-files=5 lines=335 targets=6 errors=0
-score 83.6 (B)  penalty 4.92 over 335 lines  density 1.469/100 lines
-src/humansays/reporting/ansi.py:29-36  use_color  boolean-modes
-src/humansays/reporting/ansi.py:39-44  _style  boolean-modes
-src/humansays/reporting/ansi.py:47-59  indicator_text  boolean-modes
-src/humansays/reporting/ansi.py:62-73  score_text  boolean-modes
-src/humansays/reporting/ansi.py:76-112  report_lines  boolean-modes
-src/humansays/reporting/render.py:43-50  report_text  boolean-modes
+files=9 lines=550 targets=5 errors=0
+score 91.0 (A)  penalty 4.1 over 550 lines  density 0.745/100 lines
+src/humansays/reporting/ansi.py:28-33  _style  boolean-modes
+src/humansays/reporting/ansi.py:36-48  indicator_text  boolean-modes
+src/humansays/reporting/ansi.py:51-62  score_text  boolean-modes
+src/humansays/reporting/ansi.py:65-94  unanalyzed_lines  boolean-modes
+src/humansays/reporting/ansi.py:97-130  report_lines  boolean-modes
 ```
 
 Each line is a location, a symbol, and the signals that fired against it.

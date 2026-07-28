@@ -27,6 +27,7 @@ class ScanResult:
     label: str
     reports: list[FileReport]
     errors: list[str]
+    unparsed: int = 0
 
     @property
     def findings(self) -> list[Finding]:

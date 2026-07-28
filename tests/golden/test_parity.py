@@ -127,7 +127,7 @@ def test_poc_group_grouped_json_smoke() -> None:
     from humansays import application
     from humansays.config.models import Report, ScannerSettings, Selection
     from humansays.enums import OutputFormat
-    from humansays.reporting.render import json_payload
+    from humansays.reporting.payload import json_payload
 
     group = MANIFEST['groups']['poc']
     root = REPO_ROOT / group['root']

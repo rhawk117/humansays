@@ -9,6 +9,7 @@ files matter and pipes them in, so any of these work identically::
     rg -l 'subprocess' --type py | humansays -
 """
 
+import logging
 from collections.abc import Iterable
 from pathlib import Path
 from typing import TextIO
@@ -19,6 +20,8 @@ from humansays.const import FINDINGS_EXIT, STDIN_SPEC, UNANALYZED_EXIT
 from humansays.enums import FailOn, Severity
 from humansays.findings.models import Score
 from humansays.reporting.models import FileReport, ScanResult
+
+logger = logging.getLogger(__name__)
 
 
 def read_stream_paths(stream: TextIO) -> list[str]:
@@ -113,21 +116,45 @@ def analyze_file(path: Path, settings: ScannerSettings) -> FileReport:
     )
 
 
+def parse_failure(error: SyntaxError) -> str:
+    reason = error.msg or 'invalid syntax'
+    if error.lineno is None:
+        return f'cannot parse: {reason}'
+
+    return f'cannot parse: {reason} (line {error.lineno})'
+
+
+def is_version_candidate(error: SyntaxError) -> bool:
+    """A line number means it tokenized as source, so newer syntax is plausible."""
+    return error.lineno is not None
+
+
 def analyze_paths(paths: Iterable[Path], settings: ScannerSettings) -> ScanResult:
     reports: list[FileReport] = []
     errors: list[str] = []
+    unparsed = 0
     potential_exceptions = (OSError, UnicodeError, SyntaxError, ValueError)
     for path in paths:
         try:
+            logger.debug('analyzing %s', path)
             reports.append(analyze_file(path, settings))
         except potential_exceptions as error:
-            errors.append(f'{path}: {error}')
+            if isinstance(error, SyntaxError):
+                unparsed += is_version_candidate(error)
+                message = f'{path}: {parse_failure(error)}'
+            else:
+                message = f'{path}: {error}'
 
+            logger.warning('not analyzed %s', message)
+            errors.append(message)
+
+    logger.info('analyzed %d of %d files', len(reports), len(reports) + len(errors))
     named = [spec for spec in settings.selection.paths if spec != STDIN_SPEC]
     return ScanResult(
         label=', '.join(named) or '<stdin>',
         reports=reports,
         errors=errors,
+        unparsed=unparsed,
     )
 
 

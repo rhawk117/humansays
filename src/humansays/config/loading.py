@@ -8,6 +8,7 @@ so an unset flag is absent from the namespace entirely -- that is what makes
 
 import argparse
 import dataclasses
+import logging
 import tomllib
 from collections.abc import Mapping, Sequence
 from importlib.metadata import version as package_version
@@ -41,6 +42,9 @@ SETTINGS_SPEC = MappingProxyType({
     'selection': Selection,
     'report': Report,
 })
+
+
+logger = logging.getLogger(__name__)
 
 
 class ConfigError(Exception):
@@ -130,13 +134,17 @@ def _discover_explicit_config(explicit: str) -> Path:
 
 def discover_config(explicit: str | None) -> Path | None:
     if explicit:
-        return _discover_explicit_config(explicit)
+        found = _discover_explicit_config(explicit)
+        logger.info('using config %s (named on the command line)', found)
+        return found
 
     for name in DEFAULT_CONFIG_NAMES:
         candidate = Path(name)
         if candidate.is_file():
+            logger.info('using discovered config %s', candidate)
             return candidate
 
+    logger.info('no config file found; using built-in defaults')
     return None
 
 
@@ -156,6 +164,9 @@ def build_parser() -> argparse.ArgumentParser:
         action='version',
         version=f'%(prog)s {package_version("humansays")}',
     )
+
+    # Read by cli.main before this parser runs; apply_overrides drops it.
+    parser.add_argument('-v', '--verbose', action='count')
 
     parser.add_argument('paths', nargs='*')
     parser.add_argument('--config')
