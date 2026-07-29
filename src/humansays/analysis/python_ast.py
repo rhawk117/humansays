@@ -12,13 +12,13 @@ but the parse result.
 
 import ast
 from collections.abc import Iterable
+from operator import itemgetter
 
 from humansays.analysis.body_visitor import FunctionVisitor
 from humansays.analysis.models import (
     FunctionFacts,
     FunctionNode,
     FunctionTarget,
-    LambdaFact,
     MutableBinding,
     ParsedModule,
     ScopeContext,
@@ -231,10 +231,9 @@ def collect_module_globals(tree: ast.Module) -> set[str]:
 
 
 def module_scale_findings(
-    module: ParsedModule,
+    count: int,
     thresholds: ModuleThresholds,
 ) -> list[Finding]:
-    count = len(module.lines)
     if count <= thresholds.max_lines:
         return []
 
@@ -255,12 +254,21 @@ def base_class_names(node: ast.ClassDef) -> tuple[str, ...]:
     return tuple(dotted_name(base) or snippet(base) for base in node.bases)
 
 
-def lambda_sites(tree: ast.Module) -> list[LambdaFact]:
-    return [
-        LambdaFact(line=node.lineno, source=snippet(node))
-        for node in ast.walk(tree)
-        if isinstance(node, ast.Lambda)
-    ]
+def lambda_nodes(tree: ast.Module) -> list[ast.Lambda]:
+    found: list[tuple[int, int, ast.Lambda]] = []
+    position = 0
+
+    def descend(node: ast.AST, depth: int) -> None:
+        nonlocal position
+        for child in ast.iter_child_nodes(node):
+            if isinstance(child, ast.Lambda):
+                found.append((depth, position, child))
+
+            position += 1
+            descend(child, depth + 1)
+
+    descend(tree, 1)
+    return [node for _, _, node in sorted(found, key=itemgetter(0, 1))]
 
 
 def mutable_bindings(
@@ -311,7 +319,6 @@ def build_function_facts(
     visitor.body.code_lines = code_line_count(module, node)
 
     return FunctionFacts(
-        class_name=target.class_name,
         signature=Signature(
             parameters=signature.parameters,
             boolean_parameters=signature.boolean_parameters,
@@ -321,4 +328,5 @@ def build_function_facts(
         self_usage=visitor.usage.freeze(),
         location=location_of(target.qualified_name, node),
         trivial_accessor=is_trivial_accessor(node),
+        static_method=is_static_method(node),
     )

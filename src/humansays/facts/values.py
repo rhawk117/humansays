@@ -34,10 +34,11 @@ class Scope:
 
 @dataclass(frozen=True, slots=True)
 class LambdaFact:
-    """A lambda expression and where it sits."""
+    """A lambda expression, where it sits, and the scope it resolves to."""
 
     line: int
     source: str
+    symbol: str = '<module>'
 
 
 @dataclass(frozen=True, slots=True)
@@ -87,15 +88,20 @@ class SelfUsage:
 @dataclass(frozen=True, slots=True)
 class FunctionFacts:
     location: Location
-    class_name: str | None
     signature: Signature
     body: BodyFacts
     self_usage: SelfUsage
     trivial_accessor: bool
+    static_method: bool = False
 
     @property
     def name(self) -> str:
         return self.location.symbol.rsplit('.', 1)[-1]
+
+    @property
+    def class_name(self) -> str | None:
+        owner, separator, _ = self.location.symbol.rpartition('.')
+        return owner if separator else None
 
     @property
     def length(self) -> int:

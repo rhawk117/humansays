@@ -1,43 +1,18 @@
 """Signal rules: turn extracted facts into findings.
 
-``python_ast`` reads the tree and returns facts; this module owns the
+``extraction`` walks the tree and returns facts; this module owns the
 judgement calls, meaning which threshold a fact has to cross and what the
-resulting finding says.
-
-Remaining contract debt: the evaluator still drives the traversal itself,
-dispatching on node type in ``run`` and ``_evaluate_class``, and still holds
-scopes keyed by ast nodes. A ``humansays.signals`` layer that evaluates purely
-over facts needs the fact model to carry the class and module shape that four
-rules currently read off the tree.
+resulting finding says. It reads no ast node.
 """
 
-import ast
 from operator import attrgetter
 
-from humansays.analysis.models import (
-    AnalysisIndex,
-    FunctionFacts,
-    FunctionNode,
-    FunctionTarget,
-    MutationVocabulary,
-    ParsedModule,
-    Scope,
-    ScopeContext,
-)
+from humansays.analysis.extraction import extract
+from humansays.analysis.models import AnalysisIndex, MutationVocabulary, ParsedModule
 from humansays.analysis.python_ast import (
-    FUNCTION_NODES,
     attribute_prefix_clusters,
-    base_class_names,
-    build_function_facts,
-    class_state_attributes,
-    collect_aliases,
-    collect_module_globals,
-    is_static_method,
-    lambda_sites,
     module_scale_findings,
-    mutable_bindings,
 )
-from humansays.analysis.syntax import location_of, node_span
 from humansays.catalog import build_finding
 from humansays.config.models import Thresholds
 from humansays.const import (
@@ -47,6 +22,8 @@ from humansays.const import (
     MUTATION_OWNER_MINIMUM,
 )
 from humansays.enums import SignalName
+from humansays.facts.module import ClassFacts
+from humansays.facts.values import FunctionFacts, MutableBinding
 from humansays.findings.models import Finding, Location, Observation
 
 
@@ -57,29 +34,28 @@ class RulesetEvaluator:
         thresholds: Thresholds,
         vocabulary: MutationVocabulary = MutationVocabulary(),  # noqa: B008 -- frozen, safe to share
     ) -> None:
-        self.module = module
+        self.facts = extract(module, vocabulary)
         self.thresholds = thresholds
-        self.context = ScopeContext(
-            aliases=collect_aliases(module.tree),
-            module_globals=collect_module_globals(module.tree),
-            vocabulary=vocabulary,
-        )
         self.findings: list[Finding] = []
-        self.index = AnalysisIndex()
-        span = max(1, len(module.lines))
-        self.index.add_scope(Scope('<module>', 1, span))
+
+    @property
+    def index(self) -> AnalysisIndex:
+        return AnalysisIndex(
+            symbols=set(self.facts.symbols),
+            functions=list(self.facts.all_functions),
+            classes={item.name: list(item.methods) for item in self.facts.classes},
+        )
 
     def run(self) -> list[Finding]:
         self.findings.extend(
-            module_scale_findings(self.module, self.thresholds.modules),
+            module_scale_findings(self.facts.line_count, self.thresholds.modules),
         )
-        self._mutable_bindings(self.module.tree.body, '<module>', 'module')
-        for node in self.module.tree.body:
-            if isinstance(node, FUNCTION_NODES):
-                self._evaluate_function(node, node.name)
+        self._mutable_bindings(self.facts.bindings, '<module>', 'module')
+        for facts in self.facts.functions:
+            self._evaluate_function(facts)
 
-            elif isinstance(node, ast.ClassDef):
-                self._evaluate_class(node)
+        for item in self.facts.classes:
+            self._evaluate_class(item)
 
         self._lambda_signals()
         return sorted(self.findings, key=attrgetter('sort_key'))
@@ -92,77 +68,52 @@ class RulesetEvaluator:
     ) -> None:
         self.findings.append(build_finding(signal, location, observation))
 
-    def _evaluate_class(self, node: ast.ClassDef) -> None:
-        self.index.add_scope(Scope(node.name, *node_span(node)))
-        self._mutable_bindings(node.body, node.name, 'class')
-        self._base_classes(node)
-        methods: list[FunctionFacts] = []
-        for child in node.body:
-            if not isinstance(child, FUNCTION_NODES):
-                continue
+    def _evaluate_class(self, item: ClassFacts) -> None:
+        self._mutable_bindings(item.bindings, item.name, 'class')
+        self._base_classes(item)
+        for method in item.methods:
+            self._evaluate_function(method)
+            self._static_method(method)
 
-            name = f'{node.name}.{child.name}'
-            methods.append(self._evaluate_function(child, name, node.name))
-            self._static_method(child, name)
+        self._class_state_surface(item)
+        self._class_cohesion(item)
 
-        self.index.classes[node.name] = methods
-        self._class_state_surface(node, methods)
-        self._class_cohesion(node, methods)
-
-    def _evaluate_function(
-        self,
-        node: FunctionNode,
-        qualified_name: str,
-        class_name: str | None = None,
-    ) -> FunctionFacts:
-        target = FunctionTarget(node, qualified_name, class_name)
-        facts = build_function_facts(self.module, target, self.context)
-
-        self.index.functions.append(facts)
-        self.index.add_scope(
-            Scope(
-                qualified_name,
-                facts.location.line,
-                facts.location.end_line,
-            ),
-        )
+    def _evaluate_function(self, facts: FunctionFacts) -> None:
         self._argument_signals(facts)
         self._size_signals(facts)
         self._control_flow_signals(facts)
         self._incident_signals(facts)
         self._state_signals(facts)
-        return facts
 
-    def _static_method(self, node: FunctionNode, qualified_name: str) -> None:
+    def _static_method(self, facts: FunctionFacts) -> None:
         """HS015: a staticmethod is a module function wearing a class as a namespace."""
-        if not is_static_method(node):
+        if not facts.static_method:
             return
 
         observation = Observation(
             'Method is declared @staticmethod, so it can reach neither instance '
             'nor class state.',
-            (f'line {node.lineno}: @staticmethod {node.name}',),
+            (f'line {facts.location.line}: @staticmethod {facts.name}',),
         )
 
-        self._record(SignalName.HS015, location_of(qualified_name, node), observation)
+        self._record(SignalName.HS015, facts.location, observation)
 
     def _lambda_signals(self) -> None:
         """HS016: lambdas are anonymous, unimportable, and awkward to test."""
-        for site in lambda_sites(self.module.tree):
-            scope = self.index.scope_for_line(site.line)
+        for site in self.facts.lambdas:
             observation = Observation(
                 'Lambda expression stands in for a named function.',
                 (f'line {site.line}: {site.source}',),
             )
             self._record(
                 SignalName.HS016,
-                Location(scope.symbol, site.line, site.line),
+                Location(site.symbol, site.line, site.line),
                 observation,
             )
 
-    def _base_classes(self, node: ast.ClassDef) -> None:
+    def _base_classes(self, item: ClassFacts) -> None:
         """HS018: multiple parents make the method resolution order the real design."""
-        bases = base_class_names(node)
+        bases = item.base_classes
         if len(bases) <= self.thresholds.classes.max_base_classes:
             return
 
@@ -170,7 +121,7 @@ class RulesetEvaluator:
             f'Class inherits from {len(bases)} parent classes.',
             bases,
         )
-        self._record(SignalName.HS018, location_of(node.name, node), observation)
+        self._record(SignalName.HS018, item.location, observation)
 
     def _argument_signals(self, facts: FunctionFacts) -> None:
         signature = facts.signature
@@ -325,15 +276,10 @@ class RulesetEvaluator:
 
     def _mutable_bindings(
         self,
-        body: list[ast.stmt],
+        bindings: tuple[MutableBinding, ...],
         symbol: str,
         scope: str,
     ) -> None:
-        bindings = mutable_bindings(
-            body,
-            self.context.aliases,
-            self.context.vocabulary.constructors,
-        )
         for binding in bindings:
             self._record(
                 SignalName.HS004,
@@ -345,15 +291,11 @@ class RulesetEvaluator:
                 ),
             )
 
-    def _class_state_surface(
-        self,
-        node: ast.ClassDef,
-        methods: list[FunctionFacts],
-    ) -> None:
-        attributes = class_state_attributes(node, methods)
+    def _class_state_surface(self, item: ClassFacts) -> None:
+        attributes = item.state_attributes
         if len(attributes) <= self.thresholds.classes.max_attributes:
             return
-        location = location_of(node.name, node)
+        location = item.location
         self._record(
             SignalName.HS012,
             location,
@@ -378,12 +320,8 @@ class RulesetEvaluator:
                 ),
             )
 
-    def _class_cohesion(
-        self,
-        node: ast.ClassDef,
-        methods: list[FunctionFacts],
-    ) -> None:
-        eligible = cohesion_candidates(methods)
+    def _class_cohesion(self, item: ClassFacts) -> None:
+        eligible = cohesion_candidates(list(item.methods))
         usage = [fields for _, fields in eligible]
         fields = {name for group in usage for name in group}
         if (
@@ -401,7 +339,7 @@ class RulesetEvaluator:
             evidence.append(f'methods {names} use fields {used}')
         self._record(
             SignalName.HS008,
-            location_of(node.name, node),
+            item.location,
             Observation(
                 f'Class methods form {len(components)} disconnected '
                 'field-access clusters.',
