@@ -3,15 +3,12 @@
 ``syntax`` reads individual nodes. This module describes whole definitions:
 what a signature declares, what attributes a class body reserves, where the
 lambdas are, which bindings are mutable. Everything here returns facts, so
-``rules`` can judge them without touching ``ast`` itself.
+``humansays.signals`` can judge them without touching ``ast`` itself.
 
-``body_visitor`` owns the other half, walking a single function body. The
-module-size rule lives here rather than in ``rules`` because it needs nothing
-but the parse result.
+``body_visitor`` owns the other half, walking a single function body.
 """
 
 import ast
-from collections.abc import Iterable
 from operator import itemgetter
 
 from humansays.analysis.body_visitor import FunctionVisitor
@@ -36,17 +33,8 @@ from humansays.analysis.syntax import (
     root_name,
     snippet,
 )
-from humansays.catalog import build_finding
-from humansays.config.models import ModuleThresholds
-from humansays.const import (
-    CLASS_VAR_NAMES,
-    CLUSTER_MINIMUM,
-    NON_STRUCTURAL_PREFIXES,
-)
-from humansays.enums import SignalName
-from humansays.factories import string_set_map
+from humansays.const import CLASS_VAR_NAMES
 from humansays.facts.values import frozen_evidence
-from humansays.findings.models import Finding, Location, Observation
 
 FUNCTION_NODES = (ast.FunctionDef, ast.AsyncFunctionDef)
 STATIC_DECORATOR = 'staticmethod'
@@ -109,20 +97,6 @@ def declared_class_attributes(node: ast.ClassDef) -> set[str]:
             attributes.update(plain_attributes(statement, method_names))
 
     return attributes
-
-
-def attribute_prefix_clusters(attributes: Iterable[str]) -> dict[str, tuple[str, ...]]:
-    grouped = string_set_map()
-    for attribute in attributes:
-        prefix, separator, _ = attribute.lstrip('_').partition('_')
-        if separator and prefix not in NON_STRUCTURAL_PREFIXES:
-            grouped[prefix].add(attribute)
-
-    return {
-        prefix: tuple(sorted(names))
-        for prefix, names in grouped.items()
-        if len(names) >= CLUSTER_MINIMUM
-    }
 
 
 def argument_defaults(node: FunctionNode) -> dict[str, ast.AST]:
@@ -230,22 +204,6 @@ def collect_module_globals(tree: ast.Module) -> set[str]:
     return names
 
 
-def module_scale_findings(
-    count: int,
-    thresholds: ModuleThresholds,
-) -> list[Finding]:
-    if count <= thresholds.max_lines:
-        return []
-
-    location = Location('<module>', 1, max(1, count))
-    observation = Observation(
-        f'Module spans {count} source lines.',
-        (f'configured threshold: {thresholds.max_lines}',),
-    )
-
-    return [build_finding(SignalName.HS017, location, observation)]
-
-
 def is_static_method(node: FunctionNode) -> bool:
     return STATIC_DECORATOR in decorator_names(node)
 
@@ -294,15 +252,6 @@ def mutable_bindings(
         )
 
     return bindings
-
-
-def class_state_attributes(
-    node: ast.ClassDef,
-    methods: Iterable[FunctionFacts],
-) -> set[str]:
-    return declared_class_attributes(node) | {
-        attribute for method in methods for attribute in method.self_usage.fields_written
-    }
 
 
 def build_function_facts(
