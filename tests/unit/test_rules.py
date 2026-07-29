@@ -121,6 +121,87 @@ class TestNestingRule:
         assert SignalName.HS003 in signals(found)
 
 
+class TestMutationOwnerRule:
+    def test_three_owners_are_reported_with_sorted_evidence(self) -> None:
+        found = findings_for(analyze(sources.MULTIPLE_MUTATION_OWNERS), SignalName.HS006)
+        assert len(found) == 1
+        assert found[0].observation.evidence == (
+            'REGISTRY: line 6: assignment or deletion',
+            'bucket: line 7: bucket.append(...)',
+            'cache: line 8: assignment or deletion',
+        )
+
+    def test_repeated_mutation_of_one_owner_is_not_reported(self) -> None:
+        assert SignalName.HS006 not in signals(analyze(sources.SINGLE_MUTATION_OWNER))
+
+
+class TestBoundaryRule:
+    def test_three_categories_are_reported_with_sorted_evidence(self) -> None:
+        found = findings_for(analyze(sources.MULTIPLE_BOUNDARIES), SignalName.HS007)
+        assert len(found) == 1
+        assert found[0].observation.evidence == (
+            'filesystem: line 8: os.stat',
+            'network: line 9: socket.gethostname',
+            'process: line 10: subprocess.run',
+        )
+
+    def test_repeated_use_of_one_category_is_not_reported(self) -> None:
+        assert SignalName.HS007 not in signals(analyze(sources.SINGLE_BOUNDARY))
+
+
+class TestValidatedBundleRule:
+    def test_validated_parameters_are_reported_in_declaration_order(self) -> None:
+        found = findings_for(analyze(sources.VALIDATED_ARGUMENT_BUNDLE), SignalName.HS014)
+        assert len(found) == 1
+        assert found[0].observation.evidence == (
+            'alpha: line 3: assertion',
+            'beta: line 4: conditional guard raises',
+        )
+
+    def test_wide_signature_without_validation_is_not_reported(self) -> None:
+        found = analyze(sources.UNVALIDATED_ARGUMENT_BUNDLE)
+        assert SignalName.HS001 in signals(found)
+        assert SignalName.HS014 not in signals(found)
+
+
+class TestClassStateSurfaceRules:
+    def test_wide_surface_reports_attributes_and_prefix_clusters(self) -> None:
+        found = analyze(sources.WIDE_CLASS_SURFACE)
+        attributes = findings_for(found, SignalName.HS012)
+        clusters = findings_for(found, SignalName.HS013)
+        assert attributes[0].observation.evidence == (
+            'cache_hits',
+            'cache_misses',
+            'cache_size',
+            'name',
+            'queue_depth',
+            'queue_head',
+            'queue_tail',
+        )
+        assert clusters[0].observation.evidence == (
+            'cache_*: cache_hits, cache_misses, cache_size',
+            'queue_*: queue_depth, queue_head, queue_tail',
+        )
+
+    def test_narrow_surface_is_not_reported(self) -> None:
+        found = signals(analyze(sources.NARROW_CLASS_SURFACE))
+        assert SignalName.HS012 not in found
+        assert SignalName.HS013 not in found
+
+
+class TestCohesionRule:
+    def test_disjoint_field_clusters_are_reported(self) -> None:
+        found = findings_for(analyze(sources.DISCONNECTED_CLASS), SignalName.HS008)
+        assert len(found) == 1
+        assert found[0].observation.evidence == (
+            "methods ['read_left', 'write_left'] use fields ['alpha', 'beta']",
+            "methods ['read_right', 'write_right'] use fields ['delta', 'gamma']",
+        )
+
+    def test_overlapping_field_usage_is_not_reported(self) -> None:
+        assert SignalName.HS008 not in signals(analyze(sources.COHESIVE_CLASS))
+
+
 class TestScoringWeights:
     def test_documentation_notices_do_not_cost_points(self) -> None:
         findings = analyze(sources.NAMED_FUNCTION)

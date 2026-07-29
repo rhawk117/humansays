@@ -201,6 +201,122 @@ class Store(Reader, Writer):
         return None
 '''
 
+MULTIPLE_MUTATION_OWNERS = """
+REGISTRY = {}
+
+
+def record(bucket, cache):
+    REGISTRY['seen'] = 1
+    bucket.append(2)
+    cache['key'] = 3
+    return bucket
+"""
+
+SINGLE_MUTATION_OWNER = """
+def record(bucket):
+    bucket.append(1)
+    bucket.append(2)
+    return bucket
+"""
+
+MULTIPLE_BOUNDARIES = """
+import os
+import socket
+import subprocess
+
+
+def sync(path):
+    os.stat(path)
+    socket.gethostname()
+    subprocess.run(['ls'])
+"""
+
+SINGLE_BOUNDARY = """
+import os
+
+
+def sync(path):
+    os.stat(path)
+    os.listdir(path)
+"""
+
+VALIDATED_ARGUMENT_BUNDLE = """
+def configure(alpha, beta, gamma, delta):
+    assert alpha
+    if beta is None:
+        raise ValueError('beta')
+    return alpha, beta, gamma, delta
+"""
+
+UNVALIDATED_ARGUMENT_BUNDLE = """
+def configure(alpha, beta, gamma, delta):
+    return alpha, beta, gamma, delta
+"""
+
+WIDE_CLASS_SURFACE = """
+class Registry:
+    def __init__(self):
+        self.cache_hits = 0
+        self.cache_misses = 0
+        self.cache_size = 0
+        self.queue_head = None
+        self.queue_tail = None
+        self.queue_depth = 0
+        self.name = ''
+"""
+
+NARROW_CLASS_SURFACE = """
+class Registry:
+    def __init__(self):
+        self.name = ''
+        self.size = 0
+"""
+
+DISCONNECTED_CLASS = """
+class Split:
+    def __init__(self):
+        self.alpha = 0
+        self.beta = 0
+        self.gamma = 0
+        self.delta = 0
+
+    def read_left(self):
+        return self.alpha + self.beta
+
+    def write_left(self, value):
+        self.alpha = value
+        self.beta = value
+
+    def read_right(self):
+        return self.gamma + self.delta
+
+    def write_right(self, value):
+        self.gamma = value
+        self.delta = value
+"""
+
+COHESIVE_CLASS = """
+class Joined:
+    def __init__(self):
+        self.alpha = 0
+        self.beta = 0
+        self.gamma = 0
+
+    def read_all(self):
+        return self.alpha + self.beta + self.gamma
+
+    def write_left(self, value):
+        self.alpha = value
+        self.beta = value
+
+    def write_right(self, value):
+        self.beta = value
+        self.gamma = value
+
+    def total(self):
+        return self.alpha * self.gamma
+"""
+
 CONFIG_TOML = """
 [report]
 min_score = 99.5
