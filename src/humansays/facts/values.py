@@ -1,15 +1,21 @@
-"""Facts about one function, and the small values that describe a definition.
+"""Facts about one function, and the small values that describe a definition."""
 
-``Scope`` is line-based on purpose. It used to carry the ast node it came
-from, which nothing read and which would have blocked caching a scope.
-"""
-
-from dataclasses import dataclass, field
+from collections.abc import Iterable, Mapping
+from dataclasses import dataclass
+from types import MappingProxyType
 
 from humansays.const import IMPLICIT_PARAMETERS
 from humansays.enums import SignalName
-from humansays.factories import incident_map, string_set_map
 from humansays.findings.models import Incident, Location
+
+EMPTY_EVIDENCE: Mapping[str, tuple[str, ...]] = MappingProxyType({})
+EMPTY_INCIDENTS: Mapping[SignalName, tuple[Incident, ...]] = MappingProxyType({})
+
+
+def frozen_evidence(groups: Mapping[str, Iterable[str]]) -> Mapping[str, tuple[str, ...]]:
+    return MappingProxyType({
+        key: tuple(sorted(values)) for key, values in groups.items()
+    })
 
 
 @dataclass(frozen=True, slots=True)
@@ -48,7 +54,7 @@ class MutableBinding:
 class Signature:
     parameters: tuple[str, ...] = ()
     boolean_parameters: tuple[str, ...] = ()
-    validated_parameters: dict[str, set[str]] = field(default_factory=dict)
+    validated_parameters: Mapping[str, tuple[str, ...]] = EMPTY_EVIDENCE
 
     @property
     def operation_parameters(self) -> tuple[str, ...]:
@@ -61,24 +67,24 @@ class Signature:
         )
 
 
-@dataclass(slots=True)
+@dataclass(frozen=True, slots=True)
 class BodyFacts:
     maximum_nesting: int = 0
     branches: int = 0
     code_lines: int = 0
-    mutations: dict[str, set[str]] = field(default_factory=string_set_map)
-    boundaries: dict[str, set[str]] = field(default_factory=string_set_map)
-    incidents: dict[SignalName, list[Incident]] = field(default_factory=incident_map)
+    mutations: Mapping[str, tuple[str, ...]] = EMPTY_EVIDENCE
+    boundaries: Mapping[str, tuple[str, ...]] = EMPTY_EVIDENCE
+    incidents: Mapping[SignalName, tuple[Incident, ...]] = EMPTY_INCIDENTS
 
 
-@dataclass(slots=True)
+@dataclass(frozen=True, slots=True)
 class SelfUsage:
-    fields_read: set[str] = field(default_factory=set)
-    fields_written: set[str] = field(default_factory=set)
-    methods_called: set[str] = field(default_factory=set)
+    fields_read: frozenset[str] = frozenset()
+    fields_written: frozenset[str] = frozenset()
+    methods_called: frozenset[str] = frozenset()
 
 
-@dataclass(slots=True)
+@dataclass(frozen=True, slots=True)
 class FunctionFacts:
     location: Location
     class_name: str | None

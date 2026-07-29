@@ -45,6 +45,7 @@ from humansays.const import (
 )
 from humansays.enums import SignalName
 from humansays.factories import string_set_map
+from humansays.facts.values import frozen_evidence
 from humansays.findings.models import Finding, Location, Observation
 
 FUNCTION_NODES = (ast.FunctionDef, ast.AsyncFunctionDef)
@@ -309,17 +310,15 @@ def build_function_facts(
 
     visitor.body.code_lines = code_line_count(module, node)
 
-    signature_type = type(signature)
-    signature = signature_type(
-        parameters=signature.parameters,
-        boolean_parameters=signature.boolean_parameters,
-        validated_parameters=dict(visitor.validated),
-    )
     return FunctionFacts(
         class_name=target.class_name,
-        signature=signature,
-        body=visitor.body,
-        self_usage=visitor.usage,
+        signature=Signature(
+            parameters=signature.parameters,
+            boolean_parameters=signature.boolean_parameters,
+            validated_parameters=frozen_evidence(visitor.validated),
+        ),
+        body=visitor.body.freeze(),
+        self_usage=visitor.usage.freeze(),
         location=location_of(target.qualified_name, node),
         trivial_accessor=is_trivial_accessor(node),
     )

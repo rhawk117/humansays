@@ -1,10 +1,4 @@
-"""Models that carry an ast node.
-
-The pure fact types moved to ``humansays.facts``; what stays here is
-everything that holds a piece of the tree and therefore cannot leave
-``humansays.analysis``. The re-exports below keep existing import sites
-working while the split lands.
-"""
+"""Models that carry an ast node, plus re-exports of the moved fact types."""
 
 import ast
 from dataclasses import dataclass, field
