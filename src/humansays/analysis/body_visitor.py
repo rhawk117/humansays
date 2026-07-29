@@ -8,7 +8,8 @@ it imports late, and which standard-library boundaries it touches.
 import ast
 from collections.abc import Iterable
 
-from humansays.analysis.models import BodyFacts, ScopeContext, SelfUsage
+from humansays.analysis.accumulators import BodyAccumulator, UsageAccumulator
+from humansays.analysis.models import ScopeContext
 from humansays.analysis.syntax import (
     classify_boundary,
     contains_raise,
@@ -28,8 +29,8 @@ class FunctionVisitor(ast.NodeVisitor):
         self.parameters = set(parameters)
         self.context = context.with_local_aliases()
         self.depth = 0
-        self.body = BodyFacts()
-        self.usage = SelfUsage()
+        self.body = BodyAccumulator()
+        self.usage = UsageAccumulator()
         self.validated = string_set_map()
 
     # ast.NodeVisitor dispatch needs this exact signature; nested defs must not recurse

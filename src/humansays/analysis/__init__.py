@@ -1,10 +1,10 @@
 import ast
 from pathlib import Path
 
+from humansays.analysis.extraction import extract
 from humansays.analysis.models import ParsedModule
-from humansays.analysis.rules import RulesetEvaluator
 
-__all__ = ('RulesetEvaluator', 'parse_module')
+__all__ = ('extract', 'parse_module')
 
 
 def parse_module(path: Path) -> ParsedModule:

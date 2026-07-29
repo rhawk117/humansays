@@ -14,11 +14,12 @@ import json
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+from humansays.analysis.extraction import extract
 from humansays.analysis.models import ParsedModule
-from humansays.analysis.rules import RulesetEvaluator
 from humansays.cli import main
 from humansays.config.models import Thresholds
 from humansays.enums import Grade, SignalName
+from humansays.signals import evaluate
 
 if TYPE_CHECKING:
     from humansays.findings.models import Finding
@@ -29,7 +30,7 @@ NOTICE_SIGNALS = frozenset()
 
 def analyze(source: str, thresholds: Thresholds | None = None) -> list[Finding]:
     module = ParsedModule(Path('<snippet>'), source, ast.parse(source))
-    return RulesetEvaluator(module, thresholds or Thresholds()).run()
+    return evaluate(extract(module), thresholds or Thresholds())
 
 
 def signals(findings: list[Finding]) -> list[SignalName]:

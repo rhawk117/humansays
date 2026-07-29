@@ -14,12 +14,13 @@ from collections.abc import Iterable
 from pathlib import Path
 from typing import TextIO
 
-from humansays.analysis import RulesetEvaluator, parse_module
+from humansays.analysis import extract, parse_module
 from humansays.config.models import ScannerSettings, Selection
 from humansays.const import FINDINGS_EXIT, STDIN_SPEC, UNANALYZED_EXIT
 from humansays.enums import FailOn, Severity
 from humansays.findings.models import Score
 from humansays.reporting.models import FileReport, ScanResult
+from humansays.signals import evaluate
 
 logger = logging.getLogger(__name__)
 
@@ -95,9 +96,8 @@ def matches_symbol(symbol: str, wanted: str) -> bool:
 
 
 def analyze_file(path: Path, settings: ScannerSettings) -> FileReport:
-    parsed = parse_module(path)
-    evaluator = RulesetEvaluator(parsed, settings.thresholds)
-    findings = evaluator.run()
+    facts = extract(parse_module(path))
+    findings = evaluate(facts, settings.thresholds)
     wanted = settings.selection.symbol
     if wanted:
         findings = [
@@ -108,10 +108,10 @@ def analyze_file(path: Path, settings: ScannerSettings) -> FileReport:
 
     return FileReport(
         path=path,
-        lines=len(parsed.lines),
-        classes=len(evaluator.index.classes),
-        functions=len(evaluator.index.functions),
-        symbols=set(evaluator.index.symbols),
+        lines=facts.line_count,
+        classes=len(facts.classes),
+        functions=len(facts.all_functions),
+        symbols=set(facts.symbols),
         findings=findings,
     )
 

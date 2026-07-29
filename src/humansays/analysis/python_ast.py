@@ -3,25 +3,20 @@
 ``syntax`` reads individual nodes. This module describes whole definitions:
 what a signature declares, what attributes a class body reserves, where the
 lambdas are, which bindings are mutable. Everything here returns facts, so
-``rules`` can judge them without touching ``ast`` itself.
+``humansays.signals`` can judge them without touching ``ast`` itself.
 
-``body_visitor`` owns the other half, walking a single function body. The
-module-size rule lives here rather than in ``rules`` because it needs nothing
-but the parse result.
+``body_visitor`` owns the other half, walking a single function body.
 """
 
 import ast
-from collections.abc import Iterable
-from dataclasses import dataclass
+from operator import itemgetter
 
 from humansays.analysis.body_visitor import FunctionVisitor
 from humansays.analysis.models import (
-    FunctionFacts,
     FunctionNode,
     FunctionTarget,
     ParsedModule,
     ScopeContext,
-    Signature,
 )
 from humansays.analysis.syntax import (
     annotation_is_bool,
@@ -35,37 +30,16 @@ from humansays.analysis.syntax import (
     root_name,
     snippet,
 )
-from humansays.catalog import build_finding
-from humansays.config.models import ModuleThresholds
-from humansays.const import (
-    CLASS_VAR_NAMES,
-    CLUSTER_MINIMUM,
-    NON_STRUCTURAL_PREFIXES,
+from humansays.const import CLASS_VAR_NAMES
+from humansays.facts.values import (
+    FunctionFacts,
+    MutableBinding,
+    Signature,
+    frozen_evidence,
 )
-from humansays.enums import SignalName
-from humansays.factories import string_set_map
-from humansays.findings.models import Finding, Location, Observation
 
 FUNCTION_NODES = (ast.FunctionDef, ast.AsyncFunctionDef)
 STATIC_DECORATOR = 'staticmethod'
-
-
-@dataclass(frozen=True, slots=True)
-class LambdaSite:
-    """A lambda expression and where it sits."""
-
-    line: int
-    source: str
-
-
-@dataclass(frozen=True, slots=True)
-class MutableBinding:
-    """An assignment whose value is a mutable literal or container call."""
-
-    name: str
-    line: int
-    end_line: int
-    constructor: str
 
 
 def assigned_slots(statement: ast.stmt) -> set[str] | None:
@@ -125,20 +99,6 @@ def declared_class_attributes(node: ast.ClassDef) -> set[str]:
             attributes.update(plain_attributes(statement, method_names))
 
     return attributes
-
-
-def attribute_prefix_clusters(attributes: Iterable[str]) -> dict[str, tuple[str, ...]]:
-    grouped = string_set_map()
-    for attribute in attributes:
-        prefix, separator, _ = attribute.lstrip('_').partition('_')
-        if separator and prefix not in NON_STRUCTURAL_PREFIXES:
-            grouped[prefix].add(attribute)
-
-    return {
-        prefix: tuple(sorted(names))
-        for prefix, names in grouped.items()
-        if len(names) >= CLUSTER_MINIMUM
-    }
 
 
 def argument_defaults(node: FunctionNode) -> dict[str, ast.AST]:
@@ -246,23 +206,6 @@ def collect_module_globals(tree: ast.Module) -> set[str]:
     return names
 
 
-def module_scale_findings(
-    module: ParsedModule,
-    thresholds: ModuleThresholds,
-) -> list[Finding]:
-    count = len(module.lines)
-    if count <= thresholds.max_lines:
-        return []
-
-    location = Location('<module>', 1, max(1, count))
-    observation = Observation(
-        f'Module spans {count} source lines.',
-        (f'configured threshold: {thresholds.max_lines}',),
-    )
-
-    return [build_finding(SignalName.HS017, location, observation)]
-
-
 def is_static_method(node: FunctionNode) -> bool:
     return STATIC_DECORATOR in decorator_names(node)
 
@@ -271,12 +214,21 @@ def base_class_names(node: ast.ClassDef) -> tuple[str, ...]:
     return tuple(dotted_name(base) or snippet(base) for base in node.bases)
 
 
-def lambda_sites(tree: ast.Module) -> list[LambdaSite]:
-    return [
-        LambdaSite(line=node.lineno, source=snippet(node))
-        for node in ast.walk(tree)
-        if isinstance(node, ast.Lambda)
-    ]
+def lambda_nodes(tree: ast.Module) -> list[ast.Lambda]:
+    found: list[tuple[int, int, ast.Lambda]] = []
+    position = 0
+
+    def descend(node: ast.AST, depth: int) -> None:
+        nonlocal position
+        for child in ast.iter_child_nodes(node):
+            if isinstance(child, ast.Lambda):
+                found.append((depth, position, child))
+
+            position += 1
+            descend(child, depth + 1)
+
+    descend(tree, 1)
+    return [node for _, _, node in sorted(found, key=itemgetter(0, 1))]
 
 
 def mutable_bindings(
@@ -304,15 +256,6 @@ def mutable_bindings(
     return bindings
 
 
-def class_state_attributes(
-    node: ast.ClassDef,
-    methods: Iterable[FunctionFacts],
-) -> set[str]:
-    return declared_class_attributes(node) | {
-        attribute for method in methods for attribute in method.self_usage.fields_written
-    }
-
-
 def build_function_facts(
     module: ParsedModule,
     target: FunctionTarget,
@@ -326,17 +269,15 @@ def build_function_facts(
 
     visitor.body.code_lines = code_line_count(module, node)
 
-    signature_type = type(signature)
-    signature = signature_type(
-        parameters=signature.parameters,
-        boolean_parameters=signature.boolean_parameters,
-        validated_parameters=dict(visitor.validated),
-    )
     return FunctionFacts(
-        class_name=target.class_name,
-        signature=signature,
-        body=visitor.body,
-        self_usage=visitor.usage,
+        signature=Signature(
+            parameters=signature.parameters,
+            boolean_parameters=signature.boolean_parameters,
+            validated_parameters=frozen_evidence(visitor.validated),
+        ),
+        body=visitor.body.freeze(),
+        self_usage=visitor.usage.freeze(),
         location=location_of(target.qualified_name, node),
         trivial_accessor=is_trivial_accessor(node),
+        static_method=is_static_method(node),
     )
