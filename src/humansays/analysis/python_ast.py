@@ -13,13 +13,10 @@ from operator import itemgetter
 
 from humansays.analysis.body_visitor import FunctionVisitor
 from humansays.analysis.models import (
-    FunctionFacts,
     FunctionNode,
     FunctionTarget,
-    MutableBinding,
     ParsedModule,
     ScopeContext,
-    Signature,
 )
 from humansays.analysis.syntax import (
     annotation_is_bool,
@@ -34,7 +31,12 @@ from humansays.analysis.syntax import (
     snippet,
 )
 from humansays.const import CLASS_VAR_NAMES
-from humansays.facts.values import frozen_evidence
+from humansays.facts.values import (
+    FunctionFacts,
+    MutableBinding,
+    Signature,
+    frozen_evidence,
+)
 
 FUNCTION_NODES = (ast.FunctionDef, ast.AsyncFunctionDef)
 STATIC_DECORATOR = 'staticmethod'

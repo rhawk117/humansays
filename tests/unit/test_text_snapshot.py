@@ -13,8 +13,8 @@ import re
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+from humansays.analysis.extraction import extract
 from humansays.analysis.models import ParsedModule
-from humansays.analysis.rules import RulesetEvaluator
 from humansays.config.models import Report, Thresholds
 from humansays.const import GRADE_STYLES, SEVERITY_STYLES
 from humansays.enums import Grade, OutputFormat, Severity
@@ -25,6 +25,7 @@ from humansays.reporting.models import FileReport, ReportRequest, ScanResult
 from humansays.reporting.renderers import AnsiRenderer
 from humansays.reporting.terminal import TerminalAttributes
 from humansays.scoring import score_for
+from humansays.signals import evaluate
 from tests.fixtures import sources
 
 if TYPE_CHECKING:
@@ -55,7 +56,7 @@ class _StdoutOnlyNoColorConsole(Console):
 def _scan_result() -> tuple[ScanResult, Score]:
     source = sources.MULTIPLE_INHERITANCE
     module = ParsedModule(Path('snippet.py'), source, ast.parse(source))
-    findings = RulesetEvaluator(module, Thresholds()).run()
+    findings = evaluate(extract(module), Thresholds())
     report = FileReport(
         Path('snippet.py'), len(source.splitlines()), 0, 0, set(), findings
     )

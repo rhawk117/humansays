@@ -5,11 +5,12 @@
 import ast
 from pathlib import Path
 
+from humansays.analysis.extraction import extract
 from humansays.analysis.models import ParsedModule
-from humansays.analysis.rules import RulesetEvaluator
 from humansays.catalog import RULES
 from humansays.config.models import Thresholds
 from humansays.enums import SignalName
+from humansays.signals import evaluate
 from tests.fixtures import sources
 
 DELETED_IDS = frozenset({'HS010', 'HS011', 'HS020'})
@@ -17,7 +18,7 @@ DELETED_IDS = frozenset({'HS010', 'HS011', 'HS020'})
 
 def analyze(source: str) -> list:
     module = ParsedModule(Path('<snippet>'), source, ast.parse(source))
-    return RulesetEvaluator(module, Thresholds()).run()
+    return evaluate(extract(module), Thresholds())
 
 
 def test_deleted_ids_are_absent_from_signal_name() -> None:

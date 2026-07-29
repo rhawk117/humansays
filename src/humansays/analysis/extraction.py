@@ -21,7 +21,12 @@ from humansays.analysis.python_ast import (
 from humansays.analysis.scopes import ScopeIndex
 from humansays.analysis.syntax import location_of, node_span, snippet
 from humansays.facts.module import ClassFacts, ModuleFacts
-from humansays.facts.values import FunctionFacts, LambdaFact, MutableBinding, Scope
+from humansays.facts.values import (
+    FunctionFacts,
+    LambdaFact,
+    MutableBinding,
+    Scope,
+)
 
 
 class ModuleExtractor:

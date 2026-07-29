@@ -6,10 +6,11 @@ import ast
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+from humansays.analysis.extraction import extract
 from humansays.analysis.models import ParsedModule
-from humansays.analysis.rules import RulesetEvaluator
 from humansays.config.models import Thresholds
 from humansays.enums import Severity, SignalName
+from humansays.signals import evaluate
 from tests.fixtures import sources
 
 if TYPE_CHECKING:
@@ -18,7 +19,7 @@ if TYPE_CHECKING:
 
 def analyze(source: str, thresholds: Thresholds | None = None) -> list[Finding]:
     module = ParsedModule(Path('<snippet>'), source, ast.parse(source))
-    return RulesetEvaluator(module, thresholds or Thresholds()).run()
+    return evaluate(extract(module), thresholds or Thresholds())
 
 
 def signals(findings: list[Finding]) -> list[SignalName]:
