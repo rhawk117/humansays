@@ -12,13 +12,14 @@ but the parse result.
 
 import ast
 from collections.abc import Iterable
-from dataclasses import dataclass
 
 from humansays.analysis.body_visitor import FunctionVisitor
 from humansays.analysis.models import (
     FunctionFacts,
     FunctionNode,
     FunctionTarget,
+    LambdaFact,
+    MutableBinding,
     ParsedModule,
     ScopeContext,
     Signature,
@@ -48,24 +49,6 @@ from humansays.findings.models import Finding, Location, Observation
 
 FUNCTION_NODES = (ast.FunctionDef, ast.AsyncFunctionDef)
 STATIC_DECORATOR = 'staticmethod'
-
-
-@dataclass(frozen=True, slots=True)
-class LambdaSite:
-    """A lambda expression and where it sits."""
-
-    line: int
-    source: str
-
-
-@dataclass(frozen=True, slots=True)
-class MutableBinding:
-    """An assignment whose value is a mutable literal or container call."""
-
-    name: str
-    line: int
-    end_line: int
-    constructor: str
 
 
 def assigned_slots(statement: ast.stmt) -> set[str] | None:
@@ -271,9 +254,9 @@ def base_class_names(node: ast.ClassDef) -> tuple[str, ...]:
     return tuple(dotted_name(base) or snippet(base) for base in node.bases)
 
 
-def lambda_sites(tree: ast.Module) -> list[LambdaSite]:
+def lambda_sites(tree: ast.Module) -> list[LambdaFact]:
     return [
-        LambdaSite(line=node.lineno, source=snippet(node))
+        LambdaFact(line=node.lineno, source=snippet(node))
         for node in ast.walk(tree)
         if isinstance(node, ast.Lambda)
     ]

@@ -67,7 +67,7 @@ class RulesetEvaluator:
         self.findings: list[Finding] = []
         self.index = AnalysisIndex()
         span = max(1, len(module.lines))
-        self.index.add_scope(Scope(module.tree, '<module>', 1, span))
+        self.index.add_scope(Scope('<module>', 1, span))
 
     def run(self) -> list[Finding]:
         self.findings.extend(
@@ -93,7 +93,7 @@ class RulesetEvaluator:
         self.findings.append(build_finding(signal, location, observation))
 
     def _evaluate_class(self, node: ast.ClassDef) -> None:
-        self.index.add_scope(Scope(node, node.name, *node_span(node)))
+        self.index.add_scope(Scope(node.name, *node_span(node)))
         self._mutable_bindings(node.body, node.name, 'class')
         self._base_classes(node)
         methods: list[FunctionFacts] = []
@@ -121,7 +121,6 @@ class RulesetEvaluator:
         self.index.functions.append(facts)
         self.index.add_scope(
             Scope(
-                node,
                 qualified_name,
                 facts.location.line,
                 facts.location.end_line,
