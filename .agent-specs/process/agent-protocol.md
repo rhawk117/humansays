@@ -72,8 +72,18 @@ enforce — not your memory of the document.
 | Argument-kind correctness | `tests/criteria/` fixture pair |
 | Doc and catalog agree | catalog validation test |
 | Observed findings never aggregate | scorecard input assertion |
+| New code under `src/humansays` emits no weighted finding | `tests/golden/test_self_scan.py` |
 
 If you are about to rely on remembering a constraint, write the check instead.
+
+The self-scan row is the one plans keep missing, so it is worth stating in
+prose too. `tests/golden/test_self_scan.py` is an **exact match** against a
+committed baseline of humansays scanning its own source. Any module added to or
+moved within `src/humansays` that produces a weighted finding fails it. A phase
+that adds modules under `src/` therefore has a constraint on the shape of the
+code it writes, not only on its behavior: either the new code is clean by the
+tool's own rules, or the baseline gains an entry with a stated reason. Learn
+this before writing the code, not from a red test afterwards.
 
 ## 4a. Every enforcement claim names its test
 
