@@ -57,6 +57,18 @@ stopped doing. The per-phase tree those documents used to describe is gone.
     proves it. If none exists, write it as convention instead. This rule
     exists because the scope guard was documented as blocking changes it did
     not block, and later as running in CI when it ran nowhere.
+14. **A collision or uniqueness test asserts that its corpus reached every
+    registration under test.** Surveying inputs for a clash proves nothing
+    about a registration the inputs never fired, and the test passes either
+    way — it reports safety it did not check. Assert the reach in the shared
+    helper the survey runs through, so the survey itself fails loudly on thin
+    coverage rather than leaning on a neighbouring test. This has already
+    failed twice: `test_no_two_adapters_share_a_sort_key` passed while never
+    firing `encap.class_shared_state`, which is one of the two HS004
+    registrations it exists to compare, and the interpreter-version survey in
+    `tests/integration/test_analysis_confinement.py` kept passing after the
+    package it named was renamed, because `rglob` over a missing directory
+    yields nothing.
 
 ## Documentation
 

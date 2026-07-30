@@ -66,23 +66,47 @@ def test_analysis_and_rules_do_not_import_each_other(src_root: Path) -> None:
     assert not offenders
 
 
-def test_facts_and_signals_never_branch_on_interpreter_version(
+DOWNSTREAM_PACKAGES = ('facts', 'rules')
+
+
+def test_facts_and_rules_never_branch_on_interpreter_version(
     src_root: Path,
 ) -> None:
     """`humansays.analysis` owns interpreter differences; downstream never sees them.
 
     Zero occurrences today, so this pins a property rather than fixing a bug.
     It is worth pinning because the first `sys.version_info` to appear in
-    `facts` or `signals` would put a parser detail into the layer whose whole
+    `facts` or `rules` would put a parser detail into the layer whose whole
     purpose is not to have one, and it would do so in a one-line diff.
     """
+    scanned = [
+        path
+        for package in DOWNSTREAM_PACKAGES
+        for path in sorted((src_root / package).rglob('*.py'))
+    ]
     offenders = [
         f'{path.relative_to(src_root)}:{number}'
-        for package in ('facts', 'signals')
-        for path in sorted((src_root / package).rglob('*.py'))
+        for path in scanned
         for number, line in enumerate(
             path.read_text(encoding='utf-8').splitlines(), start=1
         )
         if 'version_info' in line
     ]
     assert not offenders
+
+
+def test_the_interpreter_version_survey_reaches_both_packages(src_root: Path) -> None:
+    """A renamed package must not silently shrink the survey above.
+
+    It already did once: the survey named `signals`, that package became
+    `rules`, and `rglob` over a missing directory yields nothing. The scan went
+    on passing while checking half of what its name claimed.
+    """
+    missing = [
+        package
+        for package in DOWNSTREAM_PACKAGES
+        if not list((src_root / package).rglob('*.py'))
+    ]
+    assert not missing, (
+        f'these packages no longer exist, so nothing was scanned: {missing}'
+    )

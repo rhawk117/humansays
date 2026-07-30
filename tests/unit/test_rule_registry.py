@@ -214,23 +214,38 @@ def test_no_two_adapters_share_a_sort_key() -> None:
     ``(line, rule_id)``, their relative order would decide the output and the
     "adapter order is free" argument would stop holding.
     """
-    owners = _observed_owners()
+    owners = _surveyed_owners()
     collisions = {key: names for key, names in owners.items() if len(names) > 1}
     assert not collisions, f'two adapters share a sort key: {collisions}'
 
 
 def test_the_sort_key_survey_reaches_every_adapter() -> None:
-    """Without this, the survey above can go thin and still pass.
+    """Names the failure that ``_surveyed_owners`` already refuses to hide.
 
-    It did: the corpus and the fixtures alone never fired
-    ``encap.class_shared_state``, which is HS004's other registration and the
-    exact collision the survey exists to rule out.
+    The survey went thin once: the corpus and the fixtures alone never fired
+    ``encap.class_shared_state``, HS004's other registration and the exact
+    collision the survey exists to rule out. It reported safety it had not
+    checked, and it did so by passing.
     """
-    observed = {name for names in _observed_owners().values() for name in names}
+    _surveyed_owners()
+
+
+def _surveyed_owners() -> dict[tuple[Path, int, str], set[str]]:
+    """Observed owners, but only once every registration has actually emitted.
+
+    A collision survey that silently skips a registration is worse than no
+    survey: it answers the question it was asked without having looked. So
+    incomplete coverage fails here, in the shared helper, rather than in a
+    neighbouring test that a reader might assume is belt-and-braces.
+    """
+    owners = _observed_owners()
+    observed = {name for names in owners.values() for name in names}
     unreached = sorted({entry.name for entry in ALL_ADAPTERS} - observed)
     assert not unreached, (
-        f'these adapters never emitted, so nothing was proven: {unreached}'
+        f'these adapters never emitted, so the survey proved nothing about '
+        f'them: {unreached}. Add a source to _survey_sources() that fires each.'
     )
+    return owners
 
 
 def _observed_owners() -> dict[tuple[Path, int, str], set[str]]:
