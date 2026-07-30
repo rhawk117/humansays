@@ -122,17 +122,44 @@ A verification section that lists gates without saying what each one cannot see
 produces a green run over a real defect. This is not hypothetical: every defect
 C1 produced was a check that passed without looking.
 
-| Gate | Cannot see |
-|---|---|
-| Byte-diff of scan output | whether the tests still test the same things |
-| Coverage | a test that reads source files as data, whose input set shrank |
-| A collision or uniqueness survey | a registration its corpus never fired |
-| `lint-imports` | a contract stanza that enumerates by hand and fails open |
-| `tests/golden/test_self_scan.py` | anything outside `src/humansays` |
+**Count gates by what they consume, not by which command runs them.** C1's plan
+listed five. Counted by input it ran seven, and two pairs among those seven were
+reading the same thing — which is the difference between seven independent
+checks and five, and nobody had written it down.
 
-Write the blind spot next to the gate in the plan, then choose a second check
-for anything the first one cannot reach. `tests/fixtures/sweeps.py` exists
-because a sweep's empty result and its clean result are the same green tick.
+| # | Gate | Consumes | Cannot see | Shares its input with |
+|---|---|---|---|---|
+| 1 | `.migration/capture.sh` + `diff -r` | CLI stdout over two corpora, both formats, colour both ways | anything the two corpora do not exercise; and whether the tests still test the same things | — |
+| 2 | `tests/golden/test_self_scan.py` | the tool scanning `src/humansays` | anything outside `src/humansays`; unweighted findings | **3** |
+| 3 | `test_cli_contract.py`, three assertions | the tool scanning `src/humansays`, via one `package_findings` dict | same blind spots as 2, and an empty dict satisfies all three at once | **2** |
+| 4 | `tests/golden/test_parity.py` | the prototype `.raw.json` oracle | any rule the prototype never had, including the three retired ids | — |
+| 5 | `test_specs_match_frozen_metadata` | literals frozen in the test file | whether those literals were transcribed correctly in the first place | **6** |
+| 6 | `test_review_questions_match_poc_oracle` | the vendored prototype `catalog.py` | fields the prototype does not carry: severity, confidence, weight | **5** |
+| 7 | `lint-imports` + `test_import_contract_coverage.py` | the module graph, and `.importlinter.ini` as text | a `layers` stanza, which the coverage test does not read; a hand-enumerated contract fails open | — |
+
+Ambient and easy to overcount as coverage: `deptry` sees only declared-versus-
+imported, and line coverage cannot see a test that reads source files *as data*
+— its input set can halve without moving a covered line.
+
+Two lessons, both from the table rather than from prose:
+
+**Rows 2 and 3 are one gate wearing two names.** Both scan the same tree with
+the same tool. If that scan returned nothing, four assertions go green together.
+Row 3 is worse on its own: three assertions fed by one `package_findings` dict
+is a single point of failure that looks like three, and it read as three in the
+C1 plan's verification section. Count assertions by their input, not by their
+`def`.
+
+**Rows 5 and 6 were chosen well.** The frozen literals cannot check themselves,
+so an independent transcription of the same 19 review questions checks them —
+different source, different failure mode. That is what a second check is for,
+and it is the only pair in the table that was deliberate rather than accidental.
+
+So: write the blind spot next to the gate, write what each gate shares an input
+with, and add a second check with a *different* input for anything the first
+cannot reach. Two gates over one container are one gate.
+`tests/fixtures/sweeps.py` exists because a sweep's empty result and its clean
+result are the same green tick.
 
 ## 5. Evidence discipline
 
