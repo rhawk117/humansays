@@ -99,7 +99,13 @@ def oracle_review_questions() -> dict[str, str]:
 # rule is a one-line diff in a table that exists for nothing else. C2 sets every
 # shipped rule to ON; the three the reconciliation maps to `hint` change here
 # and nowhere else.
-FROZEN_DISPOSITIONS = dict.fromkeys(FROZEN, Disposition.ON)
+FROZEN_DISPOSITIONS = dict.fromkeys(FROZEN, Disposition.ON) | {
+    # Demoted in phase C2, per docs/site/planned/reconciliation.md:21-41, which
+    # maps all three to `hint`: emitted and shown, never weighed.
+    'HS015': Disposition.HINT,
+    'HS016': Disposition.HINT,
+    'HS021': Disposition.HINT,
+}
 
 
 def test_specs_match_frozen_metadata() -> None:

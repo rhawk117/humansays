@@ -17,7 +17,7 @@ from typing import TextIO
 from humansays.analysis import extract, parse_module
 from humansays.config.models import ScannerSettings, Selection
 from humansays.const import FINDINGS_EXIT, STDIN_SPEC, UNANALYZED_EXIT
-from humansays.enums import FailOn, Severity
+from humansays.enums import Disposition, FailOn, Severity
 from humansays.findings.models import Score
 from humansays.reporting.models import FileReport, ScanResult
 from humansays.rules import evaluate
@@ -167,7 +167,19 @@ def symbol_is_present(result: ScanResult, wanted: str) -> bool:
 
 
 def severity_exit(result: ScanResult, fail_on: FailOn) -> int:
-    findings = result.findings
+    """Only scored findings can fail a run.
+
+    Disposition decides whether a finding takes part in the verdict; severity
+    decides how much it counts once it does. A hint that fails your build is
+    not a hint, and leaving this keyed on severity alone would let `--fail-on`
+    and `--min-score` disagree about the same run: the score already excludes
+    everything that is not ON.
+    """
+    findings = [
+        finding
+        for finding in result.findings
+        if finding.rule.disposition is Disposition.ON
+    ]
     if fail_on is FailOn.ANY and findings:
         return FINDINGS_EXIT
 
