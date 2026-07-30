@@ -396,7 +396,33 @@ approach.
   so in the table rather than presenting three demotions with two rows of
   evidence.
 
-- **The self-scan baseline is unaffected, measured rather than reasoned.**
+- **Tasks 3 and 4 merged.** The plan put the scoring filter in `scoring.py`.
+  It went on `RuleSpec.penalty` instead, which returns `0.0` for anything that
+  is not `ON`. `scoring.py` already sums `finding.rule.penalty`, so the filter
+  is single-sourced at the definition of penalty rather than at one of its
+  callers, and the finding still reaches the report to be displayed — which was
+  Task 4's actual requirement. Nothing else sums penalties today, but if
+  anything ever does, it inherits the rule instead of having to remember it.
+
+- **`--fail-on` had to change, and the plan had listed it as uninvestigated.**
+  `application.py:169` keyed the exit code on `Severity` alone. Since the score
+  already ignores anything that is not `ON`, leaving it there would let
+  `--fail-on warning` and `--min-score` disagree about the same run: `HS016` is
+  a `hint` whose severity is still `WARNING`, so a file of nothing but lambdas
+  would score 100 and still fail the build. `severity_exit` now counts only
+  scored findings. A hint that fails your build is not a hint.
+
+- **The self-scan caught the new code, which is the first time that constraint
+  has fired.** `*, show_evidence: bool` in `reporting/grouping.py` is HS002
+  boolean-modes — the same false positive already baselined twice for `_style`
+  and `indicator_text`, caused by `declared_arguments()` merging posonly,
+  positional and keyword-only. Two baseline entries added with that reason and
+  the existing `phase-2-argument-kind-fix` expiry. Restructuring working code
+  to dodge a known documented false positive would have been the worse trade,
+  and the baseline exists for exactly this.
+
+- **The self-scan baseline is unaffected by the demotion, measured rather than
+  reasoned.**
   `src/humansays` fires only HS005 and HS002, neither of which C2 touches, so
   `test_self_scan_matches_baseline_exactly` needs no baseline edit. This was
   flagged in Task 5 as "probably untouched, must be run not reasoned about" —
