@@ -5,9 +5,12 @@ captures taken before Task 3 and after Task 5. These are measurements. Re-run
 them rather than re-deriving them:
 
 ```bash
-.migration/capture.sh <dir>
-# then compare <dir>/<fixture>.json.nocolor
+uv run humansays tests/golden/poc-parity/corpus/django --format json
 ```
+
+`.migration/` was the capture directory during the phase and is gitignored, so
+the command above is the reproduction path that survives it. It reproduces the
+"after" row; the "before" row requires checking out `95ec5b6~1` first.
 
 HS015, HS016 and HS021 became `hint`. They are still emitted and still shown;
 they no longer contribute penalty. Nothing else changed.

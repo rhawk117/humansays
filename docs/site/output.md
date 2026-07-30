@@ -158,9 +158,9 @@ and whether it is shown.
 | `evidence`  | yes     | no     | no               | yes                          |
 | `off`       | no      | no     | no               | no                           |
 
-`disposition` appears on every `rule` object in JSON output. It was added in
-`0.1.0a1`; the JSON `schema_version` stays `1`, because the change is additive
-and no existing key changed name, type or meaning.
+`disposition` appears on every `rule` object in JSON output. It is not present
+in `0.1.0a1` or `0.1.0a2`; the JSON `schema_version` stays `1`, because the
+change is additive and no existing key changed name, type or meaning.
 
 Three shipped rules are `hint`: `HS015` (`static-method`), `HS016`
 (`lambda-expression`) and `HS021` (`lazy-import`). They are reported and never

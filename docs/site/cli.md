@@ -69,8 +69,8 @@ default excludes: `.git`, `.mypy_cache`, `.pytest_cache`, `.ruff_cache`,
 ### `--fail-on {never,warning,any}`
 
 Controls whether findings cause a nonzero exit code (exit code 1):
-`never` never fails on findings, `warning` fails if any warning-severity
-finding is present, `any` fails if any finding at all is present. Default
+`never` never fails on findings, `warning` fails if any scored warning-severity
+finding is present, `any` fails if any scored finding is present. Default
 (from `Report.fail_on`): `never`.
 
 Only **scored** findings can fail a run. A rule whose `disposition` is not `on`
