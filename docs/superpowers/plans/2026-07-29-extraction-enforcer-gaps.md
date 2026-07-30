@@ -620,6 +620,46 @@ the deferred refactor. The operator owns git beyond this branch.
 
 ---
 
+## Execution Record: items carried over from the superseded plan
+
+After Tasks 1–4 landed, the superseded Phase B plan was walked task by task
+against the merged tree. Tasks 2–7 of that plan were fully delivered by #19.
+Three items from its Tasks 8 and 9 were still outstanding and were executed
+here.
+
+- [x] **Output baseline (its Task 1).** `.migration/capture.sh` captures both
+      corpora, both formats, colour forced on and off. Captured twice and
+      diffed: reproducible. Re-checked after the only `src/` edit below:
+      `OUTPUT UNCHANGED`. `.migration/` is gitignored (`.gitignore:225`) and was
+      removed afterwards.
+- [x] **Version-boundary test (its Task 8 Step 1).** Added to
+      `tests/integration/test_analysis_confinement.py` rather than a new file,
+      because that module is the established home for package-layout claims
+      asserted against the real source tree. Verified by appending
+      `sys.version_info` to `facts/values.py` and watching it fail with
+      `facts/values.py:124`, then reverting.
+- [x] **Caching-readiness note (its Task 8).** `analysis/extraction.py`'s
+      docstring now records that a future cache key must include the
+      interpreter version, and names the divergences that make it necessary.
+      Docstring only; output re-verified unchanged.
+
+One defect was found in the merged code while doing this and fixed in the same
+commit. `test_fact_model.py::test_module_facts_round_trip_through_json`
+asserted `restored == json.loads(json.dumps(payload, sort_keys=True))` —
+a value against a second encoding of itself, which holds for any input
+whatsoever. Two following assertions on `path` and `line_count` were carrying
+the test alone. It now compares field names and collection lengths against the
+original `ModuleFacts`.
+
+Its Task 9 verification, run in full: self-scan passes with **no re-baselining
+needed** (this work adds no module under `src/humansays`, so the concern in
+Scope Decision 1 never materialized), parity passes, three contracts kept,
+`dependencies = []`, and the largest `signals` module is `structure.py` at 110
+lines against the 448-line bar `analysis/rules.py` set. Its Task 9 Step 7,
+opening the PR, is left to the operator.
+
+---
+
 ## Deferred
 
 - **Single-pass extraction.** See Task 3 Step 2, entry 1.
