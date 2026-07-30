@@ -1,4 +1,16 @@
-"""The one place that walks a module and turns it into facts."""
+"""The one place that walks a module and turns it into facts.
+
+This is also the normalization boundary: interpreter differences stop here, and
+`humansays.facts` and `humansays.signals` never learn which version parsed the
+file. `tests/integration/test_analysis_confinement.py` is the enforcer.
+
+No cache exists. When one is built, its key must include the interpreter
+version, because facts extracted under one minor version are not valid under
+another once the parser changes shape -- `ast.Str` and `ast.Num` were removed in
+3.12, `type_params` was added to `FunctionDef`/`AsyncFunctionDef`/`ClassDef`,
+`ast.TypeAlias` was added, and PEP 701 changed `JoinedStr` structure and column
+offsets, which `analysis/syntax.py` reads for spans.
+"""
 
 import ast
 
