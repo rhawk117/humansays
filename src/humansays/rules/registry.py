@@ -11,7 +11,7 @@ share both, which can only happen inside one adapter's own loop. The order that
 is not free is the scope walk itself, which ``evaluation.py`` owns.
 """
 
-from humansays.enums import SignalName
+from humansays.enums import Disposition, SignalName
 from humansays.findings.models import Finding, Observation
 from humansays.rules.contract.adapters import argument_contract
 from humansays.rules.encap.adapters import (
@@ -88,6 +88,17 @@ ADAPTER_GROUPS = (
     CLASS_HEAD_ADAPTERS,
     CLASS_TAIL_ADAPTERS,
 )
+
+
+def is_emitted(emission: Emission) -> bool:
+    """Whether a measurement becomes a finding at all.
+
+    ``off`` short-circuits here rather than at display, so an ``off`` rule
+    costs nothing beyond the adapter that measured it. It is the only
+    disposition that changes the finding list, which is why no shipped rule
+    takes it.
+    """
+    return rule_definitions()[emission.signal].spec.disposition is not Disposition.OFF
 
 
 def build_finding(emission: Emission) -> Finding:

@@ -24,6 +24,7 @@ from humansays.rules.registry import (
     MODULE_ADAPTERS,
     MODULE_TAIL_ADAPTERS,
     build_finding,
+    is_emitted,
 )
 
 
@@ -74,5 +75,5 @@ def evaluate(facts: ModuleFacts, thresholds: Thresholds) -> list[Finding]:
         emissions.extend(class_signals(item, thresholds))
 
     emissions.extend(run_module(MODULE_TAIL_ADAPTERS, facts, thresholds))
-    findings = [build_finding(emission) for emission in emissions]
+    findings = [build_finding(e) for e in emissions if is_emitted(e)]
     return sorted(findings, key=attrgetter('sort_key'))

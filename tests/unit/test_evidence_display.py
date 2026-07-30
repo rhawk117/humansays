@@ -57,7 +57,15 @@ def test_only_evidence_is_withheld_by_default(disposition: Disposition) -> None:
 
 
 def test_every_displayable_disposition_is_covered() -> None:
-    """OFF is absent because an OFF rule never reaches display to be filtered."""
+    """OFF is absent because an OFF rule never reaches display to be filtered.
+
+    That short-circuit is `is_emitted` in `rules/registry.py`, and the test
+    that holds it is
+    `test_cli_contract.py::test_off_is_not_emitted_even_with_show_evidence`.
+    Until phase C2's closeout that sentence was this file's own justification
+    for the exclusion and nothing implemented it, so an OFF finding was in
+    fact emitted and shown.
+    """
     assert set(SHOWN_BY_DEFAULT) == set(Disposition) - {Disposition.OFF}
 
 
