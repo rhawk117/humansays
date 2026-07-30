@@ -75,6 +75,43 @@ from __future__ import generator_stop
 VALUE = 1
 """
 
+BROAD_HANDLERS = """
+def load(path):
+    try:
+        return open(path).read()
+    except Exception:
+        return ''
+
+
+def probe(path):
+    try:
+        return open(path).read()
+    except BaseException:
+        pass
+
+
+def touch(path):
+    try:
+        open(path).close()
+    except:
+        return None
+"""
+
+NARROW_HANDLERS = """
+def load(path):
+    try:
+        return open(path).read()
+    except OSError:
+        return ''
+
+
+def parse(text):
+    try:
+        return int(text)
+    except (ValueError, TypeError):
+        return 0
+"""
+
 LAZY_IMPORT = """
 def render(payload):
     import json

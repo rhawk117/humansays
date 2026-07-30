@@ -52,6 +52,22 @@ class TestLambdaRule:
         assert SignalName.HS016 not in signals(analyze(sources.NAMED_FUNCTION))
 
 
+class TestBroadExceptionRule:
+    def test_every_broad_handler_shape_is_reported(self) -> None:
+        found = findings_for(analyze(sources.BROAD_HANDLERS), SignalName.HS005)
+        assert [item.location.symbol for item in found] == ['load', 'probe', 'touch']
+        details = [item.observation.evidence[0].split(': ', 1)[1] for item in found]
+        assert details == [
+            'broad exception',
+            'broad exception silently ignored',
+            'bare except',
+        ]
+
+    def test_handlers_naming_their_exceptions_are_not_reported(self) -> None:
+        found = analyze(sources.NARROW_HANDLERS)
+        assert SignalName.HS005 not in signals(found)
+
+
 class TestLazyImportRule:
     def test_imports_inside_a_function_are_reported(self) -> None:
         found = findings_for(analyze(sources.LAZY_IMPORT), SignalName.HS021)

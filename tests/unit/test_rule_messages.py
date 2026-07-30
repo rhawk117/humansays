@@ -28,23 +28,11 @@ from tests.fixtures import sources
 
 CORPUS = Path(__file__).resolve().parents[1] / 'golden/poc-parity/corpus'
 
-# HS005 has no microfixture under tests/fixtures: it is observed only in the
-# self-scan baseline, against humansays' own source. Covered here so the
-# invariant does not depend on that.
-BROAD_EXCEPT = """
-def load(path):
-    try:
-        return open(path).read()
-    except Exception:
-        return ''
-"""
-
 # Rules gated on size need input larger than any hand-written fixture.
 GENERATED = (
     sources.line_padding(600),
     sources.padded_function(30, 30),
     sources.padded_function(70, 0),
-    BROAD_EXCEPT,
 )
 
 

@@ -58,16 +58,6 @@ MULTI_RULE_ADAPTERS = {
 
 ALL_ADAPTERS = [entry for group in ADAPTER_GROUPS for entry in group]
 
-# HS005 has no microfixture under tests/fixtures; it is observed only in the
-# self-scan baseline against humansays' own source.
-BROAD_EXCEPT = """
-def load(path):
-    try:
-        return open(path).read()
-    except Exception:
-        return ''
-"""
-
 # Every scope walked, in the order evaluate() walks it.
 WALK_FIXTURE = '''
 """Exercises module scope, a module function, a class with a method, and a lambda."""
@@ -277,7 +267,6 @@ def _survey_sources() -> list[tuple[str, str]]:
         ('<walk>', WALK_FIXTURE),
         ('<long-module>', sources.line_padding(600)),
         ('<long-function>', sources.padded_function(30, 30)),
-        ('<broad-except>', BROAD_EXCEPT),
     ]
 
 
