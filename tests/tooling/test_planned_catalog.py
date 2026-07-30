@@ -12,6 +12,8 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
+from tests.fixtures.sweeps import matching
+
 PLANNED = Path(__file__).resolve().parents[2] / 'docs' / 'site' / 'planned'
 
 DOMAIN_TOTALS = {
@@ -179,7 +181,7 @@ def test_the_vacated_numbers_are_not_reused() -> None:
 def test_no_retired_prefix_survives_outside_the_historical_pages() -> None:
     survivors = {
         page.name: sorted(set(RETIRED_ID.findall(page.read_text())))
-        for page in PLANNED.glob('*.md')
+        for page in matching(PLANNED, '*.md')
         if page.name not in HISTORICAL_PAGES
     }
 
@@ -190,7 +192,7 @@ def test_no_solid_sub_principle_is_named_anywhere_in_the_catalog() -> None:
     token = re.compile(rf'\b(?:{"|".join(PRINCIPLE_TOKENS)})\b')
     named = {
         page.name: sorted(set(token.findall(page.read_text())))
-        for page in PLANNED.glob('*.md')
+        for page in matching(PLANNED, '*.md')
     }
 
     assert {name: found for name, found in named.items() if found} == {}

@@ -12,13 +12,15 @@ from __future__ import annotations
 import ast
 from typing import TYPE_CHECKING
 
+from tests.fixtures.sweeps import python_sources
+
 if TYPE_CHECKING:
     from pathlib import Path
 
 
 def test_ast_and_tokenize_are_confined_to_analysis(src_root: Path) -> None:
     offenders = []
-    for path in sorted(src_root.rglob('*.py')):
+    for path in python_sources(src_root):
         relative = path.relative_to(src_root)
         if relative.parts[0] == 'analysis':
             continue
@@ -47,7 +49,7 @@ def test_analysis_and_rules_do_not_import_each_other(src_root: Path) -> None:
     banned = {'analysis': 'humansays.rules', 'rules': 'humansays.analysis'}
     offenders = []
     for package, forbidden in banned.items():
-        for path in sorted((src_root / package).rglob('*.py')):
+        for path in python_sources(src_root, package):
             tree = ast.parse(path.read_text(encoding='utf-8'), filename=str(path))
             for node in ast.walk(tree):
                 if isinstance(node, ast.Import):
@@ -79,34 +81,12 @@ def test_facts_and_rules_never_branch_on_interpreter_version(
     `facts` or `rules` would put a parser detail into the layer whose whole
     purpose is not to have one, and it would do so in a one-line diff.
     """
-    scanned = [
-        path
-        for package in DOWNSTREAM_PACKAGES
-        for path in sorted((src_root / package).rglob('*.py'))
-    ]
     offenders = [
         f'{path.relative_to(src_root)}:{number}'
-        for path in scanned
+        for path in python_sources(src_root, *DOWNSTREAM_PACKAGES)
         for number, line in enumerate(
             path.read_text(encoding='utf-8').splitlines(), start=1
         )
         if 'version_info' in line
     ]
     assert not offenders
-
-
-def test_the_interpreter_version_survey_reaches_both_packages(src_root: Path) -> None:
-    """A renamed package must not silently shrink the survey above.
-
-    It already did once: the survey named `signals`, that package became
-    `rules`, and `rglob` over a missing directory yields nothing. The scan went
-    on passing while checking half of what its name claimed.
-    """
-    missing = [
-        package
-        for package in DOWNSTREAM_PACKAGES
-        if not list((src_root / package).rglob('*.py'))
-    ]
-    assert not missing, (
-        f'these packages no longer exist, so nothing was scanned: {missing}'
-    )

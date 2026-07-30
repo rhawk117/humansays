@@ -20,6 +20,7 @@ from humansays.cli import main
 from humansays.config.models import Thresholds
 from humansays.enums import Grade, SignalName
 from humansays.rules import evaluate
+from tests.fixtures.sweeps import python_sources
 
 if TYPE_CHECKING:
     from humansays.findings.models import Finding
@@ -47,7 +48,7 @@ def run_cli(argv: list[str], piped: str = '') -> tuple[int, str]:
 def package_findings(src_root: Path) -> dict[str, list[Finding]]:
     return {
         path.name: analyze(path.read_text(encoding='utf-8'))
-        for path in sorted(src_root.rglob('*.py'))
+        for path in python_sources(src_root)
     }
 
 
