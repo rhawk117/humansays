@@ -100,6 +100,40 @@ pre-commit hook and in CI" while being invoked by neither.
 Phrases worth auditing hardest: *physically blocked*, *all mechanical*,
 *complete*, *exact*, *only path*, *cannot happen*, *the gate proves*.
 
+## 4b. Plans live in the repository
+
+`.agent-specs/plans/`, named `YYYY-MM-DD-topic.md`, committed with the code they
+change. Not a home directory, not an agent harness's private state directory.
+
+A plan outside the tree cannot be reviewed against §4's constraint table before
+someone executes it, and cannot be diffed against the phase that follows it.
+Both costs have been paid: the C1 plan assigned modules to packages without
+checking the import direction that already existed between them, which made two
+of its tasks unexecutable as sequenced and was discovered only at execution
+time, by a broken contract.
+
+A plan keeps its **discovered-during-execution** section. That section is the
+part with the highest value per line to the next plan's author, because it
+records what the tree turned out to be rather than what the plan assumed.
+
+## 4c. Every gate states what it is blind to
+
+A verification section that lists gates without saying what each one cannot see
+produces a green run over a real defect. This is not hypothetical: every defect
+C1 produced was a check that passed without looking.
+
+| Gate | Cannot see |
+|---|---|
+| Byte-diff of scan output | whether the tests still test the same things |
+| Coverage | a test that reads source files as data, whose input set shrank |
+| A collision or uniqueness survey | a registration its corpus never fired |
+| `lint-imports` | a contract stanza that enumerates by hand and fails open |
+| `tests/golden/test_self_scan.py` | anything outside `src/humansays` |
+
+Write the blind spot next to the gate in the plan, then choose a second check
+for anything the first one cannot reach. `tests/fixtures/sweeps.py` exists
+because a sweep's empty result and its clean result are the same green tick.
+
 ## 5. Evidence discipline
 
 Separate **verified**, **inferred** and **unknown**. Do not present an inference

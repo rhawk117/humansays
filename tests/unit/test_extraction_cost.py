@@ -5,7 +5,7 @@ Measured, not asserted from reading: on this tree extraction reaches each node
 after the main visitor pass. That second pass has no measurable wall-clock cost
 (40 interleaved trials, difference inside one standard deviation), so it is
 pinned here rather than removed. See
-docs/superpowers/plans/2026-07-29-extraction-enforcer-gaps.md.
+.agent-specs/plans/2026-07-29-extraction-enforcer-gaps.md.
 """
 
 from __future__ import annotations

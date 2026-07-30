@@ -22,7 +22,7 @@ than the plan written for it: `signals/` is already split per rule group, which
 that plan had deferred to Phase C. `RulesetEvaluator` and `analysis/rules.py`
 are gone, `facts/` and `signals/` exist, and 196 tests pass at 96.55% coverage.
 
-The plan at `docs/superpowers/plans/2026-07-29-phase-b-extraction-split.md` is
+The plan at `.agent-specs/plans/2026-07-29-phase-b-extraction-split.md` is
 superseded and marked as such. Reviewing the merged result against that plan's
 six invariants found four fully met, one met and better tested than planned, and
 one unmet with no enforcer. This plan addresses what is left.
@@ -200,7 +200,7 @@ uv run pytest -q            # 196 passed, coverage 96.55% (required 85.0%)
 
 | Path | Change |
 |---|---|
-| `docs/superpowers/plans/2026-07-29-phase-b-extraction-split.md` | Superseded banner at the top. |
+| `.agent-specs/plans/2026-07-29-phase-b-extraction-split.md` | Superseded banner at the top. |
 | `.agent-specs/backlog.md` | Two entries: the deferred single-pass refactor, and the measured traversal ratio. |
 
 Nothing under `src/humansays` is modified.
@@ -236,7 +236,7 @@ Measured, not asserted from reading: on this tree extraction reaches each node
 after the main visitor pass. That second pass has no measurable wall-clock cost
 (40 interleaved trials, difference inside one standard deviation), so it is
 pinned here rather than removed. See the plan at
-docs/superpowers/plans/2026-07-29-extraction-enforcer-gaps.md.
+.agent-specs/plans/2026-07-29-extraction-enforcer-gaps.md.
 """
 
 from __future__ import annotations
@@ -519,7 +519,7 @@ covered and lint-imports still reports the contract as kept."
 ## Task 3: Record what is deferred, and supersede the old plan
 
 **Files:**
-- Modify: `docs/superpowers/plans/2026-07-29-phase-b-extraction-split.md`
+- Modify: `.agent-specs/plans/2026-07-29-phase-b-extraction-split.md`
 - Modify: `.agent-specs/backlog.md`
 
 - [ ] **Step 1: Banner the superseded plan**
@@ -575,7 +575,7 @@ scripts/ci.sh docs
 ```
 
 ```bash
-git add docs/superpowers/plans .agent-specs/backlog.md
+git add .agent-specs/plans .agent-specs/backlog.md
 git commit -m "docs(plans): supersede the phase B plan and record the deferred single-pass work"
 ```
 

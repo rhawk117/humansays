@@ -3,7 +3,9 @@
 ## If you are a coding agent
 
 Read [`process/agent-protocol.md`](process/agent-protocol.md) first. It
-describes how work is executed in this repository. Standing constraints live
+describes how work is executed in this repository. Plans live in
+[`plans/`](plans/) and are reviewed against the protocol's §4 constraint table
+before they are executed, not after. Standing constraints live
 in `CLAUDE.md` at the repository root and are loaded automatically; they
 apply to everything here.
 
@@ -23,7 +25,7 @@ The criteria the shipped rules encode are under Design philosophy.
 ├── process/     how agents work here; the review checklist
 ├── design/      reference documents for the evaluation model and architecture
 ├── backlog.md   unordered future work, deliberately not sequenced into phases
-└── superpowers/ working plans; not part of the design record
+└── plans/       implementation plans, versioned with the code they change
 ```
 
 ## Reading order for a human
