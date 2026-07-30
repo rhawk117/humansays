@@ -1,11 +1,10 @@
 """HS008: whether a class's methods touch one field cluster or several."""
 
-from humansays.catalog import build_finding
 from humansays.const import COHESION_FIELD_MINIMUM, COHESION_METHOD_MINIMUM
 from humansays.enums import SignalName
 from humansays.facts.module import ClassFacts
 from humansays.facts.values import FunctionFacts
-from humansays.findings.models import Finding, Observation
+from humansays.rules.models import Emission
 
 
 def field_usage(method: FunctionFacts, method_names: frozenset[str]) -> frozenset[str]:
@@ -43,7 +42,7 @@ def connected_components(usage: list[frozenset[str]]) -> list[list[int]]:
     return components
 
 
-def class_cohesion(item: ClassFacts) -> list[Finding]:
+def class_cohesion(item: ClassFacts) -> list[Emission]:
     eligible = cohesion_candidates(item.methods)
     usage = [fields for _, fields in eligible]
     fields = {name for group in usage for name in group}
@@ -61,13 +60,10 @@ def class_cohesion(item: ClassFacts) -> list[Finding]:
         evidence.append(f'methods {names} use fields {used}')
 
     return [
-        build_finding(
+        Emission(
             SignalName.HS008,
             item.location,
-            Observation(
-                f'Class methods form {len(components)} disconnected '
-                'field-access clusters.',
-                tuple(evidence),
-            ),
+            tuple(evidence),
+            payload={'count': len(components)},
         ),
     ]

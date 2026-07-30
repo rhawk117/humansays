@@ -1,17 +1,24 @@
 """Rule definitions loaded from ``rules.toml`` package data.
 
-``test_toml_matches_catalog`` is the transcription proof: it holds while
-``catalog.RULES`` is still the live table, so a mistyped confidence or a dropped
-word in a review question fails here rather than surviving into the switchover.
-It is replaced by a frozen-literal assertion once the catalog is gone.
+``test_specs_match_frozen_metadata`` is what keeps the definitions honest now
+that they are the only source. The golden byte diff only covers rules that
+actually fire on the corpus, so a rule that fires nowhere could have its
+severity, confidence, weight or review question quietly changed and no other
+test would notice. ``review_question`` is the most exposed of the four: it
+reaches the JSON report only, so the text snapshot cannot see it either.
+
+FROZEN was copied out of ``catalog.py`` while both sources existed and
+``test_toml_matches_catalog`` proved them equal. Changing a value here is a
+deliberate act; C1 changed none of them.
 """
 
+import ast
 import dataclasses
+from pathlib import Path
 
 import pytest
 
-from humansays.catalog import RULES
-from humansays.enums import SignalName
+from humansays.enums import Severity, SignalName
 from humansays.rules.loading import (
     GROUPS,
     RuleDefinitionError,
@@ -34,17 +41,85 @@ VALID_ENTRY = {
 }
 
 
+ORACLE = Path(__file__).resolve().parents[1] / 'golden/poc-parity/corpus/poc/catalog.py'
+
+W = Severity.WARNING
+A = Severity.ADVISORY
+
+FROZEN = {
+    'HS001': (W, 0.80, 3.0, 'Do these values form a request object, reusable configuration, or multiple responsibilities?'),
+    'HS002': (A, 0.82, 1.0, 'Would keyword-only arguments, an enum, or separate operations communicate the modes better?'),
+    'HS003': (W, 0.76, 3.0, 'Would guard clauses, a state model, or one meaningful extraction clarify the control flow?'),
+    'HS004': (W, 0.95, 3.0, 'Is the lifetime intentional, who owns mutation, and can tests isolate this state?'),
+    'HS005': (W, 0.96, 3.0, 'Which exceptions are expected, and should unexpected failures propagate?'),
+    'HS006': (W, 0.70, 3.0, 'Are mutation authority, transaction boundaries, and partial-failure behavior clear?'),
+    'HS007': (W, 0.65, 3.0, 'Should one function coordinate this many standard-library boundary categories directly?'),
+    'HS008': (A, 0.65, 1.0, 'Do these clusters represent independently changing responsibilities that should have separate owners?'),
+    'HS009': (A, 0.55, 1.0, 'Is the function cohesive, or does it mix workflow, decisions, and lower-level mechanics?'),
+    'HS012': (A, 0.72, 1.0, 'Do subsets of this state have separate invariants, lifetimes, or reasons to change?'),
+    'HS013': (W, 0.84, 3.0, 'Does each prefix identify a cohesive value object or component hidden inside this class?'),
+    'HS014': (W, 0.88, 3.0, 'Should these arguments and their validation become one request, value, or configuration object?'),
+    'HS015': (W, 0.99, 3.0, 'The method can reach neither instance nor class state, so what does class scope buy over a module-level function?'),
+    'HS016': (W, 0.99, 3.0, 'What would this expression be named, and would a named function make it testable and reusable?'),
+    'HS017': (W, 0.60, 3.0, 'Does this file hold one subject, or have several modules been accumulated into one namespace?'),
+    'HS018': (W, 0.78, 3.0, 'Is this composition, mixin layering, or an inheritance chain that hides the real collaborators?'),
+    'HS019': (W, 0.74, 3.0, 'Do these conditionals encode one decision that belongs in a table, mapping, or polymorphic dispatch?'),
+    'HS021': (A, 0.85, 1.0, 'Is this hiding a cycle, an optional dependency, or a startup cost that belongs at module scope?'),
+    'HS022': (W, 0.72, 3.0, 'How many distinct steps are in here, and which of them has a name already?'),
+}  # fmt: skip
+
+
 def entry_with(**changes: object) -> dict[str, object]:
     return VALID_ENTRY | changes
 
 
-def test_toml_matches_catalog() -> None:
+def oracle_review_questions() -> dict[str, str]:
+    """Review questions from the vendored prototype catalog.
+
+    The corpus under ``tests/golden/poc-parity`` is a frozen independent
+    implementation, keyed ``PY0NN`` against the same rule numbers. It is not
+    generated from anything humansays ships, so agreement is real evidence
+    rather than a restatement.
+    """
+    tree = ast.parse(ORACLE.read_text(encoding='utf-8'))
+    questions: dict[str, str] = {}
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Call) or getattr(node.func, 'id', '') != 'RuleSpec':
+            continue
+
+        keywords = {keyword.arg: keyword.value for keyword in node.keywords}
+        signal = keywords['signal'].attr
+        questions[f'HS{signal[2:]}'] = ast.literal_eval(keywords['review_question'])
+
+    return questions
+
+
+def test_specs_match_frozen_metadata() -> None:
     loaded = rule_definitions()
-    assert set(loaded) == set(RULES)
-    for signal, spec in RULES.items():
-        assert dataclasses.asdict(loaded[signal].spec) == dataclasses.asdict(spec), (
-            f'{signal.name} definition diverges from the catalog'
-        )
+    assert {signal.name for signal in loaded} == set(FROZEN)
+    for signal, definition in loaded.items():
+        severity, confidence, weight, question = FROZEN[signal.name]
+        assert dataclasses.asdict(definition.spec) == {
+            'signal': signal,
+            'severity': severity,
+            'confidence': confidence,
+            'weight': weight,
+            'review_question': question,
+        }, f'{signal.name} diverges from its frozen metadata'
+
+
+def test_review_questions_match_poc_oracle() -> None:
+    oracle = oracle_review_questions()
+    loaded = rule_definitions()
+    # The prototype also carries PY010, PY011 and PY020, which humansays
+    # deleted; only the shipped rules have to agree.
+    assert {signal.name for signal in loaded}.issubset(oracle)
+    divergent = {
+        signal.name
+        for signal, definition in loaded.items()
+        if definition.spec.review_question != oracle[signal.name]
+    }
+    assert not divergent, f'review questions diverge from the prototype: {divergent}'
 
 
 def test_every_signal_has_a_definition() -> None:

@@ -1,49 +1,44 @@
 """HS009, HS022, HS003 and HS019: how large a function is and how it branches."""
 
-from humansays.catalog import build_finding
 from humansays.config.models import FunctionThresholds
 from humansays.enums import SignalName
 from humansays.facts.values import FunctionFacts
-from humansays.findings.models import Finding, Observation
+from humansays.rules.models import Emission
 
 
-def size_signals(facts: FunctionFacts, limits: FunctionThresholds) -> list[Finding]:
-    findings: list[Finding] = []
+def size_signals(facts: FunctionFacts, limits: FunctionThresholds) -> list[Emission]:
+    emissions: list[Emission] = []
     if facts.length > limits.max_lines:
-        findings.append(
-            build_finding(
+        emissions.append(
+            Emission(
                 SignalName.HS009,
                 facts.location,
-                Observation(
-                    f'Function spans {facts.length} source lines.',
-                    (f'configured threshold: {limits.max_lines}',),
-                ),
+                (f'configured threshold: {limits.max_lines}',),
+                payload={'count': facts.length},
             ),
         )
 
     if facts.body.code_lines > limits.max_code_lines:
-        findings.append(
-            build_finding(
+        emissions.append(
+            Emission(
                 SignalName.HS022,
                 facts.location,
-                Observation(
-                    f'Function holds {facts.body.code_lines} lines of code.',
-                    (
-                        f'configured threshold: {limits.max_code_lines}',
-                        'blank lines, comments, and the docstring are excluded',
-                    ),
+                (
+                    f'configured threshold: {limits.max_code_lines}',
+                    'blank lines, comments, and the docstring are excluded',
                 ),
+                payload={'count': facts.body.code_lines},
             ),
         )
 
-    return findings
+    return emissions
 
 
 def control_flow_signals(
     facts: FunctionFacts,
     limits: FunctionThresholds,
-) -> list[Finding]:
-    findings: list[Finding] = []
+) -> list[Emission]:
+    emissions: list[Emission] = []
     limit = limits.nesting_limit(facts.class_name)
     if facts.body.maximum_nesting > limit:
         evidence = [f'configured threshold: {limit}']
@@ -52,27 +47,23 @@ def control_flow_signals(
                 f'class bodies receive +{limits.class_nesting_bonus} nesting',
             )
 
-        findings.append(
-            build_finding(
+        emissions.append(
+            Emission(
                 SignalName.HS003,
                 facts.location,
-                Observation(
-                    f'Control flow reaches nesting depth {facts.body.maximum_nesting}.',
-                    tuple(evidence),
-                ),
+                tuple(evidence),
+                payload={'depth': facts.body.maximum_nesting},
             ),
         )
 
     if facts.body.branches > limits.max_branches:
-        findings.append(
-            build_finding(
+        emissions.append(
+            Emission(
                 SignalName.HS019,
                 facts.location,
-                Observation(
-                    f'Function contains {facts.body.branches} if/elif statements.',
-                    (f'configured threshold: {limits.max_branches}',),
-                ),
+                (f'configured threshold: {limits.max_branches}',),
+                payload={'count': facts.body.branches},
             ),
         )
 
-    return findings
+    return emissions

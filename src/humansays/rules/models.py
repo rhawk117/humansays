@@ -8,9 +8,28 @@ and stays outside the spec.
 """
 
 from collections.abc import Mapping
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from types import MappingProxyType
 
-from humansays.findings.models import RuleSpec
+from humansays.enums import SignalName
+from humansays.findings.models import Location, RuleSpec
+
+NO_PAYLOAD: Mapping[str, object] = MappingProxyType({})
+
+
+@dataclass(frozen=True, slots=True)
+class Emission:
+    """What a rule measured at one location, before it becomes a ``Finding``.
+
+    Adapters return these rather than findings. Rendering a message needs the
+    rule definition, and a definition lookup inside an adapter would make the
+    rules subpackages depend on the loader that reads their own package data.
+    """
+
+    signal: SignalName
+    location: Location
+    evidence: tuple[str, ...] = ()
+    payload: Mapping[str, object] = field(default=NO_PAYLOAD)
 
 
 @dataclass(frozen=True, slots=True)

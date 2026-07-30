@@ -2,10 +2,12 @@
 
 from operator import attrgetter
 
+from humansays.catalog import build_finding
 from humansays.config.models import Thresholds
 from humansays.facts.module import ClassFacts, ModuleFacts
 from humansays.facts.values import FunctionFacts
 from humansays.findings.models import Finding
+from humansays.rules.models import Emission
 from humansays.signals.cohesion import class_cohesion
 from humansays.signals.effects import incident_signals, state_signals
 from humansays.signals.scope import module_scale, mutable_bindings
@@ -19,7 +21,7 @@ from humansays.signals.structure import (
 )
 
 
-def function_signals(facts: FunctionFacts, thresholds: Thresholds) -> list[Finding]:
+def function_signals(facts: FunctionFacts, thresholds: Thresholds) -> list[Emission]:
     return [
         *argument_signals(facts, thresholds.functions),
         *size_signals(facts, thresholds.functions),
@@ -29,30 +31,31 @@ def function_signals(facts: FunctionFacts, thresholds: Thresholds) -> list[Findi
     ]
 
 
-def class_signals(item: ClassFacts, thresholds: Thresholds) -> list[Finding]:
-    findings = [
+def class_signals(item: ClassFacts, thresholds: Thresholds) -> list[Emission]:
+    emissions = [
         *mutable_bindings(item.bindings, item.name, 'class'),
         *base_classes(item, thresholds.classes),
     ]
     for method in item.methods:
-        findings.extend(function_signals(method, thresholds))
-        findings.extend(static_method(method))
+        emissions.extend(function_signals(method, thresholds))
+        emissions.extend(static_method(method))
 
-    findings.extend(class_state_surface(item, thresholds.classes))
-    findings.extend(class_cohesion(item))
-    return findings
+    emissions.extend(class_state_surface(item, thresholds.classes))
+    emissions.extend(class_cohesion(item))
+    return emissions
 
 
 def evaluate(facts: ModuleFacts, thresholds: Thresholds) -> list[Finding]:
-    findings = [
+    emissions = [
         *module_scale(facts.line_count, thresholds.modules),
         *mutable_bindings(facts.bindings, '<module>', 'module'),
     ]
     for item in facts.functions:
-        findings.extend(function_signals(item, thresholds))
+        emissions.extend(function_signals(item, thresholds))
 
     for item in facts.classes:
-        findings.extend(class_signals(item, thresholds))
+        emissions.extend(class_signals(item, thresholds))
 
-    findings.extend(lambda_signals(facts.lambdas))
+    emissions.extend(lambda_signals(facts.lambdas))
+    findings = [build_finding(emission) for emission in emissions]
     return sorted(findings, key=attrgetter('sort_key'))
