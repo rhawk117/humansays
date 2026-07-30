@@ -669,11 +669,18 @@ opening the PR, is left to the operator.
   the `ast` ban which has `test_analysis_confinement.py` as a second enforcer.
   Symmetry would suggest one; not added here because `lint-imports` runs in
   `scripts/lint.sh` and in the CI `lint` job, so the boundary is enforced.
-- **Multi-interpreter fact extraction.** `requires-python = ">=3.11"` but CI
-  pins 3.14. `ast.Str`/`ast.Num` removal, `type_params`, `ast.TypeAlias`, PEP
-  701 `JoinedStr` spans, 3.13 TypeVar defaults. A single-version test proves
-  nothing about the range `requires-python` claims. Carried over from the
-  superseded plan, still open.
+- **Multi-interpreter fact extraction.** The superseded plan claimed CI pins
+  3.14 everywhere. **That was wrong**, and it is corrected here rather than
+  carried forward: `ci-playbook.yml` runs a real `python-version` matrix, and
+  PR #20 went green on 3.11, 3.12, 3.13 and 3.14. The backlog said as much all
+  along. What remains open is narrower than the plan implied — the suite runs
+  across the range, but there are no *fixtures using version-gated syntax*, so
+  nothing exercises `ast.Str`/`ast.Num` removal, `type_params`, `ast.TypeAlias`,
+  PEP 701 `JoinedStr` spans, or 3.13 TypeVar defaults. The matrix proves the
+  existing tests pass everywhere; it does not prove the divergences are handled.
+  A useful side effect: `tests/unit/test_extraction_cost.py`'s 2.5 ceiling is
+  now known to hold on all four interpreters, which was the version-fragility
+  concern that set it wide in the first place.
 - **`connected_components` set-iteration order.** Deterministic in practice, not
   by construction. Carried over from the superseded plan; verify it still
   applies to `signals/cohesion.py` before acting on it.
