@@ -663,13 +663,22 @@ opening the PR, is left to the operator.
 ## Deferred
 
 - **Single-pass extraction.** See Task 3 Step 2, entry 1.
-- **`signals`/`analysis` independence has no direct test.** The `layers`
-  contract's `humansays.analysis | humansays.signals` bans the import in both
-  directions, and `lint-imports` is the enforcer. No pytest asserts it, unlike
-  the `ast` ban which has `test_analysis_confinement.py` as a second enforcer.
-  Symmetry would suggest one; not added here because `lint-imports` runs in
-  `scripts/lint.sh` and in the CI `lint` job, so the boundary is enforced.
-- **Multi-interpreter fact extraction.** The superseded plan claimed CI pins
+- ~~**`signals`/`analysis` independence has no direct test.**~~ **Closed** by
+  `test_analysis_confinement.py::test_analysis_and_signals_do_not_import_each_other`,
+  which checks both directions against the real source tree. `lint-imports`
+  remains the primary enforcer via the `layers` contract's
+  `humansays.analysis | humansays.signals`; this restores the symmetry with the
+  `ast` ban, which already had two enforcers.
+- ~~**Multi-interpreter fact extraction.**~~ **Closed** by
+  `tests/unit/test_version_gated_syntax.py` and the five fixtures added to
+  `tests/fixtures/sources.py`. Verified locally on all four interpreters:
+  3.11 collects and skips 9, 3.12 skips only the PEP 696 case, 3.13 and 3.14 run
+  everything; full suite green on each. Extraction already handled the newer
+  grammar correctly — notably `type_params` is not counted as an argument — so
+  the fixtures lock in correct behaviour rather than fix a defect. The original
+  wording is kept below because the reasoning that narrowed it is worth reading.
+
+  **Multi-interpreter fact extraction.** The superseded plan claimed CI pins
   3.14 everywhere. **That was wrong**, and it is corrected here rather than
   carried forward: `ci-playbook.yml` runs a real `python-version` matrix, and
   PR #20 went green on 3.11, 3.12, 3.13 and 3.14. The backlog said as much all
