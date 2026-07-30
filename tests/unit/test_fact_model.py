@@ -120,9 +120,15 @@ class TestFactsAreData:
         facts = facts_for(sources.SMELLY_MODULE)
         payload = encodable(facts)
         restored = json.loads(json.dumps(payload, sort_keys=True))
-        assert restored == json.loads(json.dumps(payload, sort_keys=True))
+        # Compare against the original facts, never against a second encoding
+        # of the payload: `restored == json.loads(json.dumps(payload))` holds
+        # for any input at all and so asserts nothing.
+        assert set(restored) == {field.name for field in dataclasses.fields(facts)}
         assert restored['path'] == '<snippet>'
         assert restored['line_count'] == facts.line_count
+        assert len(restored['classes']) == len(facts.classes)
+        assert len(restored['functions']) == len(facts.functions)
+        assert len(restored['lambdas']) == len(facts.lambdas)
 
     def test_extraction_is_deterministic(self) -> None:
         first = encodable(facts_for(sources.SMELLY_MODULE))
