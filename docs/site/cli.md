@@ -73,11 +73,25 @@ Controls whether findings cause a nonzero exit code (exit code 1):
 finding is present, `any` fails if any finding at all is present. Default
 (from `Report.fail_on`): `never`.
 
+Only **scored** findings can fail a run. A rule whose `disposition` is not `on`
+takes no part in the exit code, the same way it takes no part in the score, so
+`--fail-on` and `--min-score` cannot disagree about the same run. See
+[Disposition](output.md#disposition).
+
 ### `--min-score SCORE`
 
 If the scan's overall score is below `SCORE`, humansays exits with code 1
 regardless of `--fail-on`. Type: float, range 0.0-100.0. Default (from
 `Report.min_score`): `0.0`.
+
+### `--show-evidence`
+
+Include findings whose rule's `disposition` is `evidence`, which are collected
+and scored as normal but withheld from output by default. Type: flag. Default
+(from `Report.show_evidence`): off.
+
+No shipped rule is `evidence` today, so this flag currently changes no output.
+See [Disposition](output.md#disposition).
 
 ### Threshold flags
 

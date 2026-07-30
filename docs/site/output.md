@@ -80,6 +80,7 @@ Abridged from a real run against `docs/examples/smelly.py`:
           },
           "rule": {
             "confidence": 0.8,
+            "disposition": "on",
             "review_question": "Do these values form a request object, reusable configuration, or multiple responsibilities?",
             "severity": "warning",
             "signal": "many-arguments",
@@ -123,9 +124,13 @@ score and grade cover only the files that were analyzed.
 
 Read from `src/humansays/scoring.py:1-38` and `src/humansays/const.py`.
 
-Each finding contributes a penalty of `weight * confidence`, where `weight`
-and `confidence` come from the rule that fired (see [Rules](rules/index.md)). The
-scan's total penalty is the sum of every finding's penalty.
+Each **scored** finding contributes a penalty of `weight * confidence`, where
+`weight` and `confidence` come from the rule that fired (see
+[Rules](rules/index.md)). The scan's total penalty is the sum of every scored
+finding's penalty.
+
+A finding is scored when its rule's `disposition` is `on`. Anything else
+contributes nothing, so a file can print findings and still score `100.0`.
 
 ```text
 density = total_penalty * 100 / max(1, total_lines)
@@ -137,7 +142,30 @@ by line count rather than counting findings directly means a large clean
 codebase is not punished for its size, and a small file full of findings
 cannot hide behind a low absolute count. `7.5` is `SCORE_TOLERANCE`, chosen
 so that roughly one warning per 100 lines lands in the mid-seventies. A file
-or scan with no weighted findings scores `100.0`.
+or scan with no scored findings scores `100.0` — including one whose only
+findings are hints.
+
+## Disposition
+
+Every rule carries a `disposition` alongside its severity. Severity says how
+much a finding counts once it counts at all; disposition says whether it counts
+and whether it is shown.
+
+| Disposition | Emitted | Scored | Shown by default | Shown with `--show-evidence` |
+| ----------- | ------- | ------ | ---------------- | ---------------------------- |
+| `on`        | yes     | yes    | yes              | yes                          |
+| `hint`      | yes     | no     | yes              | yes                          |
+| `evidence`  | yes     | no     | no               | yes                          |
+| `off`       | no      | no     | no               | no                           |
+
+`disposition` appears on every `rule` object in JSON output. It was added in
+`0.1.0a1`; the JSON `schema_version` stays `1`, because the change is additive
+and no existing key changed name, type or meaning.
+
+Three shipped rules are `hint`: `HS015` (`static-method`), `HS016`
+(`lambda-expression`) and `HS021` (`lazy-import`). They are reported and never
+scored. The remaining 16 are `on`. No shipped rule is `evidence` or `off` yet,
+so `--show-evidence` currently changes no output.
 
 ## Grade bands
 
