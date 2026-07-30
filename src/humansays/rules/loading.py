@@ -17,7 +17,7 @@ from importlib.resources import files
 from string import Formatter
 from types import MappingProxyType
 
-from humansays.enums import Severity, SignalName
+from humansays.enums import Disposition, Severity, SignalName
 from humansays.findings.models import RuleSpec
 from humansays.rules.models import RuleDefinition
 
@@ -42,6 +42,7 @@ RULE_KEYS = frozenset({
     'weight',
     'message',
     'review_question',
+    'disposition',
 })
 
 
@@ -109,6 +110,14 @@ def _severity(entry: Mapping[str, object], where: str) -> Severity:
         raise RuleDefinitionError(f'{where}: unknown severity {value!r}') from None
 
 
+def _disposition(entry: Mapping[str, object], where: str) -> Disposition:
+    value = _text(entry, 'disposition', where)
+    try:
+        return Disposition(value)
+    except ValueError:
+        raise RuleDefinitionError(f'{where}: unknown disposition {value!r}') from None
+
+
 def _check_keys(entry: Mapping[str, object], where: str) -> None:
     unknown = sorted(set(entry) - RULE_KEYS)
     if unknown:
@@ -131,6 +140,7 @@ def build_definition(entry: Mapping[str, object], group: str) -> RuleDefinition:
             confidence=_number(entry, 'confidence', where),
             weight=_number(entry, 'weight', where),
             review_question=_text(entry, 'review_question', where),
+            disposition=_disposition(entry, where),
         )
     except ValueError as error:
         raise RuleDefinitionError(f'{where}: {error}') from None

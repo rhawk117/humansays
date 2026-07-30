@@ -5,6 +5,7 @@
 [[rule]]
 id = "HS016"
 severity = "warning"
+disposition = "on"
 confidence = 0.99
 weight = 3.0
 message = "Lambda expression stands in for a named function."

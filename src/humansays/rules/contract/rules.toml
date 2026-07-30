@@ -5,6 +5,7 @@
 [[rule]]
 id = "HS001"
 severity = "warning"
+disposition = "on"
 confidence = 0.80
 weight = 3.0
 message = "Function accepts {count} operation arguments."
@@ -15,6 +16,7 @@ or multiple responsibilities?"""
 [[rule]]
 id = "HS014"
 severity = "warning"
+disposition = "on"
 confidence = 0.88
 weight = 3.0
 message = "Function validates {count} of its argument bundle internally."

@@ -18,7 +18,7 @@ from pathlib import Path
 
 import pytest
 
-from humansays.enums import Severity, SignalName
+from humansays.enums import Disposition, Severity, SignalName
 from humansays.rules.loading import (
     GROUPS,
     RuleDefinitionError,
@@ -38,6 +38,7 @@ VALID_ENTRY = {
     'weight': 3.0,
     'message': 'Module spans {count} source lines.',
     'review_question': 'Does this file hold one subject?',
+    'disposition': 'on',
 }
 
 
@@ -94,6 +95,13 @@ def oracle_review_questions() -> dict[str, str]:
     return questions
 
 
+# Disposition is frozen separately from the other four fields, so demoting a
+# rule is a one-line diff in a table that exists for nothing else. C2 sets every
+# shipped rule to ON; the three the reconciliation maps to `hint` change here
+# and nowhere else.
+FROZEN_DISPOSITIONS = dict.fromkeys(FROZEN, Disposition.ON)
+
+
 def test_specs_match_frozen_metadata() -> None:
     loaded = rule_definitions()
     assert {signal.name for signal in loaded} == set(FROZEN)
@@ -105,7 +113,13 @@ def test_specs_match_frozen_metadata() -> None:
             'confidence': confidence,
             'weight': weight,
             'review_question': question,
+            'disposition': FROZEN_DISPOSITIONS[signal.name],
         }, f'{signal.name} diverges from its frozen metadata'
+
+
+def test_every_frozen_disposition_is_covered() -> None:
+    """The disposition table must not go thin as rules are added or demoted."""
+    assert set(FROZEN_DISPOSITIONS) == {signal.name for signal in rule_definitions()}
 
 
 def test_review_questions_match_poc_oracle() -> None:
@@ -177,6 +191,13 @@ def test_build_definition_accepts_a_well_formed_entry() -> None:
         (entry_with(id='HS999'), 'not a SignalName member'),
         (entry_with(id=17), 'id must be a string'),
         (entry_with(severity='error'), 'unknown severity'),
+        (entry_with(disposition='maybe'), 'unknown disposition'),
+        (entry_with(disposition='ON'), 'unknown disposition'),
+        (entry_with(disposition=1), 'disposition must be a string'),
+        (
+            {k: v for k, v in VALID_ENTRY.items() if k != 'disposition'},
+            'missing keys',
+        ),
         (entry_with(confidence=1.5), 'confidence out of range'),
         (entry_with(weight=-1.0), 'weight out of range'),
         (entry_with(confidence='high'), 'confidence must be a number'),

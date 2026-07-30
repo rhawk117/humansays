@@ -5,6 +5,7 @@
 [[rule]]
 id = "HS015"
 severity = "warning"
+disposition = "on"
 confidence = 0.99
 weight = 3.0
 message = "Method is declared @staticmethod, so it can reach neither instance nor class state."

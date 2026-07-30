@@ -13,6 +13,20 @@ class Severity(StrEnum):
     ADVISORY = 'advisory'
 
 
+class Disposition(StrEnum):
+    """Whether a rule scores, and whether it is shown.
+
+    Distinct from ``Severity``, which says how much a finding scores once it
+    scores at all. A rule that is not ``ON`` contributes no penalty, so a file
+    can print findings and still score 100.
+    """
+
+    ON = 'on'
+    HINT = 'hint'
+    EVIDENCE = 'evidence'
+    OFF = 'off'
+
+
 class FailOn(StrEnum):
     NEVER = 'never'
     WARNING = 'warning'

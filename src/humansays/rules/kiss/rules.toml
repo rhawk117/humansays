@@ -5,6 +5,7 @@
 [[rule]]
 id = "HS003"
 severity = "warning"
+disposition = "on"
 confidence = 0.76
 weight = 3.0
 message = "Control flow reaches nesting depth {depth}."
@@ -15,6 +16,7 @@ clarify the control flow?"""
 [[rule]]
 id = "HS009"
 severity = "advisory"
+disposition = "on"
 confidence = 0.55
 weight = 1.0
 message = "Function spans {count} source lines."
@@ -25,6 +27,7 @@ and lower-level mechanics?"""
 [[rule]]
 id = "HS017"
 severity = "warning"
+disposition = "on"
 confidence = 0.60
 weight = 3.0
 message = "Module spans {count} source lines."
@@ -35,6 +38,7 @@ accumulated into one namespace?"""
 [[rule]]
 id = "HS019"
 severity = "warning"
+disposition = "on"
 confidence = 0.74
 weight = 3.0
 message = "Function contains {count} if/elif statements."
@@ -45,6 +49,7 @@ table, mapping, or polymorphic dispatch?"""
 [[rule]]
 id = "HS022"
 severity = "warning"
+disposition = "on"
 confidence = 0.72
 weight = 3.0
 message = "Function holds {count} lines of code."

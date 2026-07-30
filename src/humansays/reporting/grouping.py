@@ -8,7 +8,7 @@ import dataclasses
 from typing import TypedDict, cast
 
 from humansays.const import SEVERITY_ORDER, UNKNOWN_SEVERITY_ORDER
-from humansays.enums import Severity, SignalName
+from humansays.enums import Disposition, Severity, SignalName
 from humansays.findings.models import Finding
 from humansays.reporting.models import FileReport
 
@@ -21,6 +21,7 @@ class RuleView(TypedDict):
     confidence: float
     weight: float
     review_question: str
+    disposition: Disposition
 
 
 class ObservationView(TypedDict):

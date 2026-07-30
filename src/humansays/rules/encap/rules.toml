@@ -5,6 +5,7 @@
 [[rule]]
 id = "HS004"
 severity = "warning"
+disposition = "on"
 confidence = 0.95
 weight = 3.0
 message = "Mutable {scope}-scope state `{name}` is shared beyond one instance or operation."
@@ -15,6 +16,7 @@ isolate this state?"""
 [[rule]]
 id = "HS006"
 severity = "warning"
+disposition = "on"
 confidence = 0.70
 weight = 3.0
 message = "Function appears to mutate {count} independent state owners."

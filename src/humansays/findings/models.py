@@ -10,7 +10,7 @@ replaces.
 from dataclasses import dataclass, fields
 from typing import TYPE_CHECKING
 
-from humansays.enums import Grade, Severity, SignalName
+from humansays.enums import Disposition, Grade, Severity, SignalName
 
 if TYPE_CHECKING:
     from _typeshed import DataclassInstance
@@ -53,6 +53,7 @@ class RuleSpec:
     confidence: float
     weight: float
     review_question: str
+    disposition: Disposition
 
     def __post_init__(self) -> None:
         check_bounds((
@@ -66,6 +67,14 @@ class RuleSpec:
 
     @property
     def penalty(self) -> float:
+        """What this finding contributes to the score.
+
+        Zero unless the rule is ``ON``. A hint is emitted and shown but never
+        weighed, and evidence is not shown by default either.
+        """
+        if self.disposition is not Disposition.ON:
+            return 0.0
+
         return self.weight * self.confidence
 
 

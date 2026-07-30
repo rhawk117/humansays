@@ -365,6 +365,39 @@ approach.
 
 ## Discovered during execution
 
-<!-- Append here as the phase runs. Per agent-protocol.md §4b this section is
-     the highest value-per-line part of the plan for the next phase's author:
-     it records what the tree turned out to be, not what this plan assumed. -->
+<!-- Per agent-protocol.md §4b this section is the highest value-per-line part
+     of the plan for the next phase's author: it records what the tree turned
+     out to be, not what this plan assumed. -->
+
+- **Half the byte-diff corpus produces no findings at all.** `.migration/
+  capture.sh` scans two corpora, `poc` and `django`. Measured during Task 3:
+  `poc` is 14 files and **0 signals**, score 100.0. Every `poc` capture — text
+  and JSON, colour both ways, four of the eight files compared — is an empty
+  finding list, and comparing two empty lists always matches.
+
+  This is retroactive about C1. That phase's headline gate was an empty byte
+  diff reported `IDENTICAL` at all seven commits; half of what it compared was
+  empty output, and the real evidence was 3 files and 9 findings in `django`.
+  The gate was not wrong, it was **half as strong as it read**, which is the
+  §4c failure mode exactly: a gate whose blind spot was never written down.
+
+  The reason `poc` is clean is legitimate — it is the prototype's own source,
+  and the prototype's 20 self-findings were all comment- and docstring-counting,
+  which humansays retired as HS010 and HS011. So the corpus is not broken; it is
+  just not evidence. Widening it is filed in `.agent-specs/backlog.md`; C2 does
+  not widen it, and the before/after table below is honest about resting on
+  `django` alone.
+
+- **HS015 fires in none of the available corpora.** Measured: `django` fires
+  HS016 and HS021; `poc` fires neither; `src/humansays` fires only HS005 and
+  HS002. So of the three rules C2 demotes, **only two have any observable
+  effect on any captured score**. HS015's demotion is verified by its frozen
+  metadata and by a fixture test, and by nothing in the before/after table. Say
+  so in the table rather than presenting three demotions with two rows of
+  evidence.
+
+- **The self-scan baseline is unaffected, measured rather than reasoned.**
+  `src/humansays` fires only HS005 and HS002, neither of which C2 touches, so
+  `test_self_scan_matches_baseline_exactly` needs no baseline edit. This was
+  flagged in Task 5 as "probably untouched, must be run not reasoned about" —
+  it was run.

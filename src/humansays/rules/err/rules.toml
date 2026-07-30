@@ -5,6 +5,7 @@
 [[rule]]
 id = "HS005"
 severity = "warning"
+disposition = "on"
 confidence = 0.96
 weight = 3.0
 message = "Broad exception handling may collapse unrelated failures."

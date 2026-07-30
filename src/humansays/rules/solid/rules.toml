@@ -5,6 +5,7 @@
 [[rule]]
 id = "HS002"
 severity = "advisory"
+disposition = "on"
 confidence = 0.82
 weight = 1.0
 message = "Boolean parameters select behavior or operating modes."
@@ -15,6 +16,7 @@ communicate the modes better?"""
 [[rule]]
 id = "HS007"
 severity = "warning"
+disposition = "on"
 confidence = 0.65
 weight = 3.0
 message = "Function uses {count} standard-library boundary categories."
@@ -25,6 +27,7 @@ boundary categories directly?"""
 [[rule]]
 id = "HS008"
 severity = "advisory"
+disposition = "on"
 confidence = 0.65
 weight = 1.0
 message = "Class methods form {count} disconnected field-access clusters."
@@ -35,6 +38,7 @@ responsibilities that should have separate owners?"""
 [[rule]]
 id = "HS012"
 severity = "advisory"
+disposition = "on"
 confidence = 0.72
 weight = 1.0
 message = "Class owns {count} state attributes."
@@ -45,6 +49,7 @@ reasons to change?"""
 [[rule]]
 id = "HS013"
 severity = "warning"
+disposition = "on"
 confidence = 0.84
 weight = 3.0
 message = "Large class contains {count} repeated attribute-prefix clusters."
@@ -55,6 +60,7 @@ hidden inside this class?"""
 [[rule]]
 id = "HS018"
 severity = "warning"
+disposition = "on"
 confidence = 0.78
 weight = 3.0
 message = "Class inherits from {count} parent classes."

@@ -5,6 +5,7 @@
 [[rule]]
 id = "HS021"
 severity = "advisory"
+disposition = "on"
 confidence = 0.85
 weight = 1.0
 message = "Import is deferred into the function body."
