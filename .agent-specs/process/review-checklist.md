@@ -61,7 +61,7 @@ genuinely close to its positive.
 
 ## 6. Rule changes specifically
 
-- [ ] `severity`, `confidence` and `weight` in `src/humansays/catalog.py` match
+- [ ] `severity`, `confidence` and `weight` in `src/humansays/rules/*/rules.toml` match
       the rule's page under `docs/site/rules/` exactly
 - [ ] `severity` is `WARNING` only where the syntactic condition is close to the
       concern the rule names; otherwise `ADVISORY`. There is no third level

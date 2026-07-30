@@ -13,13 +13,15 @@ them executes the code being scanned, and none of them is a verdict.
 
 ## What a rule is
 
-A rule is a named condition plus the metadata needed to weigh it. In
-`src/humansays/catalog.py` each one is a `RuleSpec` with five fields:
+A rule is a named condition plus the metadata needed to weigh it. The
+metadata is data, not code: each rule group owns a
+`src/humansays/rules/<group>/rules.toml`, and each entry there carries six
+keys. Five of them become a `RuleSpec`:
 
-`signal`
-:   The human-readable name printed in text output, for example
-    `many-arguments`. This is what you see on a target line, not the `HS###`
-    code.
+`id`
+:   The `HS###` code, which becomes the rule's `signal`. The name printed in
+    text output is that signal's readable form, for example `many-arguments`
+    — that is what you see on a target line, not the code itself.
 
 `severity`
 :   `WARNING` or `ADVISORY`. There are exactly two. There is no error level and
@@ -32,13 +34,17 @@ A rule is a named condition plus the metadata needed to weigh it. In
     is sometimes just a long function.
 
 `weight`
-:   `3.0` for a `WARNING`, `1.0` for an `ADVISORY`. Set from `WARNING_WEIGHT`
-    and `ADVISORY_WEIGHT` in `catalog.py`. A third constant, `NOTICE_WEIGHT`,
-    is defined at `0.0` and no rule uses it.
+:   `3.0` for a `WARNING`, `1.0` for an `ADVISORY`. Written out in each
+    `rules.toml`. There is no third weight.
 
 `review_question`
 :   The question a reviewer should be asking at that location. This is the
     payload of the rule. The tool cannot answer it, which is the point.
+
+The sixth key is `message`: the observation text, written as a template whose
+`{placeholders}` are filled with what the rule measured. No key may carry a
+condition or a threshold — thresholds are yours to set in `humansays.toml`, and
+the loader rejects any key outside those six.
 
 ## How a finding becomes a score
 

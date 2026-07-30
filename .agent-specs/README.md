@@ -9,7 +9,8 @@ apply to everything here.
 
 The documentation site is the source of truth for both rule sets. The 19 rules
 that ship in `0.1.0a1` are under Rules, one page per group, each carrying the
-severity, confidence, weight and trigger read from `src/humansays/catalog.py`.
+severity, confidence, weight and trigger read from
+`src/humansays/rules/*/rules.toml`.
 The 175-rule planned catalog is under Planned rules and is not implemented.
 The criteria the shipped rules encode are under Design philosophy.
 `NEW_RULES.md` at the repository root was the working draft during the

@@ -88,7 +88,7 @@ piece without reading the rest. See [Class design](rules/class-design.md).
 A finding is a location, a weighted score, and a review question. It is not a
 verdict, and the tool does not tell you what to do.
 
-Every rule in `src/humansays/catalog.py` carries a `review_question` field,
+Every rule in `src/humansays/rules/*/rules.toml` carries a `review_question`,
 and that question is the point of the rule. For `HS001`, too many arguments:
 
 > Do these values form a request object, reusable configuration, or multiple
