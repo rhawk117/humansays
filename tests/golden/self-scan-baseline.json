@@ -53,6 +53,24 @@
       "evidence": "line 96: broad exception",
       "reason": "Top-level entry-point catch-all. [project.scripts] points at cli:main, so an escaping exception would exit 1 and become indistinguishable from a findings failure. Narrowing this defeats its purpose.",
       "expires_phase": "not-planned"
+    },
+    {
+      "path": "src/humansays/reporting/grouping.py",
+      "symbol": "is_shown",
+      "line": 90,
+      "rule_id": "HS002",
+      "evidence": "show_evidence",
+      "reason": "show_evidence is keyword-only (`*, show_evidence: bool`), carrying the already-made --show-evidence decision from Report.show_evidence. Same argument-kind defect as _style: HS002's declared_arguments() merges posonly/positional/kwonly indiscriminately, so it cannot tell a keyword-only flag from a positional mode switch.",
+      "expires_phase": "phase-2-argument-kind-fix"
+    },
+    {
+      "path": "src/humansays/reporting/grouping.py",
+      "symbol": "review_targets",
+      "line": 101,
+      "rule_id": "HS002",
+      "evidence": "show_evidence",
+      "reason": "show_evidence is keyword-only (`*, show_evidence: bool`), carrying the already-made --show-evidence decision from Report.show_evidence. Same argument-kind defect as _style: HS002's declared_arguments() merges posonly/positional/kwonly indiscriminately, so it cannot tell a keyword-only flag from a positional mode switch.",
+      "expires_phase": "phase-2-argument-kind-fix"
     }
   ]
 }

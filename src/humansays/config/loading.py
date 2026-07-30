@@ -176,6 +176,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument('--exclude', action='append')
     parser.add_argument('--fail-on', choices=tuple(FailOn))
     parser.add_argument('--min-score', type=float)
+    parser.add_argument('--show-evidence', action='store_true')
     parser.add_argument('--max-arguments', type=int)
     parser.add_argument('--max-nesting', type=int)
     parser.add_argument('--class-nesting-bonus', type=int)

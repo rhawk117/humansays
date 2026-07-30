@@ -139,6 +139,7 @@ CLI_DESTINATIONS = MappingProxyType({
     'limit': ('report', 'limit'),
     'fail_on': ('report', 'fail_on'),
     'min_score': ('report', 'min_score'),
+    'show_evidence': ('report', 'show_evidence'),
     'max_arguments': ('thresholds', 'functions', 'max_arguments'),
     'max_nesting': ('thresholds', 'functions', 'max_nesting'),
     'class_nesting_bonus': ('thresholds', 'functions', 'class_nesting_bonus'),

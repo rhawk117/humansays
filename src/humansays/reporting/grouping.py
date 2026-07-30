@@ -87,10 +87,24 @@ def create_signal(finding: Finding) -> Signal:
     }
 
 
-def review_targets(reports: list[FileReport]) -> list[Target]:
+def is_shown(finding: Finding, *, show_evidence: bool) -> bool:
+    """Whether a finding appears in output at all.
+
+    Evidence is collected and scored like anything else -- it is withheld from
+    display, not from the pipeline -- so the filter lives here, at the one seam
+    both renderers pass through, rather than in `evaluate`. Removing it earlier
+    would make it unavailable to the flag that exists to show it.
+    """
+    return show_evidence or finding.rule.disposition is not Disposition.EVIDENCE
+
+
+def review_targets(reports: list[FileReport], *, show_evidence: bool) -> list[Target]:
     grouped: dict[tuple[str, str], Target] = {}
     for report in reports:
         for finding in report.findings:
+            if not is_shown(finding, show_evidence=show_evidence):
+                continue
+
             location = finding.location
             key = (str(report.path), location.symbol)
             if key not in grouped:
