@@ -1,4 +1,12 @@
-"""The driver: walks facts in emission order and sorts what the rules return."""
+"""The driver: walks facts in emission order and sorts what the rules return.
+
+The walk order is the part that has to be preserved exactly. Module work
+before functions, functions before classes, lambdas last, a class's methods in
+source order, and the class head and tail phases either side of the method
+loop. Ties on ``(line, rule_id)`` do occur -- several incidents can share one
+function location, and two lambdas can share a line -- and a stable sort
+resolves them by input order.
+"""
 
 from operator import attrgetter
 
@@ -6,60 +14,65 @@ from humansays.config.models import Thresholds
 from humansays.facts.module import ClassFacts, ModuleFacts
 from humansays.facts.values import FunctionFacts
 from humansays.findings.models import Finding
-from humansays.rules.contract.signature import argument_signals
-from humansays.rules.err.effects import incident_signals, state_signals
-from humansays.rules.kiss.scope import (
-    class_shared_state,
-    module_scale,
-    module_shared_state,
-)
-from humansays.rules.kiss.shape import control_flow_signals, size_signals
 from humansays.rules.models import Emission
-from humansays.rules.registry import build_finding
-from humansays.rules.solid.cohesion import class_cohesion
-from humansays.rules.solid.structure import (
-    base_classes,
-    class_state_surface,
-    lambda_signals,
-    static_method,
+from humansays.rules.protocol import ClassAdapter, FunctionAdapter, ModuleAdapter
+from humansays.rules.registry import (
+    CLASS_HEAD_ADAPTERS,
+    CLASS_TAIL_ADAPTERS,
+    FUNCTION_ADAPTERS,
+    METHOD_ADAPTERS,
+    MODULE_ADAPTERS,
+    MODULE_TAIL_ADAPTERS,
+    build_finding,
 )
+
+
+def run_module(
+    adapters: tuple[ModuleAdapter, ...],
+    facts: ModuleFacts,
+    thresholds: Thresholds,
+) -> list[Emission]:
+    return [item for entry in adapters for item in entry.emit(facts, thresholds)]
+
+
+def run_class(
+    adapters: tuple[ClassAdapter, ...],
+    item: ClassFacts,
+    thresholds: Thresholds,
+) -> list[Emission]:
+    return [found for entry in adapters for found in entry.emit(item, thresholds)]
+
+
+def run_function(
+    adapters: tuple[FunctionAdapter, ...],
+    facts: FunctionFacts,
+    thresholds: Thresholds,
+) -> list[Emission]:
+    return [item for entry in adapters for item in entry.emit(facts, thresholds)]
 
 
 def function_signals(facts: FunctionFacts, thresholds: Thresholds) -> list[Emission]:
-    return [
-        *argument_signals(facts, thresholds),
-        *size_signals(facts, thresholds),
-        *control_flow_signals(facts, thresholds),
-        *incident_signals(facts, thresholds),
-        *state_signals(facts, thresholds),
-    ]
+    return run_function(FUNCTION_ADAPTERS, facts, thresholds)
 
 
 def class_signals(item: ClassFacts, thresholds: Thresholds) -> list[Emission]:
-    emissions = [
-        *class_shared_state(item, thresholds),
-        *base_classes(item, thresholds),
-    ]
+    emissions = run_class(CLASS_HEAD_ADAPTERS, item, thresholds)
     for method in item.methods:
         emissions.extend(function_signals(method, thresholds))
-        emissions.extend(static_method(method, thresholds))
+        emissions.extend(run_function(METHOD_ADAPTERS, method, thresholds))
 
-    emissions.extend(class_state_surface(item, thresholds))
-    emissions.extend(class_cohesion(item, thresholds))
+    emissions.extend(run_class(CLASS_TAIL_ADAPTERS, item, thresholds))
     return emissions
 
 
 def evaluate(facts: ModuleFacts, thresholds: Thresholds) -> list[Finding]:
-    emissions = [
-        *module_scale(facts, thresholds),
-        *module_shared_state(facts, thresholds),
-    ]
+    emissions = run_module(MODULE_ADAPTERS, facts, thresholds)
     for item in facts.functions:
         emissions.extend(function_signals(item, thresholds))
 
     for item in facts.classes:
         emissions.extend(class_signals(item, thresholds))
 
-    emissions.extend(lambda_signals(facts, thresholds))
+    emissions.extend(run_module(MODULE_TAIL_ADAPTERS, facts, thresholds))
     findings = [build_finding(emission) for emission in emissions]
     return sorted(findings, key=attrgetter('sort_key'))

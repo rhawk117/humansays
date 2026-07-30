@@ -1,27 +1,12 @@
-"""HS017 and HS004: module scale, and mutable state bound to a shared scope."""
+"""HS004 and HS006: state whose owner and lifetime are not obvious."""
 
 from humansays.config.models import Thresholds
+from humansays.const import MUTATION_OWNER_MINIMUM
 from humansays.enums import SignalName
 from humansays.facts.module import ClassFacts, ModuleFacts
-from humansays.facts.values import MutableBinding
+from humansays.facts.values import FunctionFacts, MutableBinding
 from humansays.findings.models import Location
 from humansays.rules.models import Emission
-
-
-def module_scale(facts: ModuleFacts, thresholds: Thresholds) -> list[Emission]:
-    count = facts.line_count
-    limit = thresholds.modules.max_lines
-    if count <= limit:
-        return []
-
-    return [
-        Emission(
-            SignalName.HS017,
-            Location('<module>', 1, max(1, count)),
-            (f'configured threshold: {limit}',),
-            payload={'count': count},
-        ),
-    ]
 
 
 def shared_state(
@@ -54,3 +39,22 @@ def module_shared_state(facts: ModuleFacts, thresholds: Thresholds) -> list[Emis
 def class_shared_state(item: ClassFacts, thresholds: Thresholds) -> list[Emission]:
     del thresholds
     return shared_state(item.bindings, item.name, 'class')
+
+
+def mutation_owners(facts: FunctionFacts, thresholds: Thresholds) -> list[Emission]:
+    del thresholds
+    mutations = facts.body.mutations
+    if len(mutations) < MUTATION_OWNER_MINIMUM:
+        return []
+
+    evidence = tuple(
+        f'{owner}: {min(details)}' for owner, details in sorted(mutations.items())
+    )
+    return [
+        Emission(
+            SignalName.HS006,
+            facts.location,
+            evidence,
+            payload={'count': len(mutations)},
+        ),
+    ]

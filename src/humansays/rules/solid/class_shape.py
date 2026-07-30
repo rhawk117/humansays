@@ -1,4 +1,10 @@
-"""HS018, HS015, HS012, HS013 and HS016: the shape a class or module declares."""
+"""HS018, HS012 and HS013: the surface a class declares.
+
+HS013 is emitted only inside the branch that emits HS012, and stays in the same
+adapter. Splitting them would duplicate the attribute-count gate and the
+clustering call, and no fixture would catch the drift if HS013 started firing
+on a class HS012 did not.
+"""
 
 from collections.abc import Iterable
 
@@ -6,9 +12,7 @@ from humansays.config.models import Thresholds
 from humansays.const import CLUSTER_MINIMUM, NON_STRUCTURAL_PREFIXES
 from humansays.enums import SignalName
 from humansays.factories import string_set_map
-from humansays.facts.module import ClassFacts, ModuleFacts
-from humansays.facts.values import FunctionFacts
-from humansays.findings.models import Location
+from humansays.facts.module import ClassFacts
 from humansays.rules.models import Emission
 
 
@@ -34,21 +38,6 @@ def base_classes(item: ClassFacts, thresholds: Thresholds) -> list[Emission]:
 
     return [
         Emission(SignalName.HS018, item.location, bases, payload={'count': len(bases)}),
-    ]
-
-
-def static_method(facts: FunctionFacts, thresholds: Thresholds) -> list[Emission]:
-    """HS015: a staticmethod is a module function wearing a class as a namespace."""
-    del thresholds
-    if not facts.static_method:
-        return []
-
-    return [
-        Emission(
-            SignalName.HS015,
-            facts.location,
-            (f'line {facts.location.line}: @staticmethod {facts.name}',),
-        ),
     ]
 
 
@@ -81,16 +70,3 @@ def class_state_surface(item: ClassFacts, thresholds: Thresholds) -> list[Emissi
         )
 
     return emissions
-
-
-def lambda_signals(facts: ModuleFacts, thresholds: Thresholds) -> list[Emission]:
-    """HS016: lambdas are anonymous, unimportable, and awkward to test."""
-    del thresholds
-    return [
-        Emission(
-            SignalName.HS016,
-            Location(site.symbol, site.line, site.line),
-            (f'line {site.line}: {site.source}',),
-        )
-        for site in facts.lambdas
-    ]
