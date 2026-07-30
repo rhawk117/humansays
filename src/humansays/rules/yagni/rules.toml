@@ -1,0 +1,13 @@
+# Rules about structure built for a requirement that has not arrived.
+#
+# weight 3.0 is WARNING, weight 1.0 is ADVISORY. There are no other severities.
+
+[[rule]]
+id = "HS015"
+severity = "warning"
+confidence = 0.99
+weight = 3.0
+message = "Method is declared @staticmethod, so it can reach neither instance nor class state."
+review_question = """\
+The method can reach neither instance nor class state, so what \
+does class scope buy over a module-level function?"""

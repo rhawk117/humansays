@@ -1,0 +1,23 @@
+# Rules about state whose owner and lifetime are not obvious.
+#
+# weight 3.0 is WARNING, weight 1.0 is ADVISORY. There are no other severities.
+
+[[rule]]
+id = "HS004"
+severity = "warning"
+confidence = 0.95
+weight = 3.0
+message = "Mutable {scope}-scope state `{name}` is shared beyond one instance or operation."
+review_question = """\
+Is the lifetime intentional, who owns mutation, and can tests \
+isolate this state?"""
+
+[[rule]]
+id = "HS006"
+severity = "warning"
+confidence = 0.70
+weight = 3.0
+message = "Function appears to mutate {count} independent state owners."
+review_question = """\
+Are mutation authority, transaction boundaries, and \
+partial-failure behavior clear?"""

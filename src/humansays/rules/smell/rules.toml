@@ -1,0 +1,13 @@
+# Rules about constructs that are fine in isolation and telling in aggregate.
+#
+# weight 3.0 is WARNING, weight 1.0 is ADVISORY. There are no other severities.
+
+[[rule]]
+id = "HS016"
+severity = "warning"
+confidence = 0.99
+weight = 3.0
+message = "Lambda expression stands in for a named function."
+review_question = """\
+What would this expression be named, and would a named function \
+make it testable and reusable?"""
