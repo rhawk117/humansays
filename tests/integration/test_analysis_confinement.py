@@ -35,6 +35,37 @@ def test_ast_and_tokenize_are_confined_to_analysis(src_root: Path) -> None:
     assert not offenders
 
 
+def test_analysis_and_signals_do_not_import_each_other(src_root: Path) -> None:
+    """Extraction and evaluation are siblings that meet only at `humansays.facts`.
+
+    `lint-imports` is the primary enforcer: the `layers` contract writes them as
+    `humansays.analysis | humansays.signals`, and the pipe bans the import in
+    both directions. This is the second enforcer, and it exists for symmetry --
+    the `ast` ban above already had two, and this boundary is the one the
+    extraction/evaluation split was carried out to create.
+    """
+    banned = {'analysis': 'humansays.signals', 'signals': 'humansays.analysis'}
+    offenders = []
+    for package, forbidden in banned.items():
+        for path in sorted((src_root / package).rglob('*.py')):
+            tree = ast.parse(path.read_text(encoding='utf-8'), filename=str(path))
+            for node in ast.walk(tree):
+                if isinstance(node, ast.Import):
+                    names = {alias.name for alias in node.names}
+                elif isinstance(node, ast.ImportFrom):
+                    names = {node.module} if node.module else set()
+                else:
+                    continue
+
+                if any(
+                    name == forbidden or name.startswith(f'{forbidden}.')
+                    for name in names
+                ):
+                    offenders.append((str(path.relative_to(src_root)), sorted(names)))
+
+    assert not offenders
+
+
 def test_facts_and_signals_never_branch_on_interpreter_version(
     src_root: Path,
 ) -> None:

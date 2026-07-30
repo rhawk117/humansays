@@ -328,3 +328,52 @@ max_branches = 2
 [thresholds.modules]
 max_lines = 10
 """
+
+# --- syntax that does not parse on every supported interpreter ---------------
+#
+# `requires-python` is ">=3.11", and these use grammar added later. They are
+# safe to define here because they are strings: nothing parses them at import.
+# Their tests gate on `sys.version_info` and skip below the version that
+# introduced the syntax. See tests/unit/test_version_gated_syntax.py.
+
+# PEP 695, Python 3.12. The type parameter must not be counted as a call
+# parameter: `transform` takes one argument, not two.
+GENERIC_FUNCTION = """
+def transform[T](value: T) -> T:
+    return value
+"""
+
+# PEP 695, Python 3.12. `type_params` was added to ClassDef in the same release.
+GENERIC_CLASS = """
+class Store[T]:
+    def put(self, item: T) -> None:
+        self.item = item
+
+    def get[U](self, fallback: U) -> U:
+        return fallback
+"""
+
+# PEP 695, Python 3.12. `ast.TypeAlias` is neither Assign nor AnnAssign, so a
+# module-scope walk that only knows those two must still find what follows it.
+TYPE_ALIAS_MODULE = """
+type Handler = int
+
+CONSTANT = []
+
+
+def use(handler: Handler) -> int:
+    return handler
+"""
+
+# PEP 701, Python 3.12. Quotes reused inside the f-string, which changes
+# JoinedStr structure and column offsets -- analysis/syntax.py reads spans.
+NESTED_QUOTE_FSTRING = """
+def render(record):
+    return f"{record["key"]}: {record["other"]!r}"
+"""
+
+# PEP 696, Python 3.13. A default on the type parameter.
+TYPEVAR_DEFAULT = """
+def pick[T = int](value: T) -> T:
+    return value
+"""
