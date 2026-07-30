@@ -20,7 +20,7 @@ from humansays.const import FINDINGS_EXIT, STDIN_SPEC, UNANALYZED_EXIT
 from humansays.enums import FailOn, Severity
 from humansays.findings.models import Score
 from humansays.reporting.models import FileReport, ScanResult
-from humansays.signals import evaluate
+from humansays.rules import evaluate
 
 logger = logging.getLogger(__name__)
 

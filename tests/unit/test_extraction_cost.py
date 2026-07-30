@@ -32,7 +32,7 @@ MAX_REACHES_PER_NODE = 2.5
 
 SAMPLES = (
     'src/humansays/analysis/extraction.py',
-    'src/humansays/signals/structure.py',
+    'src/humansays/rules/solid/structure.py',
     'src/humansays/application.py',
     'tests/golden/poc-parity/corpus/poc/rules.py',
 )

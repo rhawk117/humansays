@@ -10,7 +10,7 @@ from humansays.analysis.extraction import extract
 from humansays.analysis.models import ParsedModule
 from humansays.config.models import Thresholds
 from humansays.enums import Severity, SignalName
-from humansays.signals import evaluate
+from humansays.rules import evaluate
 from tests.fixtures import sources
 
 if TYPE_CHECKING:

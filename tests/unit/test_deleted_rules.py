@@ -9,8 +9,8 @@ from humansays.analysis.extraction import extract
 from humansays.analysis.models import ParsedModule
 from humansays.config.models import Thresholds
 from humansays.enums import SignalName
+from humansays.rules import evaluate
 from humansays.rules.loading import rule_definitions
-from humansays.signals import evaluate
 from tests.fixtures import sources
 
 DELETED_IDS = frozenset({'HS010', 'HS011', 'HS020'})

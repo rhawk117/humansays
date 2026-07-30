@@ -2,22 +2,22 @@
 
 from operator import attrgetter
 
-from humansays.catalog import build_finding
 from humansays.config.models import Thresholds
 from humansays.facts.module import ClassFacts, ModuleFacts
 from humansays.facts.values import FunctionFacts
 from humansays.findings.models import Finding
-from humansays.rules.models import Emission
-from humansays.signals.cohesion import class_cohesion
-from humansays.signals.effects import incident_signals, state_signals
-from humansays.signals.scope import (
+from humansays.rules.contract.signature import argument_signals
+from humansays.rules.err.effects import incident_signals, state_signals
+from humansays.rules.kiss.scope import (
     class_shared_state,
     module_scale,
     module_shared_state,
 )
-from humansays.signals.shape import control_flow_signals, size_signals
-from humansays.signals.signature import argument_signals
-from humansays.signals.structure import (
+from humansays.rules.kiss.shape import control_flow_signals, size_signals
+from humansays.rules.models import Emission
+from humansays.rules.registry import build_finding
+from humansays.rules.solid.cohesion import class_cohesion
+from humansays.rules.solid.structure import (
     base_classes,
     class_state_surface,
     lambda_signals,

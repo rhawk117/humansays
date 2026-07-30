@@ -19,7 +19,7 @@ from humansays.analysis.models import ParsedModule
 from humansays.cli import main
 from humansays.config.models import Thresholds
 from humansays.enums import Grade, SignalName
-from humansays.signals import evaluate
+from humansays.rules import evaluate
 
 if TYPE_CHECKING:
     from humansays.findings.models import Finding

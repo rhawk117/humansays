@@ -3,7 +3,7 @@
 ``syntax`` reads individual nodes. This module describes whole definitions:
 what a signature declares, what attributes a class body reserves, where the
 lambdas are, which bindings are mutable. Everything here returns facts, so
-``humansays.signals`` can judge them without touching ``ast`` itself.
+``humansays.rules`` can judge them without touching ``ast`` itself.
 
 ``body_visitor`` owns the other half, walking a single function body.
 """

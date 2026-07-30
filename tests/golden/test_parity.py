@@ -18,8 +18,8 @@ from humansays.analysis.models import ParsedModule
 from humansays.config.models import Thresholds
 from humansays.enums import Grade
 from humansays.reporting.models import FileReport, ScanResult
+from humansays.rules import evaluate
 from humansays.scoring import score_for
-from humansays.signals import evaluate
 
 HERE = Path(__file__).resolve().parent
 POC_PARITY = HERE / 'poc-parity'

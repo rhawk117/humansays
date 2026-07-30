@@ -1,7 +1,7 @@
 """The one place that walks a module and turns it into facts.
 
 This is also the normalization boundary: interpreter differences stop here, and
-`humansays.facts` and `humansays.signals` never learn which version parsed the
+`humansays.facts` and `humansays.rules` never learn which version parsed the
 file. `tests/integration/test_analysis_confinement.py` is the enforcer.
 
 No cache exists. When one is built, its key must include the interpreter

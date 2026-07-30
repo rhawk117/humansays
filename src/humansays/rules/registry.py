@@ -1,10 +1,9 @@
 """Turning what a rule measured into a finding.
 
-Rule metadata lives in ``humansays/rules/<group>/rules.toml`` and is reached
-through :func:`rule_definitions`, which is keyed by :class:`SignalName`. A rule
-id is never a loose string: ``rule_definitions()[SignalName.HS015]`` is the only
-way to reach a spec, and a typo is an immediate ``KeyError`` rather than a
-silently missing finding.
+Rule metadata is reached through :func:`rule_definitions`, which is keyed by
+:class:`SignalName`, so a rule id is never a loose string:
+``rule_definitions()[SignalName.HS015]`` is the only way to reach a spec, and a
+typo is an immediate ``KeyError`` rather than a silently missing finding.
 """
 
 from humansays.findings.models import Finding, Observation
