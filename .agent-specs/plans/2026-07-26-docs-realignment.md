@@ -257,7 +257,7 @@ Reusable extraction prompt — substitute the bracketed values:
 
 > You are extracting one section of a rule catalog into its own documentation page.
 >
-> 1. Run exactly: `sed -n '[START],[END]p' NEW_RULES.md` from `/home/rhawk/dev/humansays`. Do not read `NEW_RULES.md` any other way. Do not read outside this range.
+> 1. Run exactly: `sed -n '[START],[END]p' NEW_RULES.md` from the repository root. Do not read `NEW_RULES.md` any other way. Do not read outside this range.
 > 2. Write the result to `[DEST]`.
 > 3. **Every table row and every rule ID moves byte-for-byte verbatim.** Do not rewrite, reword, reclassify, renumber, reorder, reformat, or "improve" any rule text, message template, or table cell. If you find yourself paraphrasing a rule, you have exceeded your brief — stop and report it.
 > 4. You may author exactly two kinds of new text: a page title (`# [TITLE]`) and one short introductory paragraph before the table. Invoke the `humanizer` skill for that prose and nothing else. Demote the extracted `###` heading to fit the page, or drop it if it duplicates the page title — but change no other heading text.
@@ -283,7 +283,7 @@ Reusable extraction prompt — substitute the bracketed values:
 - [ ] **Step 1: Create the directory and generate the source slug set**
 
 ```bash
-cd /home/rhawk/dev/humansays
+cd "$(git rev-parse --show-toplevel)"
 mkdir -p .migration
 PATTERN='\b(SRP|KISS|CQS|POLA|COUP|CONTRACT|STATE|LIFE|FAIL|CONC|IDIOM|NIT|DRY)[0-9]{3}\b'
 grep -rhoE "$PATTERN" NEW_RULES.md | sort -u > .migration/slugs-source.txt
@@ -321,8 +321,8 @@ Explain: this directory holds migration provenance; it lives outside `docs/` del
 - [ ] **Step 5: Copy this plan into the specs tree**
 
 ```bash
-cp /home/rhawk/.claude/plans/instructions-branch-context-this-branch-fuzzy-riddle.md \
-   .agent-specs/plans/2026-07-26-docs-realignment.md
+# Copy this plan from wherever the harness wrote it into the repository.
+cp "$PLAN_SOURCE" .agent-specs/plans/2026-07-26-docs-realignment.md
 ```
 
 - [ ] **Step 6: Commit**
@@ -382,7 +382,7 @@ git commit -m "docs(mkdocs): enforce link and anchor validation under strict"
 - [ ] **Step 1: Move the legacy catalog pages**
 
 ```bash
-cd /home/rhawk/dev/humansays
+cd "$(git rev-parse --show-toplevel)"
 mkdir -p docs/site/rules/legacy
 git mv docs/site/rules/python.md docs/site/rules/legacy/python.md
 git mv docs/site/rules/README.md docs/site/rules/legacy/README.md
@@ -502,7 +502,7 @@ Replace the `Rules:` section in `docs/mkdocs.yml` with:
 Run:
 
 ```bash
-cd /home/rhawk/dev/humansays
+cd "$(git rev-parse --show-toplevel)"
 for f in docs/site/rules/python/*.md; do
   printf '%s\t%s\n' "$(grep -cE '^\| [A-Z]+[0-9]{3} \|' "$f")" "$f"
 done
@@ -542,7 +542,7 @@ Same reusable prompt, `implementer` on `haiku`. These sections contain no `DOMAI
 §9 needs no authored prose — copy it directly rather than dispatching an agent:
 
 ```bash
-cd /home/rhawk/dev/humansays
+cd "$(git rev-parse --show-toplevel)"
 { printf '# Source-accountability ledger\n\n'
   printf 'Extracted verbatim from NEW_RULES.md lines 464-679. Unpublished: this\n'
   printf 'is migration provenance, not product documentation.\n\n'
@@ -568,7 +568,7 @@ Append under the `Python:` sub-section in `docs/mkdocs.yml`, after `DRY:`:
 This check is format-agnostic, so it holds regardless of how the tables are laid out:
 
 ```bash
-cd /home/rhawk/dev/humansays
+cd "$(git rev-parse --show-toplevel)"
 check() {  # $1=start $2=end $3=dest
   s=$(sed -n "$1,$2p" NEW_RULES.md | grep -c '^|')
   d=$(grep -c '^|' "$3")
@@ -625,7 +625,7 @@ In `docs/mkdocs.yml`, add as the first entry under `Python:`:
 - [ ] **Step 3: Run the full five-step fidelity chain**
 
 ```bash
-cd /home/rhawk/dev/humansays
+cd "$(git rev-parse --show-toplevel)"
 PATTERN='\b(SRP|KISS|CQS|POLA|COUP|CONTRACT|STATE|LIFE|FAIL|CONC|IDIOM|NIT|DRY)[0-9]{3}\b'
 
 grep -rhoE "$PATTERN" docs/ --exclude-dir=legacy | sort -u > .migration/slugs-dest.txt
@@ -682,7 +682,7 @@ Binding instructions for the agent: documentation describes behavior read from s
 - [ ] **Step 3: Verify**
 
 ```bash
-cd /home/rhawk/dev/humansays
+cd "$(git rev-parse --show-toplevel)"
 for c in $(grep -rhoE '\bHS[0-9]{3}\b' src/ | sort -u); do
   grep -q "$c" docs/site/reference/shipped-rules.md || echo "MISSING $c"
 done
@@ -732,7 +732,7 @@ Binding instruction: if the agent cannot establish a mapping from the ledger, it
 - [ ] **Step 3: Verify**
 
 ```bash
-cd /home/rhawk/dev/humansays
+cd "$(git rev-parse --show-toplevel)"
 for c in $(grep -rhoE '\bHS[0-9]{3}\b' src/ | sort -u); do
   grep -q "$c" docs/site/reference/reconciliation.md || echo "MISSING $c"
 done
@@ -785,7 +785,7 @@ Bullets the 158-rule catalog covers are removed. Bullets it does not cover move 
 - [ ] **Step 4: Delete the phase tree and repair the dangling links**
 
 ```bash
-cd /home/rhawk/dev/humansays
+cd "$(git rev-parse --show-toplevel)"
 git rm -r .agent-specs/phases/
 git rm .agent-specs/plans/2026-07-26-phase-2-fact-model.md
 ```
@@ -797,7 +797,7 @@ Then repoint the four dangling links listed in **Established Facts → Phase roa
 - [ ] **Step 5: Verify**
 
 ```bash
-cd /home/rhawk/dev/humansays
+cd "$(git rev-parse --show-toplevel)"
 test ! -d .agent-specs/phases && echo "phases removed"
 grep -rn 'phases/' .agent-specs/ ; echo "dangling_exit=$?"
 grep -nE '^\s*([0-9]+[.)]|Phase [0-9]|Step [0-9]|First,|Then,|Next,)' .agent-specs/backlog.md
@@ -827,7 +827,7 @@ git commit -m "docs(roadmap): retire the phase sequence for an unordered backlog
 - [ ] **Step 1: Confirm the frozen baseline still matches the source document**
 
 ```bash
-cd /home/rhawk/dev/humansays
+cd "$(git rev-parse --show-toplevel)"
 PATTERN='\b(SRP|KISS|CQS|POLA|COUP|CONTRACT|STATE|LIFE|FAIL|CONC|IDIOM|NIT|DRY)[0-9]{3}\b'
 diff <(grep -rhoE "$PATTERN" NEW_RULES.md | sort -u) .migration/slugs-source.txt; echo "baseline=$?"
 ```
@@ -843,7 +843,7 @@ git rm NEW_RULES.md
 - [ ] **Step 3: Re-run the full chain against the frozen baseline**
 
 ```bash
-cd /home/rhawk/dev/humansays
+cd "$(git rev-parse --show-toplevel)"
 PATTERN='\b(SRP|KISS|CQS|POLA|COUP|CONTRACT|STATE|LIFE|FAIL|CONC|IDIOM|NIT|DRY)[0-9]{3}\b'
 grep -rhoE "$PATTERN" docs/ --exclude-dir=legacy | sort -u > .migration/slugs-dest.txt
 diff .migration/slugs-source.txt .migration/slugs-dest.txt; echo "fidelity=$?"
@@ -974,7 +974,7 @@ Summary must start lowercase and must not end with a period. The scope may not c
 ### Notes on dispatching the subagents
 
 - Extraction agents need `Bash` to run `sed`, and `Skill` for `humanizer`. The `implementer` agent type has both. **Instruct them explicitly to use `sed`, not `Read`** — an agent that reaches for `Read` on `NEW_RULES.md` will pull the whole 690-line file into its context and violate the standing constraint.
-- Subagent working directory is `/home/rhawk/dev/humansays`. The `sed` commands in the extraction prompt use the repo-relative path `NEW_RULES.md`.
+- Subagent working directory is the repository root. The `sed` commands in the extraction prompt use the repo-relative path `NEW_RULES.md`.
 - Do not run the verification shell snippets under `set -e`. `grep -c` exits 1 on a zero count, which is a legitimate result for several checks (notably `accounting.md`, which may contain no table rows at all) and would abort the script.
 - Take the agents' reported counts as a claim, not a result. Every task's verification step re-measures from the coordinator for that reason.
 

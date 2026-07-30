@@ -62,7 +62,7 @@ a step tells you to.
 (`tests/tooling/test_version_metadata.py::test_cli_version_flag_matches_installed_metadata`).
 Command: `uv run pytest -q`.
 
-**pytest discovery:** `rootdir: /home/rhawk/dev/humansays`, `configfile: .pytest.toml`.
+**pytest discovery:** `rootdir: <repository root>`, `configfile: .pytest.toml`.
 `.pytest.toml` is auto-discovered; no `-c` flag is needed anywhere.
 
 **`pytest_plugins` in `tests/conftest.py` is accepted.** Verified by probe on
