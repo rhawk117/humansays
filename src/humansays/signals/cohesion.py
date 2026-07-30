@@ -1,5 +1,6 @@
 """HS008: whether a class's methods touch one field cluster or several."""
 
+from humansays.config.models import Thresholds
 from humansays.const import COHESION_FIELD_MINIMUM, COHESION_METHOD_MINIMUM
 from humansays.enums import SignalName
 from humansays.facts.module import ClassFacts
@@ -42,7 +43,8 @@ def connected_components(usage: list[frozenset[str]]) -> list[list[int]]:
     return components
 
 
-def class_cohesion(item: ClassFacts) -> list[Emission]:
+def class_cohesion(item: ClassFacts, thresholds: Thresholds) -> list[Emission]:
+    del thresholds
     eligible = cohesion_candidates(item.methods)
     usage = [fields for _, fields in eligible]
     fields = {name for group in usage for name in group}

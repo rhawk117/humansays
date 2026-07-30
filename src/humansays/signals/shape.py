@@ -1,12 +1,13 @@
 """HS009, HS022, HS003 and HS019: how large a function is and how it branches."""
 
-from humansays.config.models import FunctionThresholds
+from humansays.config.models import Thresholds
 from humansays.enums import SignalName
 from humansays.facts.values import FunctionFacts
 from humansays.rules.models import Emission
 
 
-def size_signals(facts: FunctionFacts, limits: FunctionThresholds) -> list[Emission]:
+def size_signals(facts: FunctionFacts, thresholds: Thresholds) -> list[Emission]:
+    limits = thresholds.functions
     emissions: list[Emission] = []
     if facts.length > limits.max_lines:
         emissions.append(
@@ -36,8 +37,9 @@ def size_signals(facts: FunctionFacts, limits: FunctionThresholds) -> list[Emiss
 
 def control_flow_signals(
     facts: FunctionFacts,
-    limits: FunctionThresholds,
+    thresholds: Thresholds,
 ) -> list[Emission]:
+    limits = thresholds.functions
     emissions: list[Emission] = []
     limit = limits.nesting_limit(facts.class_name)
     if facts.body.maximum_nesting > limit:

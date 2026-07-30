@@ -2,12 +2,12 @@
 
 from collections.abc import Iterable
 
-from humansays.config.models import ClassThresholds
+from humansays.config.models import Thresholds
 from humansays.const import CLUSTER_MINIMUM, NON_STRUCTURAL_PREFIXES
 from humansays.enums import SignalName
 from humansays.factories import string_set_map
-from humansays.facts.module import ClassFacts
-from humansays.facts.values import FunctionFacts, LambdaFact
+from humansays.facts.module import ClassFacts, ModuleFacts
+from humansays.facts.values import FunctionFacts
 from humansays.findings.models import Location
 from humansays.rules.models import Emission
 
@@ -26,10 +26,10 @@ def attribute_prefix_clusters(attributes: Iterable[str]) -> dict[str, tuple[str,
     }
 
 
-def base_classes(item: ClassFacts, thresholds: ClassThresholds) -> list[Emission]:
+def base_classes(item: ClassFacts, thresholds: Thresholds) -> list[Emission]:
     """HS018: multiple parents make the method resolution order the real design."""
     bases = item.base_classes
-    if len(bases) <= thresholds.max_base_classes:
+    if len(bases) <= thresholds.classes.max_base_classes:
         return []
 
     return [
@@ -37,8 +37,9 @@ def base_classes(item: ClassFacts, thresholds: ClassThresholds) -> list[Emission
     ]
 
 
-def static_method(facts: FunctionFacts) -> list[Emission]:
+def static_method(facts: FunctionFacts, thresholds: Thresholds) -> list[Emission]:
     """HS015: a staticmethod is a module function wearing a class as a namespace."""
+    del thresholds
     if not facts.static_method:
         return []
 
@@ -51,9 +52,9 @@ def static_method(facts: FunctionFacts) -> list[Emission]:
     ]
 
 
-def class_state_surface(item: ClassFacts, thresholds: ClassThresholds) -> list[Emission]:
+def class_state_surface(item: ClassFacts, thresholds: Thresholds) -> list[Emission]:
     attributes = item.state_attributes
-    if len(attributes) <= thresholds.max_attributes:
+    if len(attributes) <= thresholds.classes.max_attributes:
         return []
 
     emissions = [
@@ -82,13 +83,14 @@ def class_state_surface(item: ClassFacts, thresholds: ClassThresholds) -> list[E
     return emissions
 
 
-def lambda_signals(lambdas: tuple[LambdaFact, ...]) -> list[Emission]:
+def lambda_signals(facts: ModuleFacts, thresholds: Thresholds) -> list[Emission]:
     """HS016: lambdas are anonymous, unimportable, and awkward to test."""
+    del thresholds
     return [
         Emission(
             SignalName.HS016,
             Location(site.symbol, site.line, site.line),
             (f'line {site.line}: {site.source}',),
         )
-        for site in lambdas
+        for site in facts.lambdas
     ]
