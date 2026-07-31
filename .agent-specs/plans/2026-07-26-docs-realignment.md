@@ -1,5 +1,15 @@
 # Documentation Realignment Implementation Plan
 
+> **Superseded, 2026-07-30. Do not execute.** This plan's source document,
+> `NEW_RULES.md`, was untracked and no longer exists, and its six references to
+> `src/humansays/catalog.py` and `src/humansays/signals/` name modules deleted
+> in phase C1. Its outcomes did land: the per-domain planned catalog is under
+> `docs/site/planned/`, and the nine-phase roadmap retirement is recorded in
+> `.agent-specs/roadmap-retirement.md`. Kept for provenance. If documentation
+> realignment is wanted again, write a new plan against the current layout
+> rather than reviving this one — its premises predate two phases that changed
+> them.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Decompose the 158-rule catalog in `NEW_RULES.md` into per-domain MkDocs pages without losing or altering a single rule, document the shipped `0.1.0a1` release, reconcile it against the new catalog, and retire the nine-phase roadmap into an unordered backlog.

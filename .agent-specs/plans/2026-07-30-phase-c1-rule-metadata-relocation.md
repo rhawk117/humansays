@@ -1,5 +1,13 @@
 # Phase C1 — rule metadata relocation
 
+> **Executed and superseded, 2026-07-30.** The work landed on branch
+> `chore/rules-relocation`. The **Context** and **Established Facts** sections
+> below describe the tree *before* this plan ran: `src/humansays/catalog.py` and
+> `src/humansays/signals/` were deleted by it and no longer exist. Read them as
+> a record of what the author found, not as a description of the current
+> layout. Phase C2 followed and is in
+> `2026-07-30-phase-c2-disposition-model.md`.
+
 ## Context
 
 Rule metadata lives in Python today. `src/humansays/catalog.py` holds a
