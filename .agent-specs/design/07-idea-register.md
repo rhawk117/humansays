@@ -40,7 +40,6 @@ Effort S/M/L/XL.
 | Four-field taxonomy (claim/certainty/impact/report) | 5 | 5 | S | **Phase 2.** Replaces the two-field scheme |
 | Impact derived from repair correspondence | 4 | 4 | M | **Phase 5.** Never hand-assigned |
 | Profile-as-emittable-ID-set + snapshot test | 5 | 5 | S | **Phase 4.** Catches the suppression bug mechanically |
-| Working scope guard (`check_scope.py`) | 5 | 5 | S | **Phase 1.** Verified against seven bypasses |
 | Effect gate on precision + recall | 4 | 5 | M | **Phase 7.** Volume alone is not correctness |
 | `sitecustomize` instrumentation bootstrap | 3 | 4 | M | **Phase 8.** Subprocess propagation is unsolved otherwise |
 | Single severity tier | 1 | 1 | S | **Rejected.** See `evidence/critique-log.md` §1 |
