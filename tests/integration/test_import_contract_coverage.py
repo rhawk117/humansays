@@ -12,6 +12,8 @@ from __future__ import annotations
 import configparser
 from typing import TYPE_CHECKING
 
+from tests.fixtures.sweeps import python_sources
+
 if TYPE_CHECKING:
     from pathlib import Path
 
@@ -35,7 +37,7 @@ def module_name(path: Path, src_root: Path) -> str:
 def test_contract_covers_every_module_outside_analysis(src_root: Path) -> None:
     expected = {
         module_name(path, src_root)
-        for path in src_root.rglob('*.py')
+        for path in python_sources(src_root)
         if path.relative_to(src_root).parts[0] != 'analysis'
     }
     # The root package is deliberately absent from the contract: it re-exports
@@ -52,6 +54,6 @@ def test_contract_covers_every_module_outside_analysis(src_root: Path) -> None:
 def test_contract_lists_nothing_that_no_longer_exists(src_root: Path) -> None:
     """A stale entry does not weaken enforcement, but it does hide that the
     list is unmaintained, which is what lets a missing entry go unnoticed."""
-    real = {module_name(path, src_root) for path in src_root.rglob('*.py')}
+    real = {module_name(path, src_root) for path in python_sources(src_root)}
     stale = sorted(listed_modules() - real)
     assert not stale, f'{CONTRACT} lists modules that do not exist: {stale}'

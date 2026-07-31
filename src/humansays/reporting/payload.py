@@ -16,7 +16,7 @@ __all__ = ('json_payload', 'report_json', 'status')
 
 
 def json_payload(result: ScanResult, score: Score, settings: Report) -> dict:
-    targets = review_targets(result.reports)
+    targets = review_targets(result.reports, show_evidence=settings.show_evidence)
     shown = shown_targets(targets, settings.limit)
     return {
         'schema_version': 1,

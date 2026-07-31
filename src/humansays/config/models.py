@@ -84,6 +84,7 @@ class Report:
     limit: int = 200
     fail_on: FailOn = FailOn.NEVER
     min_score: float = 0.0
+    show_evidence: bool = False
 
     def __post_init__(self) -> None:
         object.__setattr__(self, 'format', OutputFormat(self.format))

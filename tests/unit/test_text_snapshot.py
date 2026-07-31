@@ -24,8 +24,8 @@ from humansays.reporting.console import Console, Destination
 from humansays.reporting.models import FileReport, ReportRequest, ScanResult
 from humansays.reporting.renderers import AnsiRenderer
 from humansays.reporting.terminal import TerminalAttributes
+from humansays.rules import evaluate
 from humansays.scoring import score_for
-from humansays.signals import evaluate
 from tests.fixtures import sources
 
 if TYPE_CHECKING:

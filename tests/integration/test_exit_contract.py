@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import contextlib
 import io
 import json
 from typing import TYPE_CHECKING
@@ -7,6 +8,7 @@ from typing import TYPE_CHECKING
 import pytest
 
 from humansays.cli import main
+from tests.fixtures import sources
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -233,3 +235,49 @@ def test_no_python_files_message_offers_a_path(
     assert code == 3
     assert 'no Python files found' in message
     assert 'humansays .' in message
+
+
+class TestDispositionAndTheVerdict:
+    """A hint is emitted and shown, and takes no part in the exit code.
+
+    Both gates have to agree. `--min-score` already ignores anything that is not
+    ON, because the score does; if `--fail-on warning` still tripped on a hint,
+    the same run would pass one gate and fail the other on the same finding.
+    HS016 is a `hint` whose severity is still WARNING, which is exactly the case
+    that would diverge.
+    """
+
+    def scan(self, tmp_path: Path, *flags: str) -> tuple[int, str]:
+        module = tmp_path / 'hints_only.py'
+        module.write_text(sources.LAMBDAS_IN_THREE_SCOPES, encoding='utf-8')
+        buffer = io.StringIO()
+        with contextlib.redirect_stdout(buffer):
+            code = main([str(module), '--format', 'json', *flags], io.StringIO(''))
+        return code, buffer.getvalue()
+
+    def test_a_hint_is_still_reported_and_scores_nothing(self, tmp_path: Path) -> None:
+        _, output = self.scan(tmp_path)
+        payload = json.loads(output)
+        reported = {
+            signal['rule_id']
+            for target in payload['targets']
+            for signal in target['signals']
+        }
+        assert 'HS016' in reported, 'a hint must still be reported'
+        assert payload['score']['value'] == 100.0
+
+    @pytest.mark.parametrize('flags', [('--fail-on', 'warning'), ('--fail-on', 'any')])
+    def test_a_hint_alone_does_not_fail_the_run(
+        self, tmp_path: Path, flags: tuple[str, ...]
+    ) -> None:
+        code, _ = self.scan(tmp_path, *flags)
+        assert code == 0
+
+    def test_a_scored_finding_still_fails_the_run(self, tmp_path: Path) -> None:
+        """The gate is narrowed, not disabled."""
+        module = tmp_path / 'scored.py'
+        module.write_text(sources.VALIDATED_ARGUMENT_BUNDLE, encoding='utf-8')
+        buffer = io.StringIO()
+        with contextlib.redirect_stdout(buffer):
+            code = main([str(module), '--fail-on', 'warning'], io.StringIO(''))
+        assert code != 0

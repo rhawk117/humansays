@@ -92,7 +92,7 @@ def unanalyzed_lines(result: ScanResult, *, color: bool) -> list[str]:
 def report_lines(request: ReportRequest, *, color: bool) -> list[str]:
     result = request.result
     limit = request.settings.limit
-    targets = review_targets(result.reports)
+    targets = review_targets(result.reports, show_evidence=request.settings.show_evidence)
     shown = shown_targets(targets, limit)
 
     summary = _style(

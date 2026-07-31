@@ -6,6 +6,14 @@ recomputed from the survivors) and asserts it against what humansays actually
 finds when it analyzes the same vendored corpus. This is the migration's
 acceptance criterion: identical findings, identical scores, modulo the rename
 and the three deletions.
+
+Since phase C2 the oracle's penalty is summed over scored rules only. The
+prototype had no disposition axis, so it weighed every rule it emitted; three
+of ours are now `hint` and weigh nothing. Excluding them on the oracle side is
+what keeps the comparison meaningful, and it is also a real loss: for HS015,
+HS016 and HS021 this harness no longer checks scoring against an independent
+implementation, only that the findings still appear. The finding-tuple
+comparison is what carries those three now.
 """
 
 import ast
@@ -16,10 +24,12 @@ from pathlib import Path
 from humansays.analysis.extraction import extract
 from humansays.analysis.models import ParsedModule
 from humansays.config.models import Thresholds
-from humansays.enums import Grade
+from humansays.enums import Disposition, Grade, SignalName
 from humansays.reporting.models import FileReport, ScanResult
+from humansays.rules import evaluate
+from humansays.rules.loading import rule_definitions
 from humansays.scoring import score_for
-from humansays.signals import evaluate
+from tests.fixtures.sweeps import entries
 
 HERE = Path(__file__).resolve().parent
 POC_PARITY = HERE / 'poc-parity'
@@ -40,6 +50,11 @@ def _grade_for(value: float) -> str:
     return str(Grade.F)
 
 
+def _is_scored(rule_id: str) -> bool:
+    """Whether humansays weighs this rule, so the oracle should weigh it too."""
+    return rule_definitions()[SignalName[rule_id]].spec.disposition is Disposition.ON
+
+
 def _transform_oracle(raw: dict) -> dict:
     survivors = [
         finding for finding in raw['findings'] if finding['rule_id'] not in DELETED_IDS
@@ -47,7 +62,12 @@ def _transform_oracle(raw: dict) -> dict:
     for finding in survivors:
         finding['rule_id'] = RENAME[finding['rule_id']]
     penalty = round(
-        sum(finding['weight'] * finding['confidence'] for finding in survivors), 2
+        sum(
+            finding['weight'] * finding['confidence']
+            for finding in survivors
+            if _is_scored(finding['rule_id'])
+        ),
+        2,
     )
     lines = raw['score']['lines']
     density = round(penalty * 100 / lines, 3)
@@ -103,7 +123,7 @@ def _humansays_findings(group: dict) -> dict:
 
 
 def _group_names() -> list[str]:
-    return list(MANIFEST['groups'])
+    return entries(MANIFEST['groups'], "manifest.toml's [groups]")
 
 
 def test_every_group_has_a_frozen_oracle() -> None:

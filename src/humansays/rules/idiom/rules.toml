@@ -1,0 +1,14 @@
+# Rules about constructs that read as a workaround for something unstated.
+#
+# weight 3.0 is WARNING, weight 1.0 is ADVISORY. There are no other severities.
+
+[[rule]]
+id = "HS021"
+severity = "advisory"
+disposition = "hint"
+confidence = 0.85
+weight = 1.0
+message = "Import is deferred into the function body."
+review_question = """\
+Is this hiding a cycle, an optional dependency, or a startup \
+cost that belongs at module scope?"""

@@ -7,10 +7,10 @@ from pathlib import Path
 
 from humansays.analysis.extraction import extract
 from humansays.analysis.models import ParsedModule
-from humansays.catalog import RULES
 from humansays.config.models import Thresholds
 from humansays.enums import SignalName
-from humansays.signals import evaluate
+from humansays.rules import evaluate
+from humansays.rules.loading import rule_definitions
 from tests.fixtures import sources
 
 DELETED_IDS = frozenset({'HS010', 'HS011', 'HS020'})
@@ -25,8 +25,9 @@ def test_deleted_ids_are_absent_from_signal_name() -> None:
     assert DELETED_IDS.isdisjoint(SignalName.__members__)
 
 
-def test_deleted_ids_are_absent_from_catalog() -> None:
-    assert DELETED_IDS.isdisjoint(RULES)
+def test_deleted_ids_are_absent_from_the_definitions() -> None:
+    defined = {signal.name for signal in rule_definitions()}
+    assert DELETED_IDS.isdisjoint(defined)
 
 
 def test_future_annotations_import_yields_no_finding() -> None:

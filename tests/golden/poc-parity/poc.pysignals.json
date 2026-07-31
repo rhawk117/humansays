@@ -1,6 +1,6 @@
 {
   "schema_version": 4,
-  "root": "/home/rhawk/src-code/humansays/.poc-reference/pysignals-0.3.0/pysignals/catalog.py, /home/rhawk/src-code/humansays/.poc-reference/pysignals-0.3.0/pysignals/const.py, /home/rhawk/src-code/humansays/.poc-reference/pysignals-0.3.0/pysignals/core.py, /home/rhawk/src-code/humansays/.poc-reference/pysignals-0.3.0/pysignals/enums.py, /home/rhawk/src-code/humansays/.poc-reference/pysignals-0.3.0/pysignals/factories.py, /home/rhawk/src-code/humansays/.poc-reference/pysignals-0.3.0/pysignals/models.py, /home/rhawk/src-code/humansays/.poc-reference/pysignals-0.3.0/pysignals/options.py, /home/rhawk/src-code/humansays/.poc-reference/pysignals-0.3.0/pysignals/py_ast.py, /home/rhawk/src-code/humansays/.poc-reference/pysignals-0.3.0/pysignals/report.py, /home/rhawk/src-code/humansays/.poc-reference/pysignals-0.3.0/pysignals/rules.py, /home/rhawk/src-code/humansays/.poc-reference/pysignals-0.3.0/pysignals/scoring.py, /home/rhawk/src-code/humansays/.poc-reference/pysignals-0.3.0/pysignals/syntax.py, /home/rhawk/src-code/humansays/.poc-reference/pysignals-0.3.0/pysignals/__init__.py, /home/rhawk/src-code/humansays/.poc-reference/pysignals-0.3.0/pysignals/__main__.py",
+  "root": "<poc-reference>/pysignals-0.3.0/pysignals/catalog.py, <poc-reference>/pysignals-0.3.0/pysignals/const.py, <poc-reference>/pysignals-0.3.0/pysignals/core.py, <poc-reference>/pysignals-0.3.0/pysignals/enums.py, <poc-reference>/pysignals-0.3.0/pysignals/factories.py, <poc-reference>/pysignals-0.3.0/pysignals/models.py, <poc-reference>/pysignals-0.3.0/pysignals/options.py, <poc-reference>/pysignals-0.3.0/pysignals/py_ast.py, <poc-reference>/pysignals-0.3.0/pysignals/report.py, <poc-reference>/pysignals-0.3.0/pysignals/rules.py, <poc-reference>/pysignals-0.3.0/pysignals/scoring.py, <poc-reference>/pysignals-0.3.0/pysignals/syntax.py, <poc-reference>/pysignals-0.3.0/pysignals/__init__.py, <poc-reference>/pysignals-0.3.0/pysignals/__main__.py",
   "score": {
     "lines": 2215,
     "penalty": 0.0,
@@ -18,7 +18,7 @@
   },
   "targets": [
     {
-      "path": "/home/rhawk/src-code/humansays/.poc-reference/pysignals-0.3.0/pysignals/__init__.py",
+      "path": "<poc-reference>/pysignals-0.3.0/pysignals/__init__.py",
       "symbol": "<module>",
       "line": 1,
       "end_line": 6,
@@ -38,7 +38,7 @@
       ]
     },
     {
-      "path": "/home/rhawk/src-code/humansays/.poc-reference/pysignals-0.3.0/pysignals/__main__.py",
+      "path": "<poc-reference>/pysignals-0.3.0/pysignals/__main__.py",
       "symbol": "<module>",
       "line": 1,
       "end_line": 6,
@@ -58,7 +58,7 @@
       ]
     },
     {
-      "path": "/home/rhawk/src-code/humansays/.poc-reference/pysignals-0.3.0/pysignals/catalog.py",
+      "path": "<poc-reference>/pysignals-0.3.0/pysignals/catalog.py",
       "symbol": "<module>",
       "line": 1,
       "end_line": 188,
@@ -78,7 +78,7 @@
       ]
     },
     {
-      "path": "/home/rhawk/src-code/humansays/.poc-reference/pysignals-0.3.0/pysignals/const.py",
+      "path": "<poc-reference>/pysignals-0.3.0/pysignals/const.py",
       "symbol": "<module>",
       "line": 1,
       "end_line": 126,
@@ -98,7 +98,7 @@
       ]
     },
     {
-      "path": "/home/rhawk/src-code/humansays/.poc-reference/pysignals-0.3.0/pysignals/core.py",
+      "path": "<poc-reference>/pysignals-0.3.0/pysignals/core.py",
       "symbol": "<module>",
       "line": 1,
       "end_line": 173,
@@ -118,7 +118,7 @@
       ]
     },
     {
-      "path": "/home/rhawk/src-code/humansays/.poc-reference/pysignals-0.3.0/pysignals/enums.py",
+      "path": "<poc-reference>/pysignals-0.3.0/pysignals/enums.py",
       "symbol": "<module>",
       "line": 1,
       "end_line": 57,
@@ -138,7 +138,7 @@
       ]
     },
     {
-      "path": "/home/rhawk/src-code/humansays/.poc-reference/pysignals-0.3.0/pysignals/factories.py",
+      "path": "<poc-reference>/pysignals-0.3.0/pysignals/factories.py",
       "symbol": "<module>",
       "line": 1,
       "end_line": 54,
@@ -158,7 +158,7 @@
       ]
     },
     {
-      "path": "/home/rhawk/src-code/humansays/.poc-reference/pysignals-0.3.0/pysignals/models.py",
+      "path": "<poc-reference>/pysignals-0.3.0/pysignals/models.py",
       "symbol": "<module>",
       "line": 1,
       "end_line": 261,
@@ -178,7 +178,7 @@
       ]
     },
     {
-      "path": "/home/rhawk/src-code/humansays/.poc-reference/pysignals-0.3.0/pysignals/options.py",
+      "path": "<poc-reference>/pysignals-0.3.0/pysignals/options.py",
       "symbol": "<module>",
       "line": 1,
       "end_line": 104,
@@ -198,7 +198,7 @@
       ]
     },
     {
-      "path": "/home/rhawk/src-code/humansays/.poc-reference/pysignals-0.3.0/pysignals/py_ast.py",
+      "path": "<poc-reference>/pysignals-0.3.0/pysignals/py_ast.py",
       "symbol": "<module>",
       "line": 1,
       "end_line": 409,
@@ -218,7 +218,7 @@
       ]
     },
     {
-      "path": "/home/rhawk/src-code/humansays/.poc-reference/pysignals-0.3.0/pysignals/py_ast.py",
+      "path": "<poc-reference>/pysignals-0.3.0/pysignals/py_ast.py",
       "symbol": "module_scale_findings",
       "line": 195,
       "end_line": 208,
@@ -238,7 +238,7 @@
       ]
     },
     {
-      "path": "/home/rhawk/src-code/humansays/.poc-reference/pysignals-0.3.0/pysignals/py_ast.py",
+      "path": "<poc-reference>/pysignals-0.3.0/pysignals/py_ast.py",
       "symbol": "future_annotation_findings",
       "line": 211,
       "end_line": 231,
@@ -258,7 +258,7 @@
       ]
     },
     {
-      "path": "/home/rhawk/src-code/humansays/.poc-reference/pysignals-0.3.0/pysignals/report.py",
+      "path": "<poc-reference>/pysignals-0.3.0/pysignals/report.py",
       "symbol": "<module>",
       "line": 1,
       "end_line": 166,
@@ -278,7 +278,7 @@
       ]
     },
     {
-      "path": "/home/rhawk/src-code/humansays/.poc-reference/pysignals-0.3.0/pysignals/rules.py",
+      "path": "<poc-reference>/pysignals-0.3.0/pysignals/rules.py",
       "symbol": "<module>",
       "line": 1,
       "end_line": 488,
@@ -298,7 +298,7 @@
       ]
     },
     {
-      "path": "/home/rhawk/src-code/humansays/.poc-reference/pysignals-0.3.0/pysignals/rules.py",
+      "path": "<poc-reference>/pysignals-0.3.0/pysignals/rules.py",
       "symbol": "Analyzer._static_method",
       "line": 153,
       "end_line": 161,
@@ -318,7 +318,7 @@
       ]
     },
     {
-      "path": "/home/rhawk/src-code/humansays/.poc-reference/pysignals-0.3.0/pysignals/rules.py",
+      "path": "<poc-reference>/pysignals-0.3.0/pysignals/rules.py",
       "symbol": "Analyzer._lambda_signals",
       "line": 163,
       "end_line": 173,
@@ -338,7 +338,7 @@
       ]
     },
     {
-      "path": "/home/rhawk/src-code/humansays/.poc-reference/pysignals-0.3.0/pysignals/rules.py",
+      "path": "<poc-reference>/pysignals-0.3.0/pysignals/rules.py",
       "symbol": "Analyzer._base_classes",
       "line": 175,
       "end_line": 184,
@@ -358,7 +358,7 @@
       ]
     },
     {
-      "path": "/home/rhawk/src-code/humansays/.poc-reference/pysignals-0.3.0/pysignals/scoring.py",
+      "path": "<poc-reference>/pysignals-0.3.0/pysignals/scoring.py",
       "symbol": "<module>",
       "line": 1,
       "end_line": 37,
@@ -378,7 +378,7 @@
       ]
     },
     {
-      "path": "/home/rhawk/src-code/humansays/.poc-reference/pysignals-0.3.0/pysignals/syntax.py",
+      "path": "<poc-reference>/pysignals-0.3.0/pysignals/syntax.py",
       "symbol": "<module>",
       "line": 1,
       "end_line": 140,
@@ -398,7 +398,7 @@
       ]
     },
     {
-      "path": "/home/rhawk/src-code/humansays/.poc-reference/pysignals-0.3.0/pysignals/syntax.py",
+      "path": "<poc-reference>/pysignals-0.3.0/pysignals/syntax.py",
       "symbol": "code_line_count",
       "line": 130,
       "end_line": 140,

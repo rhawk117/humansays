@@ -13,17 +13,25 @@ them executes the code being scanned, and none of them is a verdict.
 
 ## What a rule is
 
-A rule is a named condition plus the metadata needed to weigh it. In
-`src/humansays/catalog.py` each one is a `RuleSpec` with five fields:
+A rule is a named condition plus the metadata needed to weigh it. The
+metadata is data, not code: each rule group owns a
+`src/humansays/rules/<group>/rules.toml`, and each entry there carries seven
+keys. Six of them become a `RuleSpec`:
 
-`signal`
-:   The human-readable name printed in text output, for example
-    `many-arguments`. This is what you see on a target line, not the `HS###`
-    code.
+`id`
+:   The `HS###` code, which becomes the rule's `signal`. The name printed in
+    text output is that signal's readable form, for example `many-arguments`
+    — that is what you see on a target line, not the code itself.
 
 `severity`
 :   `WARNING` or `ADVISORY`. There are exactly two. There is no error level and
     no bug level.
+
+`disposition`
+:   `on`, `hint`, `evidence` or `off`. Severity says how much a finding counts
+    once it counts at all; disposition says whether it counts and whether it is
+    shown. Only `on` contributes to the score. See
+    [Disposition](../output.md#disposition).
 
 `confidence`
 :   How reliably the syntactic condition indicates the thing the rule is
@@ -32,18 +40,27 @@ A rule is a named condition plus the metadata needed to weigh it. In
     is sometimes just a long function.
 
 `weight`
-:   `3.0` for a `WARNING`, `1.0` for an `ADVISORY`. Set from `WARNING_WEIGHT`
-    and `ADVISORY_WEIGHT` in `catalog.py`. A third constant, `NOTICE_WEIGHT`,
-    is defined at `0.0` and no rule uses it.
+:   `3.0` for a `WARNING`, `1.0` for an `ADVISORY`. Written out in each
+    `rules.toml`. There is no third weight.
 
 `review_question`
 :   The question a reviewer should be asking at that location. This is the
     payload of the rule. The tool cannot answer it, which is the point.
 
+The seventh key is `message`: the observation text, written as a template whose
+`{placeholders}` are filled with what the rule measured. No key may carry a
+condition or a threshold — thresholds are yours to set in `humansays.toml`, and
+the loader rejects any key outside those seven.
+
 ## How a finding becomes a score
 
-Each finding contributes a penalty of `weight * confidence`. So one `HS015`
-costs `3.0 * 0.99 = 2.97`, and one `HS009` costs `1.0 * 0.55 = 0.55`.
+Each **scored** finding contributes a penalty of `weight * confidence`. So one
+`HS018` costs `3.0 * 0.78 = 2.34`, and one `HS009` costs `1.0 * 0.55 = 0.55`.
+
+A finding is scored when its rule's disposition is `on`. Three of the 19 are
+`hint` — `HS015`, `HS016` and `HS021` — and cost nothing however often they
+fire. They are still reported: a hint is a lead for a reviewer, not a defect
+the score should punish.
 
 Penalties are summed across the scan, expressed per 100 source lines as a
 density, and turned into a score:
@@ -64,27 +81,27 @@ JSON shape.
 
 ## The 19 shipped rules
 
-| Code  | Signal                      | Severity | Confidence | Weight | Page                                            |
-| ----- | --------------------------- | -------- | ---------- | ------ | ----------------------------------------------- |
-| HS001 | `many-arguments`            | WARNING  | 0.80       | 3.0    | [Function shape](function-shape.md)             |
-| HS002 | `boolean-modes`             | ADVISORY | 0.82       | 1.0    | [Function shape](function-shape.md)             |
-| HS003 | `deep-nesting`              | WARNING  | 0.76       | 3.0    | [Function shape](function-shape.md)             |
-| HS004 | `shared-mutable-state`      | WARNING  | 0.95       | 3.0    | [State and boundaries](state-and-boundaries.md) |
-| HS005 | `broad-exception`           | WARNING  | 0.96       | 3.0    | [Failure and imports](failure-and-imports.md)   |
-| HS006 | `multiple-mutation-owners`  | WARNING  | 0.70       | 3.0    | [State and boundaries](state-and-boundaries.md) |
-| HS007 | `mixed-boundaries`          | WARNING  | 0.65       | 3.0    | [State and boundaries](state-and-boundaries.md) |
-| HS008 | `low-class-cohesion`        | ADVISORY | 0.65       | 1.0    | [Class design](class-design.md)                 |
-| HS009 | `long-function`             | ADVISORY | 0.55       | 1.0    | [Function shape](function-shape.md)             |
-| HS012 | `many-class-attributes`     | ADVISORY | 0.72       | 1.0    | [Class design](class-design.md)                 |
-| HS013 | `attribute-prefix-cluster`  | WARNING  | 0.84       | 3.0    | [Class design](class-design.md)                 |
-| HS014 | `validated-argument-bundle` | WARNING  | 0.88       | 3.0    | [Function shape](function-shape.md)             |
-| HS015 | `static-method`             | WARNING  | 0.99       | 3.0    | [Class design](class-design.md)                 |
-| HS016 | `lambda-expression`         | WARNING  | 0.99       | 3.0    | [Function shape](function-shape.md)             |
-| HS017 | `long-file`                 | WARNING  | 0.60       | 3.0    | [State and boundaries](state-and-boundaries.md) |
-| HS018 | `many-base-classes`         | WARNING  | 0.78       | 3.0    | [Class design](class-design.md)                 |
-| HS019 | `many-branches`             | WARNING  | 0.74       | 3.0    | [Function shape](function-shape.md)             |
-| HS021 | `lazy-import`               | ADVISORY | 0.85       | 1.0    | [Failure and imports](failure-and-imports.md)   |
-| HS022 | `dense-function`            | WARNING  | 0.72       | 3.0    | [Function shape](function-shape.md)             |
+| Code  | Signal                      | Severity | Disposition | Confidence | Weight | Page                                            |
+| ----- | --------------------------- | -------- | ----------- | ---------- | ------ | ----------------------------------------------- |
+| HS001 | `many-arguments`            | WARNING  | `on`        | 0.80       | 3.0    | [Function shape](function-shape.md)             |
+| HS002 | `boolean-modes`             | ADVISORY | `on`        | 0.82       | 1.0    | [Function shape](function-shape.md)             |
+| HS003 | `deep-nesting`              | WARNING  | `on`        | 0.76       | 3.0    | [Function shape](function-shape.md)             |
+| HS004 | `shared-mutable-state`      | WARNING  | `on`        | 0.95       | 3.0    | [State and boundaries](state-and-boundaries.md) |
+| HS005 | `broad-exception`           | WARNING  | `on`        | 0.96       | 3.0    | [Failure and imports](failure-and-imports.md)   |
+| HS006 | `multiple-mutation-owners`  | WARNING  | `on`        | 0.70       | 3.0    | [State and boundaries](state-and-boundaries.md) |
+| HS007 | `mixed-boundaries`          | WARNING  | `on`        | 0.65       | 3.0    | [State and boundaries](state-and-boundaries.md) |
+| HS008 | `low-class-cohesion`        | ADVISORY | `on`        | 0.65       | 1.0    | [Class design](class-design.md)                 |
+| HS009 | `long-function`             | ADVISORY | `on`        | 0.55       | 1.0    | [Function shape](function-shape.md)             |
+| HS012 | `many-class-attributes`     | ADVISORY | `on`        | 0.72       | 1.0    | [Class design](class-design.md)                 |
+| HS013 | `attribute-prefix-cluster`  | WARNING  | `on`        | 0.84       | 3.0    | [Class design](class-design.md)                 |
+| HS014 | `validated-argument-bundle` | WARNING  | `on`        | 0.88       | 3.0    | [Function shape](function-shape.md)             |
+| HS015 | `static-method`             | WARNING  | `hint`      | 0.99       | 3.0    | [Class design](class-design.md)                 |
+| HS016 | `lambda-expression`         | WARNING  | `hint`      | 0.99       | 3.0    | [Function shape](function-shape.md)             |
+| HS017 | `long-file`                 | WARNING  | `on`        | 0.60       | 3.0    | [State and boundaries](state-and-boundaries.md) |
+| HS018 | `many-base-classes`         | WARNING  | `on`        | 0.78       | 3.0    | [Class design](class-design.md)                 |
+| HS019 | `many-branches`             | WARNING  | `on`        | 0.74       | 3.0    | [Function shape](function-shape.md)             |
+| HS021 | `lazy-import`               | ADVISORY | `hint`      | 0.85       | 1.0    | [Failure and imports](failure-and-imports.md)   |
+| HS022 | `dense-function`            | WARNING  | `on`        | 0.72       | 3.0    | [Function shape](function-shape.md)             |
 
 ## The gaps at HS010, HS011, and HS020
 

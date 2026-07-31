@@ -8,7 +8,7 @@ import dataclasses
 from typing import TypedDict, cast
 
 from humansays.const import SEVERITY_ORDER, UNKNOWN_SEVERITY_ORDER
-from humansays.enums import Severity, SignalName
+from humansays.enums import Disposition, Severity, SignalName
 from humansays.findings.models import Finding
 from humansays.reporting.models import FileReport
 
@@ -21,6 +21,7 @@ class RuleView(TypedDict):
     confidence: float
     weight: float
     review_question: str
+    disposition: Disposition
 
 
 class ObservationView(TypedDict):
@@ -86,10 +87,24 @@ def create_signal(finding: Finding) -> Signal:
     }
 
 
-def review_targets(reports: list[FileReport]) -> list[Target]:
+def is_shown(finding: Finding, *, show_evidence: bool) -> bool:
+    """Whether a finding appears in output at all.
+
+    Evidence is collected and scored like anything else -- it is withheld from
+    display, not from the pipeline -- so the filter lives here, at the one seam
+    both renderers pass through, rather than in `evaluate`. Removing it earlier
+    would make it unavailable to the flag that exists to show it.
+    """
+    return show_evidence or finding.rule.disposition is not Disposition.EVIDENCE
+
+
+def review_targets(reports: list[FileReport], *, show_evidence: bool) -> list[Target]:
     grouped: dict[tuple[str, str], Target] = {}
     for report in reports:
         for finding in report.findings:
+            if not is_shown(finding, show_evidence=show_evidence):
+                continue
+
             location = finding.location
             key = (str(report.path), location.symbol)
             if key not in grouped:

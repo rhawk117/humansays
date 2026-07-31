@@ -86,6 +86,10 @@ ignore = [
 # Standalone entry points invoked by path, not an importable package.
 "scripts/**/*.py" = ["INP001"]
 "tests/**/*.py" = ["ARG001", "ARG002", "INP001", "PLR2004", "S101", "PLC0415"]
+# The frozen rule metadata holds each review question as one unbroken literal.
+# Wrapping them would reintroduce the implicit-concatenation seams the table
+# exists to catch: a dropped or doubled space at a seam is invisible in review.
+"tests/unit/test_rule_definitions.py" = ["E501"]
 
 [lint.flake8-tidy-imports]
 # Imports inside the package are written as `humansays.*`, never `from .x`.

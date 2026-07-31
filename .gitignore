@@ -218,9 +218,6 @@ __marimo__/
 .streamlit/secrets.toml
 .poc-reference
 
-# Brainstorming specs and plans -- local working material, never committed.
-.agent-specs/superpowers/
-
 # Migration provenance: local working material, not shipped.
 .migration/
 

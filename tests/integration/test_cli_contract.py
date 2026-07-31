@@ -11,15 +11,20 @@ import ast
 import contextlib
 import io
 import json
+from dataclasses import replace
 from pathlib import Path
 from typing import TYPE_CHECKING
+
+import pytest
 
 from humansays.analysis.extraction import extract
 from humansays.analysis.models import ParsedModule
 from humansays.cli import main
 from humansays.config.models import Thresholds
-from humansays.enums import Grade, SignalName
-from humansays.signals import evaluate
+from humansays.enums import Disposition, Grade, SignalName
+from humansays.rules import evaluate, registry
+from humansays.rules.loading import rule_definitions
+from tests.fixtures.sweeps import python_sources
 
 if TYPE_CHECKING:
     from humansays.findings.models import Finding
@@ -47,7 +52,7 @@ def run_cli(argv: list[str], piped: str = '') -> tuple[int, str]:
 def package_findings(src_root: Path) -> dict[str, list[Finding]]:
     return {
         path.name: analyze(path.read_text(encoding='utf-8'))
-        for path in sorted(src_root.rglob('*.py'))
+        for path in python_sources(src_root)
     }
 
 
@@ -171,6 +176,76 @@ class TestInputResolution:
         assert code == 0
         assert symbols
         assert all('dispatch' in symbol for symbol in symbols)
+
+
+class TestEvidenceDisposition:
+    """Invariant 4 of the phase C2 plan, driven through `main()`.
+
+    No shipped rule is `evidence`, so HS003 is re-dispositioned onto a
+    test-only definition map. That is what invariant 4 asks for, and it is
+    also the only way to reach the flag at all: a test drawing on the shipped
+    definitions could not produce an evidence finding to hide.
+
+    `tests/unit/test_evidence_display.py` covers the same filter at the
+    `review_targets` seam. This one exists because that seam is reached
+    through `--show-evidence` -> `CLI_DESTINATIONS` -> `Report.show_evidence`,
+    and none of that chain is exercised by calling `review_targets` directly.
+    """
+
+    @staticmethod
+    def redispositioned(
+        monkeypatch: pytest.MonkeyPatch,
+        disposition: Disposition,
+    ) -> None:
+        definitions = dict(rule_definitions())
+        definition = definitions[SignalName.HS003]
+        definitions[SignalName.HS003] = replace(
+            definition,
+            spec=replace(definition.spec, disposition=disposition),
+        )
+        monkeypatch.setattr(registry, 'rule_definitions', lambda: definitions)
+
+    @pytest.fixture
+    def hidden_hs003(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        self.redispositioned(monkeypatch, Disposition.EVIDENCE)
+
+    @pytest.fixture
+    def off_hs003(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        self.redispositioned(monkeypatch, Disposition.OFF)
+
+    def test_hs003_is_reported_before_it_is_re_dispositioned(
+        self,
+        smelly_module_path: Path,
+    ) -> None:
+        """Without this, the two assertions below pass on an empty report."""
+        _, output = run_cli(['--format', 'json'], str(smelly_module_path))
+        assert 'HS003' in reported_rule_ids(output)
+
+    @pytest.mark.usefixtures('hidden_hs003')
+    def test_evidence_is_withheld_by_default(self, smelly_module_path: Path) -> None:
+        _, output = run_cli(['--format', 'json'], str(smelly_module_path))
+        assert 'HS003' not in reported_rule_ids(output)
+
+    @pytest.mark.usefixtures('hidden_hs003')
+    def test_show_evidence_reveals_it(self, smelly_module_path: Path) -> None:
+        _, output = run_cli(
+            ['--format', 'json', '--show-evidence'],
+            str(smelly_module_path),
+        )
+        assert 'HS003' in reported_rule_ids(output)
+
+    @pytest.mark.usefixtures('off_hs003')
+    def test_off_is_not_emitted_even_with_show_evidence(
+        self,
+        smelly_module_path: Path,
+    ) -> None:
+        """`off` short-circuits at emission, which is what separates it from
+        `evidence`: no flag can reveal a finding that was never built."""
+        _, output = run_cli(
+            ['--format', 'json', '--show-evidence'],
+            str(smelly_module_path),
+        )
+        assert 'HS003' not in reported_rule_ids(output)
 
 
 class TestSelfScan:

@@ -10,7 +10,7 @@ from humansays.analysis.extraction import extract
 from humansays.analysis.models import ParsedModule
 from humansays.config.models import Thresholds
 from humansays.enums import Severity, SignalName
-from humansays.signals import evaluate
+from humansays.rules import evaluate
 from tests.fixtures import sources
 
 if TYPE_CHECKING:
@@ -50,6 +50,22 @@ class TestLambdaRule:
 
     def test_named_function_is_not_reported(self) -> None:
         assert SignalName.HS016 not in signals(analyze(sources.NAMED_FUNCTION))
+
+
+class TestBroadExceptionRule:
+    def test_every_broad_handler_shape_is_reported(self) -> None:
+        found = findings_for(analyze(sources.BROAD_HANDLERS), SignalName.HS005)
+        assert [item.location.symbol for item in found] == ['load', 'probe', 'touch']
+        details = [item.observation.evidence[0].split(': ', 1)[1] for item in found]
+        assert details == [
+            'broad exception',
+            'broad exception silently ignored',
+            'bare except',
+        ]
+
+    def test_handlers_naming_their_exceptions_are_not_reported(self) -> None:
+        found = analyze(sources.NARROW_HANDLERS)
+        assert SignalName.HS005 not in signals(found)
 
 
 class TestLazyImportRule:

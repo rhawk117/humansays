@@ -1,7 +1,7 @@
 # Reconciliation: shipped rules against the new catalog
 
 This document maps each of the 19 shipped rule codes in
-`src/humansays/catalog.py` to its fate in the new 175-rule catalog published
+`src/humansays/rules/*/rules.toml` to its fate in the new 175-rule catalog published
 under `docs/site/planned/`. The mapping follows a two-hop join: a shipped
 `HS0NN` code matches a prototype `PY0NN` check by name and behavior, §8 of
 `NEW_RULES.md` crosswalks that prototype to one or more `HS-DOMAIN-NN`

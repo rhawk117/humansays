@@ -1,0 +1,25 @@
+# Rules about what a signature asks its callers to supply.
+#
+# weight 3.0 is WARNING, weight 1.0 is ADVISORY. There are no other severities.
+
+[[rule]]
+id = "HS001"
+severity = "warning"
+disposition = "on"
+confidence = 0.80
+weight = 3.0
+message = "Function accepts {count} operation arguments."
+review_question = """\
+Do these values form a request object, reusable configuration, \
+or multiple responsibilities?"""
+
+[[rule]]
+id = "HS014"
+severity = "warning"
+disposition = "on"
+confidence = 0.88
+weight = 3.0
+message = "Function validates {count} of its argument bundle internally."
+review_question = """\
+Should these arguments and their validation become one request, \
+value, or configuration object?"""

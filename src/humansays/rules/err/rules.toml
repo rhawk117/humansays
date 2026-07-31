@@ -1,0 +1,13 @@
+# Rules about how failures are handled.
+#
+# weight 3.0 is WARNING, weight 1.0 is ADVISORY. There are no other severities.
+
+[[rule]]
+id = "HS005"
+severity = "warning"
+disposition = "on"
+confidence = 0.96
+weight = 3.0
+message = "Broad exception handling may collapse unrelated failures."
+review_question = """\
+Which exceptions are expected, and should unexpected failures propagate?"""
