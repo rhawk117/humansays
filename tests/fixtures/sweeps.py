@@ -26,6 +26,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
+    from collections.abc import Mapping
     from pathlib import Path
 
 
@@ -43,6 +44,25 @@ def matching(directory: Path, pattern: str) -> list[Path]:
             f'it would examine nothing and pass. Either the path is stale -- a '
             f'renamed or moved package is the usual cause -- or the caller is '
             f'asking for a corpus that no longer exists.'
+        )
+
+    return found
+
+
+def entries(mapping: Mapping[str, object], label: str) -> list[str]:
+    """Every key of `mapping`, sorted, never empty.
+
+    A manifest is a sweep whose corpus is enumerated in a file rather than
+    found on disk, and it goes thin the same way `matching` does: a table that
+    lost its rows leaves every loop over it green. `label` names the table, so
+    the failure says which one went empty rather than only that something did.
+    """
+    found = sorted(mapping)
+    if not found:
+        raise AssertionError(
+            f'{label} is empty, so the sweep about to run over it would '
+            f'examine nothing and pass. Either the table lost its entries, or '
+            f'the key that addresses it was renamed.'
         )
 
     return found

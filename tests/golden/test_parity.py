@@ -29,6 +29,7 @@ from humansays.reporting.models import FileReport, ScanResult
 from humansays.rules import evaluate
 from humansays.rules.loading import rule_definitions
 from humansays.scoring import score_for
+from tests.fixtures.sweeps import entries
 
 HERE = Path(__file__).resolve().parent
 POC_PARITY = HERE / 'poc-parity'
@@ -122,7 +123,7 @@ def _humansays_findings(group: dict) -> dict:
 
 
 def _group_names() -> list[str]:
-    return list(MANIFEST['groups'])
+    return entries(MANIFEST['groups'], "manifest.toml's [groups]")
 
 
 def test_every_group_has_a_frozen_oracle() -> None:

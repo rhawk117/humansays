@@ -33,6 +33,7 @@ from humansays.rules.registry import (
     build_finding,
 )
 from tests.fixtures import sources
+from tests.fixtures.sweeps import matching
 
 if TYPE_CHECKING:
     from humansays.facts.module import ModuleFacts
@@ -88,7 +89,7 @@ def analyze(source: str) -> list:
 
 def corpus_facts() -> list:
     collected = []
-    for path in sorted(CORPUS.rglob('*.py')):
+    for path in matching(CORPUS, '*.py'):
         text = path.read_text(encoding='utf-8')
         try:
             tree = ast.parse(text)

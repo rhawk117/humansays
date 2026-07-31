@@ -25,6 +25,7 @@ from humansays.enums import SignalName
 from humansays.rules import evaluate
 from humansays.rules.loading import rule_definitions
 from tests.fixtures import sources
+from tests.fixtures.sweeps import matching
 
 CORPUS = Path(__file__).resolve().parents[1] / 'golden/poc-parity/corpus'
 
@@ -55,7 +56,7 @@ def rendered_signals() -> set[SignalName]:
     for source in fixture_sources():
         fired.update(finding.rule.signal for finding in analyze(source, '<fixture>'))
 
-    for path in sorted(CORPUS.rglob('*.py')):
+    for path in matching(CORPUS, '*.py'):
         text = path.read_text(encoding='utf-8')
         fired.update(finding.rule.signal for finding in analyze(text, str(path)))
 

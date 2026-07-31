@@ -13,7 +13,7 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from tests.fixtures.sweeps import matching, python_sources
+from tests.fixtures.sweeps import entries, matching, python_sources
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -61,3 +61,12 @@ def test_python_sources_sweeps_the_root_when_no_package_is_named(
     (tmp_path / 'nested' / 'module.py').write_text('', encoding='utf-8')
 
     assert [path.name for path in python_sources(tmp_path)] == ['module.py']
+
+
+def test_entries_returns_sorted_keys() -> None:
+    assert entries({'poc': 1, 'django': 2}, 'a table') == ['django', 'poc']
+
+
+def test_entries_refuses_an_empty_table() -> None:
+    with pytest.raises(AssertionError, match=r'manifest\.toml'):
+        entries({}, "manifest.toml's [groups]")
