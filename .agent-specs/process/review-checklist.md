@@ -2,18 +2,32 @@
 
 The reviewer assumes the implementation is wrong. Confirm or refute, in order.
 
-## 1. Failure modes first
+## 1. Run the gates before reading the diff
 
-Open the phase document's **"What a wrong implementation looks like"** section.
-Attempt to confirm each listed failure before looking at anything else. These
-are the specific mistakes predicted for this phase.
+Open the plan's verification commands and **run them**. Do not read the plan's
+account of having run them; a plan is written before execution and its
+verification section records an intention.
+
+Then, for each gate, write down what it cannot see. `agent-protocol.md` §4c is
+the worked example: C1 listed five gates, ran seven counted by input, and two
+pairs among the seven read the same thing. Two gates over one container are one
+gate.
+
+- [ ] Every verification command in the plan was run, by the reviewer, in this
+      session
+- [ ] Each gate has a stated blind spot
+- [ ] No two gates in the list share an input without saying so
+- [ ] Any gate that could not be run is reported as not run, never as passing
 
 ## 2. Scope
 
-- [ ] `scripts/check-scope.sh <phase>` passes
-- [ ] If `paths.json` was widened, it happened in its own commit with a
-      stated reason
-- [ ] No change addresses a non-goal listed in the phase document
+Nothing enforces scope. The diffstat against the plan's file list is the check.
+
+- [ ] `git diff --stat <base>...HEAD` touches no file outside the plan's
+      **Files** blocks
+- [ ] Every file the plan named as touched actually changed, or the plan says
+      why it did not
+- [ ] No change addresses a non-goal the plan lists
 
 ## 3. Acceptance criteria
 
@@ -35,8 +49,9 @@ genuinely close to its positive.
 
 **Enforcement claims.**
 
-- [ ] Every phase-document sentence claiming a mechanism prevents or guarantees
-      something names the test that demonstrates it, and that test exists
+- [ ] Every sentence in the plan or the docs it changes claiming a mechanism
+      prevents or guarantees something names the test, hook or CI job that
+      demonstrates it, and that enforcer exists
 
 ## 4. Evidence
 
@@ -83,5 +98,5 @@ the tool enforces.
 ## 8. Verdict
 
 State one of: **accept**, **accept with follow-ups**, **reject**. If rejecting,
-name the specific acceptance criterion that fails. "Feels wrong" is not a
-verdict.
+name the specific acceptance criterion that fails, and the command whose output
+shows it failing. "Feels wrong" is not a verdict.
