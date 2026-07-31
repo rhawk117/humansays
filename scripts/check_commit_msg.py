@@ -44,6 +44,7 @@ def is_valid(message: str) -> str | None:
     summary = match.group('summary')
     if summary[0].isupper():
         return f'summary must start lowercase, got: {summary!r}'
+
     if summary.endswith('.'):
         return f'summary must not end with a period, got: {summary!r}'
 
