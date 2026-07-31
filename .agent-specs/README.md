@@ -15,8 +15,6 @@ severity, confidence, weight and trigger read from
 `src/humansays/rules/*/rules.toml`.
 The 175-rule planned catalog is under Planned rules and is not implemented.
 The criteria the shipped rules encode are under Design philosophy.
-`NEW_RULES.md` at the repository root was the working draft during the
-`docs/realign-specs` migration and no longer exists.
 
 ## Layout
 
@@ -25,8 +23,7 @@ The criteria the shipped rules encode are under Design philosophy.
 ├── process/              how agents work here; the review checklist
 ├── design/               reference documents for the evaluation model and architecture
 ├── plans/                implementation plans, versioned with the code they change
-├── CLAUDE.md.template    the root CLAUDE.md's source; edit here, then copy
-└── roadmap-retirement.md what the nine-phase roadmap was, and why it stopped
+└── CLAUDE.md.template    the root CLAUDE.md's source; edit here, then copy
 ```
 
 ## Reading order for a human
@@ -36,17 +33,7 @@ The criteria the shipped rules encode are under Design philosophy.
 `design/04-execution-modes.md` → `design/05-rust.md` →
 `design/06-cross-language.md` → `design/07-idea-register.md`
 
-## On the retired phase roadmap
+## No backlog
 
-This tree previously organized work into nine sequential phase directories,
-then into an unordered `backlog.md`. Both are retired. See
-[`roadmap-retirement.md`](roadmap-retirement.md) for the phase-by-phase
-disposition.
-
-**There is no backlog.** Work that is worth doing is planned and done; work
-that is not is not written down. A list of things nobody is doing accrues
-claims that stop being true, and this repository has now had that happen twice.
-The measurements the backlog held were moved to
-`docs/evidence/backlog-measurements.md` before it was deleted.
-
-Only the next piece of work gets planned at a time.
+Work that is worth doing is planned and done; work that is not is not written
+down. Only the next piece of work gets planned at a time.

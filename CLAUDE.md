@@ -5,8 +5,7 @@ Project-specific instructions for working in this repo.
 ## humansays — standing constraints
 
 Agent specs: `.agent-specs/`. Start at `.agent-specs/README.md` for the current
-layout, then `.agent-specs/roadmap-retirement.md` for what the project has
-stopped doing. The per-phase tree those documents used to describe is gone.
+layout.
 
 ## Never
 

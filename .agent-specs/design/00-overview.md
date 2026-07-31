@@ -59,10 +59,3 @@ Rules are per-language by design. The two criteria documents demonstrate why:
 Rust's ownership, trait, RAII and unsafe criteria have no Python analogue;
 Python's hidden-input, `ClassVar` and monkeypatching criteria have no Rust
 analogue. See [`06-cross-language.md`](06-cross-language.md).
-
-## Roadmap
-
-There is no roadmap. The nine-phase structure this section described was retired;
-[`../roadmap-retirement.md`](../roadmap-retirement.md) records the
-phase-by-phase disposition. Only the next piece of work gets planned, and plans
-live in [`../plans/`](../plans/).

@@ -56,9 +56,8 @@ Prototype-verified: resolves `shutil.copy` to `open`, `tempfile.mkdtemp` to
 code, which is disqualifying for untrusted dependencies and which this project
 has a rule about.
 
-**Never on the scan path.** Batch, cached, keyed on the composite fingerprint in
-[the retired effects roadmap](../roadmap-retirement.md) — not on the
-lockfile hash alone.
+**Never on the scan path.** Batch, cached, keyed on a composite environment
+fingerprint — not on the lockfile hash alone.
 
 ### Layer 4 — first-party call graph
 

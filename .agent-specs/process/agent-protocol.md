@@ -34,16 +34,13 @@ A plan states the files it touches. Changing anything outside that set is scope
 drift, and the remedy is to stop and report the path and why it is needed, not
 to widen the plan mid-execution.
 
-**Nothing enforces this.** It was previously enforced by obligation against a
-per-phase `paths.json` allowlist checked by `scripts/check_scope.py`. The phase
-directories are gone and the allowlists with them, so the mechanism is gone
-too; what remains is the reviewer reading the diffstat against the plan's file
-list.
+**Nothing enforces this.** The reviewer reading the diffstat against the plan's
+file list is the check.
 
-One lesson from that mechanism is worth keeping, because it applies to any
-future check: `git diff BASE...HEAD` sees only committed changes, and a guard
-reading it alone is bypassed by anything staged, unstaged, or untracked. A
-scope check that does not read all four sources is not a scope check.
+If a scope check is ever built: `git diff BASE...HEAD` sees only committed
+changes, and a guard reading it alone is bypassed by anything staged, unstaged,
+or untracked. A scope check that does not read all four sources is not a scope
+check.
 
 ## 4. Constraints that can be tests, are tests
 
@@ -108,27 +105,18 @@ A verification section that lists gates without saying what each one cannot see
 produces a green run over a real defect. This is not hypothetical: every defect
 C1 produced was a check that passed without looking.
 
-**Count gates by what they consume, not by which command runs them.** C1's plan
-listed five. Counted by input it ran seven, and two pairs among those seven were
-reading the same thing — which is the difference between seven independent
-checks and five, and nobody had written it down.
+**Count gates by what they consume, not by which command runs them.** Two pairs
+below read the same thing, which is the difference between six independent
+checks and four.
 
 | # | Gate | Consumes | Cannot see | Shares its input with |
 |---|---|---|---|---|
-| 1 | ~~`.migration/capture.sh` + `diff -r`~~ | CLI stdout over two corpora, both formats, colour both ways | anything the two corpora do not exercise; and whether the tests still test the same things | — |
-| 2 | `tests/golden/test_self_scan.py` | the tool scanning `src/humansays` | anything outside `src/humansays`; unweighted findings | **3** |
-| 3 | `test_cli_contract.py`, three assertions | the tool scanning `src/humansays`, via one `package_findings` dict | same blind spots as 2, and an empty dict satisfies all three at once | **2** |
-| 4 | `tests/golden/test_parity.py` | the prototype `.raw.json` oracle | any rule the prototype never had, including the three retired ids | — |
-| 5 | `test_specs_match_frozen_metadata` | literals frozen in the test file | whether those literals were transcribed correctly in the first place | **6** |
-| 6 | `test_review_questions_match_poc_oracle` | the vendored prototype `catalog.py` | fields the prototype does not carry: severity, confidence, weight | **5** |
-| 7 | `lint-imports` + `test_import_contract_coverage.py` | the module graph, and `.importlinter.ini` as text | a `layers` stanza, which the coverage test does not read; a hand-enumerated contract fails open | — |
-
-Row 1 is struck because the script is gone: `.migration/` was gitignored and has
-been deleted, so the byte-diff gate C1 relied on cannot be re-run. The row stays
-in the table because the count of seven is the point being made, and dropping
-the row would quietly restate it as six. What that gate covered is now covered
-by nothing. The corpus it ran over was measured thin in any case — see
-`docs/evidence/backlog-measurements.md`.
+| 1 | `tests/golden/test_self_scan.py` | the tool scanning `src/humansays` | anything outside `src/humansays`; unweighted findings | **2** |
+| 2 | `test_cli_contract.py`, three assertions | the tool scanning `src/humansays`, via one `package_findings` dict | same blind spots as 1, and an empty dict satisfies all three at once | **1** |
+| 3 | `tests/golden/test_parity.py` | the prototype `.raw.json` oracle | any rule the prototype never had, including the three retired ids | — |
+| 4 | `test_specs_match_frozen_metadata` | literals frozen in the test file | whether those literals were transcribed correctly in the first place | **5** |
+| 5 | `test_review_questions_match_poc_oracle` | the vendored prototype `catalog.py` | fields the prototype does not carry: severity, confidence, weight | **4** |
+| 6 | `lint-imports` + `test_import_contract_coverage.py` | the module graph, and `.importlinter.ini` as text | a `layers` stanza, which the coverage test does not read; a hand-enumerated contract fails open | — |
 
 Ambient and easy to overcount as coverage: `deptry` sees only declared-versus-
 imported, and line coverage cannot see a test that reads source files *as data*
@@ -136,14 +124,14 @@ imported, and line coverage cannot see a test that reads source files *as data*
 
 Two lessons, both from the table rather than from prose:
 
-**Rows 2 and 3 are one gate wearing two names.** Both scan the same tree with
+**Rows 1 and 2 are one gate wearing two names.** Both scan the same tree with
 the same tool. If that scan returned nothing, four assertions go green together.
-Row 3 is worse on its own: three assertions fed by one `package_findings` dict
+Row 2 is worse on its own: three assertions fed by one `package_findings` dict
 is a single point of failure that looks like three, and it read as three in the
 C1 plan's verification section. Count assertions by their input, not by their
 `def`.
 
-**Rows 5 and 6 were chosen well.** The frozen literals cannot check themselves,
+**Rows 4 and 5 were chosen well.** The frozen literals cannot check themselves,
 so an independent transcription of the same 19 review questions checks them —
 different source, different failure mode. That is what a second check is for,
 and it is the only pair in the table that was deliberate rather than accidental.
@@ -243,12 +231,9 @@ remedy that §8 permits.
 
 A plan is not complete when its acceptance criteria pass. It is complete when
 every drift and defect entry it produced has been written back into the plan
-itself, under its **discovered-during-execution** section.
-
-There is no downstream phase document to receive it. That was the old shape,
-and it depended on a roadmap that no longer exists. The plan that produced the
-finding is where the finding lives, because the next plan's author reads the
-last plan and nothing else.
+itself, under its **discovered-during-execution** section. The plan that
+produced the finding is where the finding lives, because the next plan's author
+reads the last plan and nothing else.
 
 1. List every drift entry, defect, blocker, compromise and deferred decision
    the plan recorded.

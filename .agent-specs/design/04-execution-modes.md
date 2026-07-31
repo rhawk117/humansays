@@ -43,9 +43,7 @@ an information-disclosure and merge-churn problem.
 
 ### Fingerprint
 
-Complete field list in
-[the retired dynamic-analysis roadmap](../roadmap-retirement.md). Mismatch
-produces a warning **and non-use**. Never silent use.
+Mismatch produces a warning **and non-use**. Never silent use.
 
 ## 3. Observe
 
