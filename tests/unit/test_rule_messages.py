@@ -54,7 +54,14 @@ def analyze(source: str, origin: str) -> list:
 def rendered_signals() -> set[SignalName]:
     fired: set[SignalName] = set()
     for source in fixture_sources():
-        fired.update(finding.rule.signal for finding in analyze(source, '<fixture>'))
+        try:
+            findings = analyze(source, '<fixture>')
+        except SyntaxError:
+            # Some fixtures use grammar newer than the running interpreter;
+            # see tests/unit/test_version_gated_syntax.py.
+            continue
+
+        fired.update(finding.rule.signal for finding in findings)
 
     for path in matching(CORPUS, '*.py'):
         text = path.read_text(encoding='utf-8')

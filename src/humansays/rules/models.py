@@ -17,6 +17,10 @@ from humansays.findings.models import Location, RuleSpec
 NO_PAYLOAD: Mapping[str, object] = MappingProxyType({})
 
 
+def _no_payload() -> Mapping[str, object]:
+    return NO_PAYLOAD
+
+
 @dataclass(frozen=True, slots=True)
 class Emission:
     """What a rule measured at one location, before it becomes a ``Finding``.
@@ -29,7 +33,7 @@ class Emission:
     signal: SignalName
     location: Location
     evidence: tuple[str, ...] = ()
-    payload: Mapping[str, object] = field(default=NO_PAYLOAD)
+    payload: Mapping[str, object] = field(default_factory=_no_payload)
 
 
 @dataclass(frozen=True, slots=True)
