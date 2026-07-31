@@ -2,22 +2,26 @@
 
 How work is executed in this repository. Applies to every phase.
 
-## 1. One phase per session
+## 1. One plan per session
 
-A session executes tasks from exactly one `PHASE.md`. Do not read other phase
-files. They describe work that is deliberately deferred, and reading them
-reliably produces scope drift.
+A session executes tasks from exactly one plan under [`plans/`](../plans/). Do
+not read the other plans. They describe work that is either finished or
+deliberately deferred, and reading them reliably produces scope drift.
+
+A plan carrying a **Superseded** banner is provenance, not work. Do not execute
+it, and do not treat its "Established facts" section as describing the current
+tree.
 
 ## 2. Acceptance tests come first
 
 For any task with a non-trivial correctness condition:
 
-1. Write the failing test from the phase document.
+1. Write the failing test from the plan.
 2. Run it and confirm it fails for the stated reason -- not on an import
    error or a typo.
 3. Commit it red: `fix(scope): add failing test for <condition>`. A red
    acceptance test is a valid checkpoint; the tree is green when the suite's
-   failures are exactly the ones the phase document predicts.
+   failures are exactly the ones the plan predicts.
 4. Make it pass, and commit that separately.
 
 Models are substantially better at "make this red test green" than at
@@ -26,38 +30,20 @@ that split without routing through the operator.
 
 ## 3. Scope
 
-Every phase directory contains `paths.json`:
+A plan states the files it touches. Changing anything outside that set is scope
+drift, and the remedy is to stop and report the path and why it is needed, not
+to widen the plan mid-execution.
 
-    {"note": "...", "allowed": ["src/**"], "deny": ["src/runtime/**"]}
+**Nothing enforces this.** It was previously enforced by obligation against a
+per-phase `paths.json` allowlist checked by `scripts/check_scope.py`. The phase
+directories are gone and the allowlists with them, so the mechanism is gone
+too; what remains is the reviewer reading the diffstat against the plan's file
+list.
 
-`uv run python scripts/check_scope.py <phase> --base develop` reports any
-change outside it, reading committed, staged, unstaged and untracked files.
-
-**No hook and no CI job runs this.** It is enforcement by obligation: run it
-at every task boundary, before every commit. A violation is not something to
-work around -- stop, report the path and why it is needed, and wait. See
-[`scope-guard.md`](scope-guard.md).
-
-## 3a. Allowlists are derived, not inherited
-
-The original allowlists were authored at roadmap time against a repository
-layout that did not exist yet. This is not hypothetical: Phase 2's allowlist
-denied the criteria document that Phase 2's own acceptance test requires.
-
-At phase start, derive the allowlist from the actual tree:
-
-1. List every symbol the phase changes, from `PHASE.md`.
-2. Search for every consumer of every one of those symbols.
-3. The allowlist is the set of files that search returns, plus the phase's
-   own directory.
-4. **Put the search output in the commit body** that establishes the
-   allowlist. A reviewer needs to see what was searched for, not only what
-   the result was.
-
-Mid-phase additions keep the widening ritual: an allowlist change lands in a
-commit containing nothing else, with a one-line reason. `check_scope.py`
-reports violations of that isolation rule, though it does not block them --
-see §3.
+One lesson from that mechanism is worth keeping, because it applies to any
+future check: `git diff BASE...HEAD` sees only committed changes, and a guard
+reading it alone is bypassed by anything staged, unstaged, or untracked. A
+scope check that does not read all four sources is not a scope check.
 
 ## 4. Constraints that can be tests, are tests
 
@@ -129,13 +115,20 @@ checks and five, and nobody had written it down.
 
 | # | Gate | Consumes | Cannot see | Shares its input with |
 |---|---|---|---|---|
-| 1 | `.migration/capture.sh` + `diff -r` | CLI stdout over two corpora, both formats, colour both ways | anything the two corpora do not exercise; and whether the tests still test the same things | — |
+| 1 | ~~`.migration/capture.sh` + `diff -r`~~ | CLI stdout over two corpora, both formats, colour both ways | anything the two corpora do not exercise; and whether the tests still test the same things | — |
 | 2 | `tests/golden/test_self_scan.py` | the tool scanning `src/humansays` | anything outside `src/humansays`; unweighted findings | **3** |
 | 3 | `test_cli_contract.py`, three assertions | the tool scanning `src/humansays`, via one `package_findings` dict | same blind spots as 2, and an empty dict satisfies all three at once | **2** |
 | 4 | `tests/golden/test_parity.py` | the prototype `.raw.json` oracle | any rule the prototype never had, including the three retired ids | — |
 | 5 | `test_specs_match_frozen_metadata` | literals frozen in the test file | whether those literals were transcribed correctly in the first place | **6** |
 | 6 | `test_review_questions_match_poc_oracle` | the vendored prototype `catalog.py` | fields the prototype does not carry: severity, confidence, weight | **5** |
 | 7 | `lint-imports` + `test_import_contract_coverage.py` | the module graph, and `.importlinter.ini` as text | a `layers` stanza, which the coverage test does not read; a hand-enumerated contract fails open | — |
+
+Row 1 is struck because the script is gone: `.migration/` was gitignored and has
+been deleted, so the byte-diff gate C1 relied on cannot be re-run. The row stays
+in the table because the count of seven is the point being made, and dropping
+the row would quietly restate it as six. What that gate covered is now covered
+by nothing. The corpus it ran over was measured thin in any case — see
+`docs/evidence/backlog-measurements.md`.
 
 Ambient and easy to overcount as coverage: `deptry` sees only declared-versus-
 imported, and line coverage cannot see a test that reads source files *as data*
@@ -174,10 +167,10 @@ as a measurement.
 
 ## 6. Adversarial review before merge
 
-Every phase ends with a review pass that assumes the implementation is wrong.
-See [`review-checklist.md`](review-checklist.md). The reviewer reads the phase
-document's **"What a wrong implementation looks like"** section first and
-attempts to confirm each failure mode before anything else.
+Every plan ends with a review pass that assumes the implementation is wrong.
+See [`review-checklist.md`](review-checklist.md). The reviewer starts from the
+plan's verification commands and runs them, rather than reading the plan's
+account of having run them.
 
 ## 7. What to do when blocked
 
@@ -187,8 +180,12 @@ than a completed task built on a guess.
 
 ## 8. Git
 
-Agents commit and push their own branch. Agents do not merge, rewrite, or
-destroy.
+The operator owns git. `CLAUDE.md` rule 8 is the governing statement and this
+section elaborates it rather than qualifying it: an agent commits, branches or
+pushes **only when asked**, and never merges, rewrites, or destroys.
+
+The permitted list below is what an agent may run *once asked*. It is not a
+standing permission.
 
 **Permitted:** `status`, `diff`, `log`, `show`, `add`, `commit`, `checkout`,
 `checkout -b`, `stash list`, `push`.
@@ -205,7 +202,8 @@ There is no other "unless asked" clause. An agent that believes it needs a
 forbidden verb stops and reports what it wants to run and why. The operator
 runs it.
 
-`push` is permitted so the operator can follow along. Force-push is not,
+`push`, when asked, is permitted so the operator can follow along. Force-push is
+not,
 which is what keeps every push recoverable. The forbidden list is the set of
 verbs that destroy work or rewrite shared history; the permitted list is the
 set that creates recoverable checkpoints.
@@ -230,34 +228,40 @@ set that creates recoverable checkpoints.
 |---|---|
 | Commit message format | `commit-msg` hook, asserted by `tests/tooling/test_commit_msg.py` |
 | Hooks are installed | `scripts/precheck.sh`, if it is run |
-| Scope stays inside `paths.json` | **nothing** -- §3, agent obligation |
-| Allowlist derived from a search | **nothing** -- §3a, reviewer reads the commit body |
-| Drift folded downstream before close | **nothing** -- §9, reviewer checks at merge |
+| Scope stays inside the plan's file list | **nothing** -- §3, reviewer reads the diffstat |
+| Drift folded into the plan before close | **nothing** -- §9, reviewer checks at merge |
 | Forbidden git verbs | **nothing** -- §8, agent obligation |
 | One commit per green step | **nothing** -- convention |
 
-The bottom five rows are convention. They are listed so a reader knows which
+The bottom four rows are convention. They are listed so a reader knows which
 lines the repository catches and which depend on the agent doing as told.
 The commit-message hook is bypassable with `--no-verify`; no CI job backs it
 up, because a CI rejection of an already-written commit leaves an agent no
 remedy that §8 permits.
 
-## 9. Phase close-out
+## 9. Plan close-out
 
-A phase is not complete when its acceptance criteria pass. It is complete
-when every drift and defect entry it produced has been applied to the
-downstream phase documents it affects.
+A plan is not complete when its acceptance criteria pass. It is complete when
+every drift and defect entry it produced has been written back into the plan
+itself, under its **discovered-during-execution** section.
+
+There is no downstream phase document to receive it. That was the old shape,
+and it depended on a roadmap that no longer exists. The plan that produced the
+finding is where the finding lives, because the next plan's author reads the
+last plan and nothing else.
 
 1. List every drift entry, defect, blocker, compromise and deferred decision
-   the phase recorded.
-2. For each, identify the downstream phase document it changes.
-3. Apply the change to that document, **relocating the reasoning, not only
-   the conclusion.** A deferred decision that arrives downstream without the
-   argument for deferring it will be re-litigated or silently reversed.
-4. Commit as `ops(phase-N): fold drift into downstream phase docs`.
+   the plan recorded.
+2. Write each into the plan's **discovered-during-execution** section,
+   **recording the reasoning, not only the conclusion.** A deferred decision
+   recorded without the argument for deferring it will be re-litigated or
+   silently reversed.
+3. If a measurement was taken, it goes to `docs/evidence/` instead, because
+   plans are not re-run and measurements are.
+4. Commit as `ops(<topic>): fold execution findings into the plan`.
 5. **Only then** delete the entries. Deletion before relocation loses the
-   reasoning permanently, because evidence is not tracked.
+   reasoning permanently.
 
-Evidence is per-phase and untracked -- working material, not an archive.
-Anything that must outlive the phase belongs in a phase document before the
-phase closes.
+Working material is untracked and disposable. Anything that must outlive the
+plan belongs in the plan, or in `docs/evidence/` if it is a number, before the
+plan closes.
