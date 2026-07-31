@@ -110,7 +110,8 @@ plan adds nothing there.
 The consequence is user-visible and must be in the changelog: after C2, a file
 with only static methods and lambdas scores 100 while still printing findings.
 That is the intended end state per reconciliation, arrived at one phase early
-for these three rules.
+for these three rules. Recorded in `CHANGELOG.md` under Unreleased → Changed,
+2026-07-30.
 
 ## Disposition semantics
 
