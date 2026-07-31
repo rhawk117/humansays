@@ -34,7 +34,7 @@ Two independent attributes on every rule:
 
 ### 1.3 Impact — how consequential the likely problem is
 
-**Deliberately unassigned until Phase 5.** Hand-assigning `high`/`medium`/`low`
+**Deliberately unassigned, and not scheduled.** Hand-assigning `high`/`medium`/`low`
 is the unjustified-constant error the critique log records twice, wearing a nicer
 name. `impact` is derived from repair correspondence in the paired before/after
 corpus: a rule whose findings are routinely repaired has demonstrated impact.

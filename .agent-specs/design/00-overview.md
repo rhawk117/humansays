@@ -45,9 +45,15 @@ The defensible claim:
 
 The rules are an attempt to programmatically enforce two authored documents:
 *Python Code Design and Review Criteria* and *Rust Code Design and Review
-Criteria*. Every rule cites a section. CI reports sections with zero coverage —
-that number, not the rule count, measures how much of the document the tool
-enforces.
+Criteria*. Every rule should cite a section, and how much of the document is
+covered — not the rule count — is what measures how much the tool enforces.
+
+**Nothing checks the citation.** It is convention, per `CLAUDE.md` rule 9. The
+19 shipped rules satisfy it because each page under `docs/site/rules/` links the
+`docs/site/philosophy/` page its criteria come from and each of those links
+back, but no test or CI job reads that pairing, and no job counts uncovered
+sections. The 175 planned rules under `docs/site/planned/` carry no criteria
+citation at all.
 
 Rules are per-language by design. The two criteria documents demonstrate why:
 Rust's ownership, trait, RAII and unsafe criteria have no Python analogue;
@@ -56,12 +62,7 @@ analogue. See [`06-cross-language.md`](06-cross-language.md).
 
 ## Roadmap
 
-| Phase | Goal |
-|---|---|
-| 1 | Migration — behavior-preserving port |
-| 2 | Fact-model correctness — argument kinds, claim/evidence, immutability |
-| 3 | Measurement — four corpora, paired repairs, the narration study |
-| 4 | MVP rule set — ~30 signals, 6 findings |
-| 5 | Effects — four layers, stop when measurement allows |
-| 6 | Calibration and observation |
-| 7 | Performance, then the Rust decision |
+There is no roadmap. The nine-phase structure this section described was retired;
+[`../roadmap-retirement.md`](../roadmap-retirement.md) records the
+phase-by-phase disposition. Only the next piece of work gets planned, and plans
+live in [`../plans/`](../plans/).

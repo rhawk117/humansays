@@ -20,7 +20,7 @@ extra steps.
 
 ## First candidate: the dependency summarizer
 
-Phase 5 Layer 3, not the AST analyzer:
+The dependency summarizer, not the AST analyzer:
 
 - Batch, not per-node — one crossing per package
 - Comment-agnostic, so source-versus-bytecode parity is easy
