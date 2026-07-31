@@ -5,12 +5,12 @@
 Read [`process/agent-protocol.md`](process/agent-protocol.md) first. It
 describes how work is executed in this repository. Plans live in
 [`plans/`](plans/) and are reviewed against the protocol's §4 constraint table
-before they are executed, not after. Standing constraints live
-in `CLAUDE.md` at the repository root and are loaded automatically; they
+before they are executed, not after. There is no backlog: see below. Standing
+constraints live in `CLAUDE.md` at the repository root and are loaded automatically; they
 apply to everything here.
 
 The documentation site is the source of truth for both rule sets. The 19 rules
-that ship in `0.1.0a1` are under Rules, one page per group, each carrying the
+that ship in `0.1.0a2` are under Rules, one page per group, each carrying the
 severity, confidence, weight and trigger read from
 `src/humansays/rules/*/rules.toml`.
 The 175-rule planned catalog is under Planned rules and is not implemented.
@@ -22,10 +22,11 @@ The criteria the shipped rules encode are under Design philosophy.
 
 ```
 .agent-specs/
-├── process/     how agents work here; the review checklist
-├── design/      reference documents for the evaluation model and architecture
-├── backlog.md   unordered future work, deliberately not sequenced into phases
-└── plans/       implementation plans, versioned with the code they change
+├── process/              how agents work here; the review checklist
+├── design/               reference documents for the evaluation model and architecture
+├── plans/                implementation plans, versioned with the code they change
+├── CLAUDE.md.template    the root CLAUDE.md's source; edit here, then copy
+└── roadmap-retirement.md what the nine-phase roadmap was, and why it stopped
 ```
 
 ## Reading order for a human
@@ -37,10 +38,15 @@ The criteria the shipped rules encode are under Design philosophy.
 
 ## On the retired phase roadmap
 
-This tree previously organized work into nine sequential phase
-directories. That structure predated the shift to `NEW_RULES.md` as the
-project's source of truth and has been retired: see
+This tree previously organized work into nine sequential phase directories,
+then into an unordered `backlog.md`. Both are retired. See
 [`roadmap-retirement.md`](roadmap-retirement.md) for the phase-by-phase
-disposition and [`backlog.md`](backlog.md) for the unordered work it left
-behind. Only the next piece of work gets planned at a time; do not
-reconstruct a phase sequence from the backlog.
+disposition.
+
+**There is no backlog.** Work that is worth doing is planned and done; work
+that is not is not written down. A list of things nobody is doing accrues
+claims that stop being true, and this repository has now had that happen twice.
+The measurements the backlog held were moved to
+`docs/evidence/backlog-measurements.md` before it was deleted.
+
+Only the next piece of work gets planned at a time.

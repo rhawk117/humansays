@@ -6,8 +6,10 @@ rule model that predated the current catalog. That catalog now lives at
 plans only the next piece of work rather than a multi-phase sequence in advance.
 This file records, phase by phase, whether each phase's premise still holds
 against the current catalog. It is the permanent record. The phase directories
-have been deleted. Work that remains worth doing moves to `backlog.md` as an
-unordered list.
+have been deleted. Work that remains worth doing is planned when it is done,
+not listed in advance; `backlog.md`, which briefly held such a list, was itself
+deleted on 2026-07-30. Its measurements are in
+`docs/evidence/backlog-measurements.md`.
 
 Classification is by catalog alignment, not by completion. "Misaligned" means
 the phase's premise or scope was built around the old rule model and no longer
@@ -29,7 +31,7 @@ scope guard (`allowed-paths.txt`, `scripts/check_scope.py`) served the
 phase-isolation discipline that this branch retires. The only catalog-independent
 element, the release pipeline and PyPI name reservation, is already realized:
 `.github/workflows/release.yml` exists and `0.1.0a1` shipped. Nothing here
-carries to the backlog.
+carries forward.
 
 ## 02-fact-model: still worth doing
 

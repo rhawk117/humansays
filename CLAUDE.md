@@ -38,7 +38,7 @@ stopped doing. The per-phase tree those documents used to describe is gone.
     section is convention, not a guarantee: nothing checks it. The shipped
     rules satisfy it through `docs/site/rules/*.md`, each of which links the
     `docs/site/philosophy/` page its criteria come from, and those pages link
-    back. `.agent-specs/backlog.md` tracks the gap.
+    back. Nothing tracks the gap; there is no backlog.
 10. **`WARNING` is weight 3.0, `ADVISORY` is weight 1.0, and those are the only
     two severities.** `src/humansays/enums.py` defines `Severity`; there is no
     error or bug level. A rule earns `WARNING` when the syntactic condition is
@@ -83,7 +83,7 @@ stopped doing. The per-phase tree those documents used to describe is gone.
   `docs` job in `.github/workflows/integration.yml` runs the same build on every
   pull request.
 - `docs/site/planned/` describes 175 rules that are not implemented. Version
-  `0.1.0a1` ships 19. Never document a planned rule as shipped.
+  `0.1.0a2` ships 19. Never document a planned rule as shipped.
 - `docs/evidence/` sits outside `docs_dir` and is never built.
 - `.mascots/` is untracked local working material.
 
