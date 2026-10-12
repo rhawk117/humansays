@@ -59,7 +59,7 @@ jobs:
         run: ./scripts/build.sh "$OUTPUT_DIRECTORY"
 
       - name: Upload Distributions
-        uses: actions/upload-artifact@v7.0.1
+        uses: actions/upload-artifact@v7.0.2
         with:
           name: ${{ inputs.artifact-name }}
           path: dist/
@@ -83,7 +83,7 @@ jobs:
           sync: "false"
 
       - name: Download distributions
-        uses: actions/download-artifact@v8.0.1 # v8.0.1
+        uses: actions/download-artifact@v8.0.2 # v8.0.1
         with:
           name: ${{ inputs.artifact-name }}
           path: dist/
